@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scriptmodule xmlns="http://xlt.xceptance.com/xlt-script/2" version="6">
+  <description>Opens the product search bar by clicking on the search icon </description>
+  <command name="click" target="css=.nav-header .large-1.columns i.icon-search2"/>
+  <command name="waitForVisible" target="css=#q.search-input"/>
+</scriptmodule>

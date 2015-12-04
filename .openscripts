@@ -1,0 +1,3 @@
+modules.pages.search.VSearch_Results_validateArticlesFound
+modules.pages.pdp.VProduct_validatePDP
+tests.search.TSearch_ProductOnly

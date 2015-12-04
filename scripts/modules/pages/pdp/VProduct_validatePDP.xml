@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scriptmodule xmlns="http://xlt.xceptance.com/xlt-script/2" version="6">
+  <description>Validates the functionality and elements for the product detail page.</description>
+  <codecomment>Name</codecomment>
+  <command name="assertElementPresent" target="css=#content .productdetail div.tablet h1"/>
+  <codecomment>Image</codecomment>
+  <command name="assertElementPresent" target="id=product-detail-image-container"/>
+  <codecomment>Details</codecomment>
+  <command name="assertElementPresent" target="id=price"/>
+  <codecomment>Add2Cart</codecomment>
+  <command name="assertElementPresent" target="css=#addproductbox .prod-add button[type='submit']"/>
+  <command name="assertElementPresent" target="id=qtybox"/>
+</scriptmodule>
