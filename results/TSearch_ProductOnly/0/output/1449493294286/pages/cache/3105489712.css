@@ -1,0 +1,615 @@
+/*-------------------------------------------------------*/
+/* Kate Sans Font
+/*-------------------------------------------------------*/
+@font-face {
+  font-family: 'KateSansRegular';
+  src: url("1603691004.eot");
+  src: url("1603691004.eot?#iefix") format("embedded-opentype"), 
+  url("1080290417.woff") format("woff"), 
+  url("419238505.ttf") format("truetype"), 
+  url("1485002488.svg") format("svg");
+  }
+
+@font-face {
+  font-family: 'KateSansBold';
+  src: url("2394604897.eot");
+  src: url("2394604897.eot?#iefix") format("embedded-opentype"), 
+  url("3456905004.woff") format("woff"), 
+  url("3385964276.ttf") format("truetype"), 
+  url("2310009445.svg") format("svg");
+  }
+
+@font-face {
+  font-family: 'KateSansLight';
+  src: url("3380533489.eot");
+  src: url("232628527.eot") format("embedded-opentype"), 
+  url("1044674677.woff") format("woff"), 
+  url("2383784804.ttf") format("truetype"), 
+  url("3463180277.svg") format("svg");
+  }
+/*-------------------------------------------------------*/
+/* All created assets for VCP are wrapped in '.dropzone' for reference and locality
+/*-------------------------------------------------------*/
+.dropzone img {
+  width: 100%; }
+.dropzone a {
+  display: block; }
+.dropzone .hero, .dropzone .dropzone .banner {
+  margin-bottom: 20px; }
+.dropzone .cube {
+  padding-right: 5px;
+  padding-left: 5px; }
+.dropzone .cube:first-child {
+  padding-right: 5px;
+  padding-left: 0px; }
+.dropzone .cube:last-child {
+  padding-right: 0px;
+  padding-left: 5px; }
+
+
+/*-------------------------------------------------------*/
+/* Homepage
+/*-------------------------------------------------------*/
+.dropzone.homepage .welcome-banner {
+  margin-bottom: 7px; }
+
+.dropzone.homepage .hero-links{
+  text-align: center;
+  color: #fff;
+  background-color: #000;
+  padding: 0;
+}
+
+.dropzone.homepage .hero-links a{
+  color: #fff;
+  padding: 10px 0 10px 0;
+  border: 1px solid #fff;
+  font-size: 14px;
+  -webkit-transition: all 0.3s ease-in-out;
+  -moz-transition: all 0.3s ease-in-out;
+  -o-transition: all 0.3s ease-in-out;
+  transition: all 0.3s ease-in-out;
+}
+
+.dropzone.homepage .hero-links.slide-01 a{
+  background-color: #FFEBED;
+  color: #000;
+}
+
+.dropzone.homepage .hero-links.slide-01 a:hover{
+  background-color: #000;
+  color: #fff;
+}
+
+.dropzone.homepage .hero-links.slide-02 a{
+  background-color: #DD224B;
+  color: #fff;
+}
+
+.dropzone.homepage .hero-links.slide-02 a:hover{
+  background-color: #000;
+  color: #fff;
+}
+
+.dropzone.homepage .hero-links.slide-03 a{
+  background-color: #FCFCF2;
+  color: #000;
+}
+
+.dropzone.homepage .hero-links.slide-03 a:hover{
+  background-color: #000;
+  color: #fff;
+}
+
+
+.dropzone.homepage .hero-links.slide-04 a{
+  background-color: #DD224B;
+  color: #fff;
+}
+
+.dropzone.homepage .hero-links.slide-04 a:hover{
+  background-color: #000;
+  color: #fff;
+}
+
+.dropzone.homepage .orbit-timer{
+  display: none;
+}
+
+.dropzone.homepage .orbit-container .orbit-next, .dropzone.homepage .orbit-container .orbit-prev {
+    background-color: transparent; }
+.dropzone.homepage .orbit-container .orbit-prev > span, .dropzone.homepage .orbit-container .tfl-html ul .orbit-prev > li:first-child, .tfl-html ul .dropzone.homepage .orbit-container .orbit-prev > li:first-child {
+    border-color: transparent black transparent transparent; }
+.dropzone.homepage .orbit-container .orbit-next > span, .dropzone.homepage .orbit-container .tfl-html ul .orbit-next > li:first-child, .tfl-html ul .dropzone.homepage .orbit-container .orbit-next > li:first-child {
+    border-color: transparent transparent transparent black; }
+.dropzone.homepage .orbit-container .orbit-prev:hover > span, .dropzone.homepage .orbit-container .tfl-html ul .orbit-prev:hover > li:first-child, .tfl-html ul .dropzone.homepage .orbit-container .orbit-prev:hover > li:first-child {
+    border-color: transparent #333 transparent transparent; }
+.dropzone.homepage .orbit-container .orbit-next:hover > span, .dropzone.homepage .orbit-container .tfl-html ul .orbit-next:hover > li:first-child, .tfl-html ul .dropzone.homepage .orbit-container .orbit-next:hover > li:first-child {
+    border-color: transparent transparent transparent #333; }
+
+
+
+
+
+/*-------------------------------------------------------*/
+/* Category Banners
+/*-------------------------------------------------------*/
+
+.dropzone.cat-landing img{
+  border: 1px solid #fff;
+}
+
+
+/*-------------------------------------------------------*/
+/* Accessories
+/*-------------------------------------------------------*/
+
+.dropzone.accessories .acessories-image-holder{
+  position: relative;
+}
+
+.dropzone.accessories .accessories-menu-wrapper{
+  position: absolute;
+  bottom: 30%;
+  z-index: 5;
+  padding: 0;
+}
+
+.dropzone.accessories ul{
+  width: 90%;
+  margin-left: auto;
+  margin-right: auto;
+  }
+
+.dropzone.accessories li{
+  float: left;
+}
+
+.dropzone.accessories li a{
+  color: #fff;
+  font-family: arial, sans-serif;
+  font-size: 11px;
+  text-align: center;
+}
+
+.dropzone .accessories-shop{
+  background-color: rgb(243, 243, 243);
+}
+
+.dropzone .accessories-shop .accessories-shop-wrapper{
+  padding-top: 25%;
+}
+
+.dropzone .accessories-shop ul{
+  text-align: center;
+  padding-top: 15px;
+}
+
+.dropzone .accessories-shop li{
+  display: inline-block;
+  padding: 7px 20px;
+}
+
+.dropzone .accessories-shop li a{
+  font-family: helvetica, arial, sans-serif;
+  font-size: 12px;
+}
+
+.dropzone .accessories-shop img{
+  text-align: center;
+}
+
+/*-------------------------------------------------------*/
+/* New Arrivals Jan
+/*-------------------------------------------------------*/
+
+.dropzone.new-arrivals-jan .na-wrapper{
+  background-color: #ffeaed;
+  padding: 25px 30px;
+  display: inline-block;
+}
+
+.dropzone.new-arrivals-jan .na-border{
+  border: 1px solid #d9204f;
+  display: inline-block;
+}
+
+/*-------------------------------------------------------*/
+/* New Arrivals March 2015
+/*-------------------------------------------------------*/
+
+.dropzone.new-arrivals-march .na-wrapper{
+  background-color: #f3f3f3;
+  padding: 25px 30px;
+  display: inline-block;
+}
+
+/*-------------------------------------------------------*/
+/* New Arrivals April 2015
+/*-------------------------------------------------------*/
+
+.dropzone.new-arrivals-april .na-wrapper{
+  background-color: #000000;
+}
+
+.dropzone.new-arrivals-april .na-wrapper img{
+  width: 100%;
+}
+
+
+/*-------------------------------------------------------*/
+/* New Arrivals May 2015
+/*-------------------------------------------------------*/
+
+.dropzone.new-arrivals-may .na-wrapper .large-8:nth-child(1){
+  padding-left: 0;
+}
+
+.dropzone.new-arrivals-may .na-wrapper .large-8:nth-child(2){
+  padding-left: 0;
+  padding-right: 0;
+}
+
+.dropzone.new-arrivals-may .na-wrapper .large-8:nth-child(3){
+  padding-right: 0;
+}
+
+
+.new-arrivals-thumbnails ul li{
+  float: left;
+  width: 14%;
+}
+
+
+
+.miss-adventure-gallery{
+  position: relative;
+  padding-bottom: 14px;
+}
+
+.miss-adventure-gallery img{
+  width: 100%;
+}
+
+.miss-adventure-gallery-text{
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: rgba(255, 255, 255, 0.75);
+  color: #000;
+  text-decoration: underline;
+  text-align: center;
+  visibility: hidden;
+  -webkit-transition: visibility opacity 0.2s ease;
+  -moz-transition: visibility opacity 0.2s ease;
+  -ms-transition: visibility opacity 0.2s ease;
+  -o-transition: visibility opacity 0.2s ease;
+  transition: visibility opacity 0.2s ease;
+}
+
+.miss-adventure-gallery:hover .miss-adventure-gallery-text {
+  visibility: visible;
+  opacity: 1;
+}
+
+.dropzone.new-arrivals-may .na-wrapper .miss-adventure-gallery-text p{
+  padding-top: 40%;
+}
+
+
+.flex-video{
+  position: relative;
+  padding-top: 1.78571em;
+  padding-bottom: 56.25%;
+  height: 0;
+  margin-bottom: 1.14286em;
+  overflow: hidden;
+}
+
+.flex-video iframe{
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+
+
+
+
+
+/*-------------------------------------------------------*/
+/* On Purpose
+/*-------------------------------------------------------*/
+.on-purpose li img {
+  width: 100%; }
+.on-purpose .hero img {
+  width: 100%; }
+
+/*-------------------------------------------------------*/
+/* gift black banners
+/*-------------------------------------------------------*/
+.dropzone.gift-banner {
+  margin-bottom: 5px; }
+
+/*-------------------------------------------------------*/
+/* gifts landing page
+/*-------------------------------------------------------*/
+.gifts-landing-page {
+  position: relative;
+  /*share cta*/ }
+  .gifts-landing-page div.links {
+    width: 100%;
+    background-color: #fff1ed;
+    padding: 10px 0; }
+  .gifts-landing-page div.links ul li {
+    display: inline-block; }
+  .gifts-landing-page div.links ul li span, .gifts-landing-page div.links .tfl-html ul li li:first-child, .tfl-html .gifts-landing-page div.links ul li li:first-child {
+    font-style: italic;
+    font-weight: bold; }
+  .gifts-landing-page div.links ul {
+    text-align: center; }
+  .gifts-landing-page div.links a {
+    text-transform: uppercase;
+    color: black;
+    text-decoration: underline;
+    font-size: 14px;
+    padding: 0 10px; }
+  .gifts-landing-page div.links a:hover {
+    font-style: italic;
+    font-weight: bold; }
+  .gifts-landing-page .share {
+    width: 69px;
+    position: absolute;
+    right: 15px;
+    top: 0;
+    z-index: 100; }
+
+/*-------------------------------------------------------*/
+/* gifts landing page
+/*-------------------------------------------------------*/
+
+.dropzone .home-shop ul{
+  text-align: center;
+  padding-top: 15px;
+}
+
+.dropzone .home-shop li{
+  display: inline-block;
+  padding: 7px 20px;
+}
+
+.dropzone .home-shop li a{
+  font-family: helvetica, arial, sans-serif;
+  font-size: 12px;
+}
+
+/*gifts landing page*/
+/*-------------------------------------------------------*/
+/* Footer Gift Links
+/*-------------------------------------------------------*/
+.dropzone.footer-gift-links {
+  margin-top: 10px;
+  margin-bottom: 10px; }
+  .dropzone.footer-gift-links .row {
+    margin-left: 0;
+    margin-right: 0; }
+  .dropzone.footer-gift-links .links {
+    background-color: #fff1ed;
+    padding: 20px 0; }
+  .dropzone.footer-gift-links p, .dropzone.footer-gift-links a {
+    letter-spacing: 0; }
+  .dropzone.footer-gift-links p {
+    text-align: center;
+    font-size: 21px; }
+    .dropzone.footer-gift-links p span, .dropzone.footer-gift-links p .tfl-html ul li:first-child, .tfl-html ul .dropzone.footer-gift-links p li:first-child {
+      font-style: italic;
+      font-weight: bold; }
+  .dropzone.footer-gift-links ul {
+    text-align: center; }
+    .dropzone.footer-gift-links ul li {
+      display: inline-block; }
+      .dropzone.footer-gift-links ul li a {
+        text-transform: uppercase;
+        color: black;
+        text-decoration: underline;
+        font-size: 16px;
+        padding: 0 25px; }
+      .dropzone.footer-gift-links ul li a:hover {
+        font-style: italic;
+        font-weight: bold; }
+
+/*-------------------------------------------------------*/
+/* New Arrivals Orbit Slider
+/*-------------------------------------------------------*/
+.new-arrivals {
+  padding: 20px;
+  background-color: #fef1ee;
+  /*slider*/ }
+  .new-arrivals img {
+    cursor: auto; }
+  .new-arrivals .orbit-container .orbit-slides-container > * .orbit-caption {
+    width: inherit; }
+  .new-arrivals .orbit-caption p {
+    color: white; }
+  .new-arrivals .orbit-caption.top {
+    top: 0; }
+  .new-arrivals .orbit-caption.top-right {
+    top: 0;
+    text-align: right; }
+  .new-arrivals .orbit-caption.right {
+    text-align: right; }
+  .new-arrivals .orbit-caption.bottom-right {
+    text-align: right; }
+  .new-arrivals li img {
+    width: 100%; }
+  .new-arrivals li ul li {
+    padding: 0; }
+  .new-arrivals li ul li:first-child {
+    padding-right: 4px; }
+  .new-arrivals li ul li:last-child {
+    padding-left: 4px; }
+  .new-arrivals .small-block-grid-2 {
+    margin: 0; }
+  .new-arrivals .orbit-container {
+    background-color: transparent; }
+  .new-arrivals .orbit-container .orbit-next, .new-arrivals .orbit-container .orbit-prev {
+    background-color: transparent; }
+  .new-arrivals .orbit-container .orbit-prev > span, .new-arrivals .orbit-container .tfl-html ul .orbit-prev > li:first-child, .tfl-html ul .new-arrivals .orbit-container .orbit-prev > li:first-child {
+    border-color: transparent black transparent transparent; }
+  .new-arrivals .orbit-container .orbit-next > span, .new-arrivals .orbit-container .tfl-html ul .orbit-next > li:first-child, .tfl-html ul .new-arrivals .orbit-container .orbit-next > li:first-child {
+    border-color: transparent transparent transparent black; }
+  .new-arrivals .orbit-container .orbit-prev:hover > span, .new-arrivals .orbit-container .tfl-html ul .orbit-prev:hover > li:first-child, .tfl-html ul .new-arrivals .orbit-container .orbit-prev:hover > li:first-child {
+    border-color: transparent #333 transparent transparent; }
+  .new-arrivals .orbit-container .orbit-next:hover > span, .new-arrivals .orbit-container .tfl-html ul .orbit-next:hover > li:first-child, .tfl-html ul .new-arrivals .orbit-container .orbit-next:hover > li:first-child {
+    border-color: transparent transparent transparent #333; }
+
+/*new-arrivals*/
+/*-------------------------------------------------------*/
+/* TFL - images version
+/*-------------------------------------------------------*/
+.tfl .left-column {
+  padding-right: 0; }
+.tfl .right-column {
+  padding-left: 0; }
+.tfl img {
+  width: 100%; }
+
+/*-------------------------------------------------------*/
+/* TFL - html version
+/*-------------------------------------------------------*/
+.tfl-html * {
+  /*font-family: "Helvetica Neue", Arial, sans-serif;*/
+  letter-spacing: initial; }
+
+.tfl-html {
+  background-color: #fff1ed;
+  cursor: auto; }
+  .tfl-html .title img {
+    width: 100%; }
+  .tfl-html span, .tfl-html ul li:first-child {
+    color: #b31218;
+    text-transform: uppercase;
+    font-family: "Helvetica Neue", Arial, sans-serif;
+    font-style: normal;
+    font-size: 1rem;
+    font-weight: 500;
+    letter-spacing: 1.2px; }
+  .tfl-html p {
+    font-style: italic;
+    line-height: 1.3;
+    margin-bottom: 20px; }
+  .tfl-html p a, .tfl-html h1 a, .tfl-html ul a {
+    color: #b31218;
+    text-decoration: underline;
+    font-style: italic; }
+  .tfl-html h1 {
+    line-height: 1;
+    font-size: 1.5rem;
+    font-style: italic;
+    margin-bottom: 20px; }
+  .tfl-html h1 span, .tfl-html h1 ul li:first-child, .tfl-html ul h1 li:first-child {
+    font-size: 2.5rem;
+    font-weight: 300;
+    display: inline-block;
+    margin-bottom: 5px;
+    letter-spacing: 3.2px; }
+  .tfl-html ul {
+    list-style-type: disc;
+    list-style-position: inside;
+    font-style: italic; }
+    .tfl-html ul li:first-child {
+      list-style-type: none;
+      font-style: normal; }
+  .tfl-html .content {
+    padding: 0 20px; }
+    .tfl-html .content a {
+      display: inline; }
+    .tfl-html .content img {
+      width: 100%; }
+    .tfl-html .content img, .tfl-html .content img:last-child {
+      margin-bottom: 0px; }
+    .tfl-html .content img, .tfl-html .content img:first-child {
+      margin-bottom: 20px; }
+    .tfl-html .content :first-child {
+      padding-right: 0; }
+  .tfl-html .left-column, .tfl-html .right-column {
+    padding-top: 20px;
+    padding-bottom: 20px; }
+  .tfl-html .left-column {
+    padding-right: 0; }
+  .tfl-html .right-column {
+    padding-left: 0; }
+
+/*tfl-html*/
+/*-------------------------------------------------------*/
+/* Media Queries
+/*-------------------------------------------------------*/
+@media only screen and (max-width: 767px) {
+  /*-------------------------------------------------------*/
+  /* gifts landing page
+  /*-------------------------------------------------------*/
+  .gifts-landing-page div.links ul li {
+    display: block; }
+  .gifts-landing-page li.title, .gifts-landing-page div.links ul li a {
+    font-size: 1.3em; }
+  .gifts-landing-page li.title {
+    padding-bottom: 10px; }
+  .gifts-landing-page li:not(.title) a {
+    padding-top: 10px;
+    padding-bottom: 10px; }
+
+  /* gifts-landing-page */
+  /*-------------------------------------------------------*/
+  /* Footer Gift Links
+  /*-------------------------------------------------------*/
+  .dropzone.footer-gift-links {
+    margin: 10px 0; }
+    .dropzone.footer-gift-links p.title {
+      font-size: 1.3em;
+      margin-bottom: 0; }
+    .dropzone.footer-gift-links ul li a {
+      padding-right: 10px;
+      padding-left: 10px;
+      font-size: 1.3em; }
+
+  /* footer-gift-links */
+  /*-------------------------------------------------------*/
+  /* New Arrivals Orbit Slider
+  /*-------------------------------------------------------*/
+  .orbit-container .orbit-next, .orbit-container .orbit-prev {
+    -webkit-transform: scale(0.5);
+    -moz-transform: scale(0.5);
+    -o-transform: scale(0.5);
+    transform: scale(0.5);
+    display: block; }
+
+  .orbit-container .orbit-prev {
+    margin-left: -20px; }
+
+  .orbit-container .orbit-next {
+    margin-right: -20px; }
+
+  /*-------------------------------------------------------*/
+  /* TFL - HTML
+  /*-------------------------------------------------------*/
+  .tfl-html h1 {
+    text-align: center; }
+    .tfl-html h1 br {
+      display: none; }
+    .tfl-html h1 br:first-of-type {
+      display: initial; }
+  .tfl-html .left-column {
+    padding-right: 1.07143em; }
+  .tfl-html .right-column {
+    padding-left: 1.07143em; }
+  .tfl-html p, .tfl-html ul {
+    font-size: 18px; }
+    .tfl-html p span, .tfl-html p ul li:first-child, .tfl-html ul p li:first-child, .tfl-html ul span, .tfl-html ul li:first-child {
+      font-size: 16px; }
+
+  /*tfl-html*/ }
+/* END (max-width: 767px) */
