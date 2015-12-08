@@ -34,6 +34,7 @@ Methods of Execution
 - Directory: your Workspace (eg: path/to/multi-browser-suite) -> [Next] 
 - Select “Import existing Eclipse projects” -> [Next] 
 - Check all values and press [Finish]
+
 - Click left on project folder
 - Select Build Path configure Build Path
 - Libraries -> [Add External JARs]
@@ -70,7 +71,7 @@ Methods of Execution
 * Compiles the Java sources
 
 ### ant test.init
-*Prepares everything for testing
+* Prepares everything for testing
 
 ### ant test.java
 * Performs a functional test by running the configured Java test cases
