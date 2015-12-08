@@ -18,7 +18,7 @@ public abstract class AbstractIEScriptTestCase extends AbstractScriptTestCase {
 			saucelabUrl = new URL(
 					"http://" + saucelabUsername + ":" + saucelabAccesskey + "@ondemand.saucelabs.com:80/wd/hub");
 		} catch (MalformedURLException e) {
-			throw new RuntimeException("URL could not resolved: " + e.toString());
+			throw new RuntimeException(e);
 		}
 	}
 
