@@ -14,8 +14,12 @@ import org.junit.Test;
 import org.junit.runners.model.FrameworkMethod;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.ie.InternetExplorerDriver;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.RemoteWebDriver;
+import org.openqa.selenium.safari.SafariDriver;
 
 import com.xceptance.xlt.api.util.XltProperties;
 import com.xceptance.xlt.engine.scripting.junit.ScriptTestCaseRunner;
@@ -71,18 +75,23 @@ public class AnnotationRunner extends ScriptTestCaseRunner
             default:
                 break;
         }
-        
+
         switch (config.getScope())
         {
             case SauceLabs:
                 switch (config.getBrowser())
                 {
                     case InternetExplorer:
-                        if ("8.0".equals(config.getBrowserVersion())) {
+                        if ("8.0".equals(config.getBrowserVersion()))
+                        {
                             capabilities.setCapability("platform", Platform.WINDOWS);
-                        } else if ("11.0".equals(config.getBrowserVersion())) {
+                        }
+                        else if ("11.0".equals(config.getBrowserVersion()))
+                        {
                             capabilities.setCapability("platform", Platform.WIN8_1);
-                        } else {
+                        }
+                        else
+                        {
                             // default platform for all other versions of internet explorer
                             capabilities.setCapability("platform", Platform.WIN8_1);
                         }
@@ -99,20 +108,40 @@ public class AnnotationRunner extends ScriptTestCaseRunner
 
         capabilities.setVersion(config.getBrowserVersion());
 
-        if (!StringUtils.isEmpty(config.getTestCaseName())) {
+        if (!StringUtils.isEmpty(config.getTestCaseName()))
+        {
             capabilities.setCapability("name", config.getTestCaseName());
         }
-        
-        
+
         return capabilities;
     }
 
     private WebDriver createWebdriverUrl(AnnotationRunnerConfiguration config)
     {
+        DesiredCapabilities capabilities = setUpBrowserCapabilities(config);
         switch (config.getScope())
         {
             case SauceLabs:
-                return new RemoteWebDriver(createSauceLabUrl(), setUpBrowserCapabilities(config));
+                return new RemoteWebDriver(createSauceLabUrl(), capabilities);
+
+            case Local:
+                switch (config.getBrowser())
+                {
+                    case InternetExplorer:
+                        return new InternetExplorerDriver(capabilities);
+                        
+                    case Chrome:
+                        return new ChromeDriver(capabilities);
+
+                    case Firefox:
+                        return new FirefoxDriver(capabilities);
+
+                    case Safari:
+                        return new SafariDriver(capabilities);
+
+                    default:
+                        return null;
+                }
 
             default:
                 return null;
