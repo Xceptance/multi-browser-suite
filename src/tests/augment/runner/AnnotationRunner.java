@@ -131,6 +131,7 @@ public class AnnotationRunner extends ScriptTestCaseRunner
                         return new InternetExplorerDriver(capabilities);
                         
                     case Chrome:
+                    	System.setProperty("webdriver.chrome.driver", "D:/Tools/chromedriver.exe");
                         return new ChromeDriver(capabilities);
 
                     case Firefox:

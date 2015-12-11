@@ -36,9 +36,9 @@ import tests.augment.enums.Scope;
         // OS.Windows,
         // scope = Scope.Local),
         // @TestTarget(testCaseName = "IE11-Testcase", browser = Browser.InternetExplorer, browserVersion = "11.0", os =
-        // OS.Windows,
-        // scope = Scope.Local),
-        @TestTarget(testCaseName = "FF-Testcase", browser = Browser.Firefox, browserVersion = "", os = OS.Windows, scope = Scope.Local),
+       //  OS.Windows,
+       //  scope = Scope.SauceLabs),
+        @TestTarget(testCaseName = "FF-Testcase", browser = Browser.Chrome, browserVersion = "", os = OS.Windows, scope = Scope.Local),
 
     })
 public class TSearch_ProductOnly_Augmented extends AbstractAugmentedScriptTestCase
