@@ -129,7 +129,7 @@ public class AnnotationRunner extends ScriptTestCaseRunner
                 {
                     case InternetExplorer:
                         return new InternetExplorerDriver(capabilities);
-                        
+
                     case Chrome:
                     	System.setProperty("webdriver.chrome.driver", "D:/Tools/chromedriver.exe");
                         return new ChromeDriver(capabilities);
@@ -153,13 +153,23 @@ public class AnnotationRunner extends ScriptTestCaseRunner
     {
         super(testCaseClass);
 
+        XltProperties xltProperties = XltProperties.getInstance();
+
+        String ieDriverPath = xltProperties.getProperty("xlt.webDriver.ie.pathToDriverServer");
+        String chromeDriverPath = xltProperties.getProperty("xlt.webDriver.chrome.pathToDriverServer");
+
+        if (!StringUtils.isEmpty(ieDriverPath))
+            System.setProperty("webdriver.ie.driver", ieDriverPath);
+
+        if (!StringUtils.isEmpty(chromeDriverPath))
+            System.setProperty("webdriver.chrome.driver", chromeDriverPath);
+
         config = new HashMap<FrameworkMethod, AnnotationRunnerConfiguration>();
 
-        /*
-         * Get annotations of test class. Check whether the configuration of testcase met current testscope or not
-         */
         boolean foundTargetsAnnotation = false;
         boolean foundTargetAnnotation = false;
+
+        // Get annotations of test class.
         Annotation[] annotations = testCaseClass.getAnnotations();
         for (Annotation annotation : annotations)
         {

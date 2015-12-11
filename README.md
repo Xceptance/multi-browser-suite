@@ -3,28 +3,38 @@
 This is a demo test suite for [katespade.com](http://www.katespade.com).
 This test suite has been built for and with __XLT__.
 
-
 # Test Suite Setup
 
 The following prerequisites and installation steps are needed to run the test suite with __XLT Script Developer__ in Firefox or the __XLT Framework__ orchestrating different WebDrivers. For further help please refer to [XLT Online](https://www.xceptance.com/en/xlt/documentation.html).
+
+# Overview
+- Step 1) Execution Environments
+    - IDE
+    - Ant
+- Step 2) WebDrive Configuration
+    - Firefox
+    - Chrome
+    - Internet Explorer
+- Step 3) Execution/ run
+    - Eclipse
+    - Ant
 
 # Prerequisites
 - XLT&reg; Framework v4.5 (or higher) - [Download the XLT Framework](https://www.xceptance.com/en/xlt/download.html)
 - JDK 7 or higher
 - Browser: 
-    - Firefox 42.0 (It now supports Firefox 31/ESR to 42)
-    - Goole Chrome v30 (or higher)
-    - or Internet Explorer 11 (recommendation)
-- Java IDE (e.g. [Eclipse](https://eclipse.org/downloads/))
-- [Apache Ant](https://ant.apache.org/bindownload.cgi)  ( [note for Install Apache Ant](https://ant.apache.org/manual/install.html#installing) )
+    - Firefox 31 up to latest Version 42
+    - or Google Chrome v30 (or higher)
+    - or Internet Explorer 11 
+- Execution Environent:
+    - Java IDE (e.g. [Eclipse](https://eclipse.org/downloads/)) or
+    - [Apache Ant](https://ant.apache.org/bindownload.cgi)  ( [note for Install Apache Ant](https://ant.apache.org/manual/install.html#installing) )
 - [Source Labs Account](https://saucelabs.com/)
 
-# Methods of Execution
-1. __IDE__ (Eclipse)
-2. __Ant__
 
-# Firefox, Chrome, Internet Explorer via Eclipse
-## Basic Eclipse Configuration
+
+# Step 1: Execution Environments
+## IDE - Project Configuration (Eclipse)
 - `File` -> `Import`
 - `Git` -> `Projects from Git` -> `[Next]`
 - `Clone URI` -> `[Next]`
@@ -39,74 +49,77 @@ The following prerequisites and installation steps are needed to run the test su
 - Go to `your xlt path /libs`
 - Select `all jar files` and press `[OK]`
 
-## Firefox - Configuration
-Note: FirefoxWebdriver are integrated.
+## Ant - Project Configuration
+Open file `multi-browser-suite/config/build.properties` and adjust the values
+```sh
+xlt.lib.dir = path/to/xlt/lib
+```
+```sh
+test.lib.dir = path/to/xlt/lib
+```
+# Step 2: WebDriver Configuration
+
+### Firefox
+Note: Installation, Configuration not required. FirefoxWebdriver are integrated.
+- Open file `multi-browser-suite/config/default.properties` and set property to
+```sh
+xlt.webDriver = firefox
+```
+
+### Chrome
+Note: Information about ChromeWebdriver [click here](https://sites.google.com/a/chromium.org/chromedriver)
+- [Download ChromeDriver](https://sites.google.com/a/chromium.org/chromedriver/downloads) and unpack it (eg: D:/dev/webDriver/)
 - Open file `multi-browser-suite/config/default.properties`
-- Change the defaulte value "xlt.webDriver = firefox" to `"xlt.webDriver = firefox"`
+- Set property and adjust path to the downloaded ChromeDriver
+```sh
+xlt.webDriver = chrome
+xlt.webDriver.chrome.pathToDriverServer = path/to/webDriver/chromedriver.exe
+```
 
-## Chrome Configuration
-Note: Information about ChromeWebdriver [click her](https://sites.google.com/a/chromium.org/chromedriver)
-- [Download ChromeDriver](https://sites.google.com/a/chromium.org/chromedriver/downloads) (from https://sites.google.com/a/chromium.org/chromedriver/downloads) and unpack it (eg: D:/dev/webDriver/)
+### Internet Explorer 11 (only Microsoft OS Support)
+Note: Genaral information about IEWebdriver [click here](https://code.google.com/p/selenium/wiki/InternetExplorerDriver). 
+For install/configuration information please read [this note](https://code.google.com/p/selenium/wiki/InternetExplorerDriver#Required_Configuration).
+
+- [Download Internet Explorer Webdriver](http://www.seleniumhq.org/download/) and unpack it (eg: D:/dev/webDriver/)
 - Open file `multi-browser-suite/config/default.properties`
-- Change the defaulte value "xlt.webDriver = firefox" to `"xlt.webDriver = chrome"`
-- Adjust the value "`xlt.webDriver.chrome.pathToDriverServer` = xxx" with your ChromeDriver folder
-	- Windows eg: to "xlt.webDriver.chrome.pathToDriverServer = `path/to/webDriver/chromedriver.exe`
-	- Linux eg: to "xlt.webDriver.chrome.pathToDriverServer = /home/.../dev/webDriver/chromedriver
+- Set property and adjust path to the downloaded IEWebdriver
+```sh
+xlt.webDriver = ie
+xlt.webDriver.ie.pathToDriverServer = path/to/webDriver/IEDriverServer.exe
+```
 
-## Internet Explorer Configuration (only Microsoft OS Support)
-Note: Information about IEWebdriver [click her](https://code.google.com/p/selenium/wiki/InternetExplorerDriver)
-- [Download Internet Explorer Webdriver](http://www.seleniumhq.org/download/) (from http://www.seleniumhq.org/download/) and unpack it (eg: D:/dev/webDriver/)
-- Open file `multi-browser-suite/config/default.properties`
-- Change the defaulte value "xlt.webDriver = firefox" to `"xlt.webDriver = ie"`
-- Adjust the value "`xlt.webDriver.ie.pathToDriverServer`  = xxx" with your IEWebdriver folder
-	- Windows eg: to "xlt.webDriver.ie.pathToDriverServer  = `path/to/webDriver/IEDriverServer.exe`"
-
-# Apache Ant
-Apache Ant is a command-line Java tool for automating software build processes.
-[more information](http://ant.apache.org/manual/index.html)
-
-## Configuration Ant 'build.properties' file
-- Open file `multi-browser-suite/config/build.properties`
-- Adjust the values 
-    - `xlt.lib.dir = path/to/xlt/lib`
-    - `test.lib.dir = = path/to/xlt/lib`
+# Step 3: Execution / Run
+## Start test case in Eclipse
+- select file src->test.search->'TSearch_ProductOnly.java' 
+- 'Run as' item in context menu -> 'JUnit Test'
 
 ## Run Apache Ant
 Open the Command Prompt window by clicking the Start button Picture of the Start button, clicking All Programs, clicking Accessories, and then clicking Command Prompt.
 
 ### Performs all the functional tests and creates a JUnit test report
-Firefox:
 ```sh
-$ ant -Dwebdriver=firefox test
+$ ant test
 ```
-Chrome:
-```sh
-$ ant -Dwebdriver=chrome test
-```
-Internet Explorer:
-```sh
-$ ant -Dwebdriver=ie test
-```
+
 ### Run one test and create a JUnit test report
 - 'tests.search' is the path to the test case.
 - 'TSearch_ProductOnly' is the name of the example test case.
+```sh
+$ ant test -Dtestcase=tests.search.TSearch_ProductOnly 
+```
 
-Firefox:
-```sh
-$ ant -Dwebdriver=firefox test -Dtestcase=tests.search.TSearch_ProductOnly 
-```
-Chrome:
-```sh
-$ ant -Dwebdriver=chrome test -Dtestcase=tests.search.TSearch_ProductOnl
-```
-Internet Explorer:
-```sh
-$ ant -Dwebdriver=ie test -Dtestcase=tests.search.TSearch_ProductOnl
-```
 ### Run one test and create a JUnit test report via build.properties
 - Open file `multi-browser-suite/config/build.properties`
-- value `"test.cases.java = tests.search.TSearch_ProductOnly.java"`
+- Set the name of the testcase 
+```sh
+test.cases.java = tests.search.TSearch_ProductOnly.java
+```
+- start ant on console
+```sh
+$ ant test
+```
 
+### Performs all the functional tests and create a JUnit test report with a selected browser
 Firefox:
 ```sh
 $ ant -Dwebdriver=firefox test
@@ -119,10 +132,10 @@ Internet Explorer:
 ```sh
 $ ant -Dwebdriver=ie test
 ```
-### XLT Result Browser
-The result browser offers an integrated navigation to browse the complete page output of the transaction and to look at every single request in detail. 
+## XLT Result Browser
+The result browser offers an integrated navigation to browse the complete page output of the transaction and to look at every single request in detail. For more informations about XLT Result Browser [click here](https://lab.xceptance.de/releases/xlt/latest/user-manual.html#XLTResultBrowser).
 
-### XLT Result - Structure
+## XLT Result - Structure
 ```sh
 ---+ multi-browser-suite
     `---+ results
@@ -136,7 +149,6 @@ The result browser offers an integrated navigation to browse the complete page o
                        |   `---- cache
                        `---- responses
 ```
-- For more informations about XLT Result Browser [click her](https://lab.xceptance.de/releases/xlt/latest/user-manual.html#XLTResultBrowser)
 
 ###  Deletes any result file from a previous test run
 ```sh
