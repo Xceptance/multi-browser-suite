@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testcase xmlns="http://xlt.xceptance.com/xlt-script/2" version="6" junit-test="true">
+  <tags>smoke</tags>
+  <description>Test is for mobile devices only - uses mobile menu to navigate to the catalog page
+
+# 1. Setup and preparation
+
+- open site, delete cookies , open it again
+
+# 2. Scope of test
+
+- click on mobile menu
+- click on clothing</description>
+  <module name="modules.helper.FHelper_Session_flowToStartSession"/>
+  <action name="OpenMobileMenu"/>
+  <command name="click" target="css=#js-canvas-left .icon-menu2"/>
+  <command name="waitForElementPresent" target="css=#offCanvasClose.js-offCanvasClose"/>
+  <action name="GoToClothing"/>
+  <command name="click" target="id=mm_icatclothing"/>
+  <command name="waitForElementPresent" target="css=.center-banner .cat-banner img[alt='Clothing']"/>
+</testcase>

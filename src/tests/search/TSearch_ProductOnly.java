@@ -5,7 +5,6 @@ package tests.search;
 import com.xceptance.xlt.api.engine.scripting.AbstractScriptTestCase;
 import com.xceptance.xlt.api.engine.scripting.ScriptName;
 
-import tests.browser.AbstractMobileChromeTestCase;
 
 
 /**
@@ -25,6 +24,6 @@ import tests.browser.AbstractMobileChromeTestCase;
  */
 @ScriptName
 ("tests.search.TSearch_ProductOnly")
-public class TSearch_ProductOnly extends AbstractMobileChromeTestCase
+public class TSearch_ProductOnly extends AbstractScriptTestCase
 {
 }

@@ -1,7 +1,7 @@
 package tests.browser;
 
 /*
- * NOTE: You can change the mobile Divice at project.properties   
+ * NOTE: You can change the mobile Device at project.properties   
  */
 
 import java.util.HashMap;
@@ -61,6 +61,7 @@ public class AbstractMobileChromeTestCase extends AbstractScriptTestCase {
 		capabilities.setCapability(ChromeOptions.CAPABILITY, chromeOptions);
 		WebDriver driver = new ChromeDriver(capabilities);
 
+		
 		setWebDriver(driver);
 	}
 
