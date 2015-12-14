@@ -2,7 +2,7 @@
 .classpath
 build.properties
 .openscripts
-classes
+/classes/
 /.settings/
 /results/
 /target/
