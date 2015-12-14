@@ -1,6 +1,7 @@
 /bin/
 .classpath
 build.properties
+.properties
 .openscripts
 /classes/
 /.settings/
