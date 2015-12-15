@@ -21,7 +21,7 @@ See below for prerequisites and installation steps needed to run the test suite 
 
 # Prerequisites
 - XLT&reg; Framework v4.5 (or higher) - [Download the XLT Framework](https://www.xceptance.com/en/xlt/download.html)
-- JDK 7 ([JSE](https://www.oracle.com/technetwork/java/javase/download)) or higher
+- JDK 7 ([JSE](https://www.oracle.com/technetwork/java/javase/downloads)) or higher
 - Browser:
     - (Firefox 31)[https://www.mozilla.org/firefox-download‎] up to latest version 42
     - or (Google Chrome)[https://www.google.com/chrome/browser/desktop/index.html#] version 30 (or higher)
