@@ -31,6 +31,7 @@
     <parameter name="searchText" value="${searchText}"/>
   </module>
   <module name="modules.pages.search.VSearch_Results_validateArticlesFound"/>
+  <module name="modules.pages.catalog.VCatalog_validateSharedElements"/>
   <action name="ViewArticle"/>
   <module name="modules.pages.search.MSearch_Results_clickArticleResults"/>
   <module name="modules.pages.pdp.VProduct_validatePDP"/>

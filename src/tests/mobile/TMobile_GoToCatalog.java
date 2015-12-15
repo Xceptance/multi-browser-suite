@@ -7,7 +7,8 @@ import com.xceptance.xlt.api.engine.scripting.ScriptName;
 
 
 /**
- * <p>Test is for mobile devices only - uses mobile menu to navigate to the catalog page</p>
+ * <p>Test is for mobile devices only - it uses mobile menu to navigate to the catalog page</p>
+ * <p>This test case will only work when your browser window is smaller than 500 pixel</p>
  * <h1 id="1-setup-and-preparation">1. Setup and preparation</h1>
  * <ul>
  * <li>open site, delete cookies , open it again</li>
@@ -16,6 +17,8 @@ import com.xceptance.xlt.api.engine.scripting.ScriptName;
  * <ul>
  * <li>click on mobile menu</li>
  * <li>click on clothing</li>
+ * <li>click on mobile menu</li>
+ * <li>close mobile menu</li>
  * </ul>
  */
 @ScriptName

@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scriptmodule xmlns="http://xlt.xceptance.com/xlt-script/2" version="6">
+  <description>Opens the mobile navigation menu</description>
+  <command name="click" target="css=#js-canvas-left .icon-menu2"/>
+  <command name="waitForVisible" target="css=#offCanvasClose.js-offCanvasClose"/>
+</scriptmodule>

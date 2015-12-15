@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <testcase xmlns="http://xlt.xceptance.com/xlt-script/2" version="6" junit-test="true">
   <tags>smoke</tags>
-  <description>Test is for mobile devices only - uses mobile menu to navigate to the catalog page
+  <description>Test is for mobile devices only - it uses mobile menu to navigate to the catalog page
+
+This test case will only work when your browser window is smaller than 500 pixel
 
 # 1. Setup and preparation
 
@@ -10,12 +12,22 @@
 # 2. Scope of test
 
 - click on mobile menu
-- click on clothing</description>
+- click on clothing
+- click on mobile menu
+- close mobile menu</description>
   <module name="modules.helper.FHelper_Session_flowToStartSession"/>
-  <action name="OpenMobileMenu"/>
-  <command name="click" target="css=#js-canvas-left .icon-menu2"/>
-  <command name="waitForElementPresent" target="css=#offCanvasClose.js-offCanvasClose"/>
+  <action name="OpenMobileMainMenu"/>
+  <module name="modules.navigation.mobile.MNavigationMobile_openMobileMenu"/>
+  <module name="modules.navigation.mobile.VNavigationMobile_validateMobileMenu"/>
   <action name="GoToClothing"/>
-  <command name="click" target="id=mm_icatclothing"/>
-  <command name="waitForElementPresent" target="css=.center-banner .cat-banner img[alt='Clothing']"/>
+  <module name="modules.navigation.mobile.MNavigationMobile_goToCategory">
+    <parameter name="id" value="mm_icatclothing"/>
+  </module>
+  <module name="modules.pages.catalog.VCatalog_validateSharedElements"/>
+  <module name="modules.pages.catalog.mobile.VCatalog_validateMobileElementsOnly"/>
+  <action name="OpenMobileMainMenu"/>
+  <module name="modules.navigation.mobile.MNavigationMobile_openMobileMenu"/>
+  <module name="modules.navigation.mobile.VNavigationMobile_validateMobileMenu"/>
+  <action name="CloseMobileMainMenu"/>
+  <module name="modules.navigation.mobile.MNavigationMobile_closeMobileNavigation"/>
 </testcase>

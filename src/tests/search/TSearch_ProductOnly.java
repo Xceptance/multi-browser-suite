@@ -6,7 +6,6 @@ import com.xceptance.xlt.api.engine.scripting.AbstractScriptTestCase;
 import com.xceptance.xlt.api.engine.scripting.ScriptName;
 
 
-
 /**
  * <p>Test search for products.</p>
  * <h1 id="1-setup-and-preparation">1. Setup and preparation</h1>

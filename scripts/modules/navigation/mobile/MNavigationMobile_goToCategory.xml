@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scriptmodule xmlns="http://xlt.xceptance.com/xlt-script/2" version="6">
+  <description>Opens a category from the obile menu</description>
+  <parameter name="id"/>
+  <command name="click" target="id=@{id}"/>
+  <command name="waitForElementPresent" target="css=#sortby"/>
+</scriptmodule>

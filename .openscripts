@@ -1,5 +1,0 @@
-modules.pages.search.VSearch_Results_validateArticlesFound
-modules.pages.pdp.VProduct_validatePDP
-tests.search.TSearch_ProductOnly
-tests.mobile.TMobile_GoToCatalog
-modules.helper.FHelper_Session_flowToStartSession

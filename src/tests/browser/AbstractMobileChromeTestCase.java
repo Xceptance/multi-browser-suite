@@ -64,11 +64,4 @@ public class AbstractMobileChromeTestCase extends AbstractScriptTestCase {
 		
 		setWebDriver(driver);
 	}
-
-	@Override
-	@After
-	public void tearDown() {
-		driver.quit();
-	}
-
 }
