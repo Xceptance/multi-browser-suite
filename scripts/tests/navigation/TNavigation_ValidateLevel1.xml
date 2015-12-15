@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testcase xmlns="http://xlt.xceptance.com/xlt-script/2" version="6">
+  <tags>smoke,search,articles</tags>
+  <description>Test opens Level 1 Categories and validates Catalog Page
+
+# 1. Setup and preparation
+
+- Start session, open homepage and delete all visible cookies
+
+# 2. Scope of test
+
+- open Handbags
+- validate Page
+- open Clothing
+- validate Page</description>
+  <codecomment># Setup
+
+- Start session</codecomment>
+  <module name="modules.helper.FHelper_Session_flowToStartSession"/>
+  <codecomment># Scope</codecomment>
+  <codecomment>## Article Result
+
+- Search article content
+- Validiate PDP
+- Validiate PDP product number</codecomment>
+  <action name="OpenHandbags"/>
+  <module name="modules.navigation.MNavigation_GotoCategory">
+    <parameter name="id" value="#mm_subhandbagsviewall"/>
+  </module>
+  <module name="modules.pages.catalog.VCatalog_validateSharedElements"/>
+  <module name="modules.pages.catalog.VCatalog_validateCatalogPageDesktopOnly">
+    <parameter name="breadcrumbText" value="HANDBAGS"/>
+  </module>
+  <action name="OpenClothing"/>
+  <module name="modules.navigation.MNavigation_GotoCategory">
+    <parameter name="id" value="#mm-subclothingviewall"/>
+  </module>
+  <module name="modules.pages.catalog.VCatalog_validateSharedElements"/>
+  <module name="modules.pages.catalog.VCatalog_validateCatalogPageDesktopOnly">
+    <parameter name="breadcrumbText" value="CLOTHING"/>
+  </module>
+</testcase>
