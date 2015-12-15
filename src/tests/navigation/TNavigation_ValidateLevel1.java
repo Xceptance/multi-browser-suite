@@ -8,6 +8,7 @@ import com.xceptance.xlt.api.engine.scripting.ScriptName;
 
 /**
  * <p>Test opens Level 1 Categories and validates Catalog Page</p>
+ * <h1 id="please-keep-in-mind-this-thest-case-will-only-work-in-the-desktop-version">Please keep in mind this thest case will only work in the desktop version</h1>
  * <h1 id="1-setup-and-preparation">1. Setup and preparation</h1>
  * <ul>
  * <li>Start session, open homepage and delete all visible cookies</li>

@@ -2,6 +2,7 @@
 <testcase xmlns="http://xlt.xceptance.com/xlt-script/2" version="6">
   <tags>smoke,search,articles</tags>
   <description>Test opens Level 1 Categories and validates Catalog Page
+# Please keep in mind this thest case will only work in the desktop version
 
 # 1. Setup and preparation
 
