@@ -1,10 +1,19 @@
 package tests.augment.runner;
 
+import org.apache.commons.lang3.StringUtils;
+
 import tests.augment.annotation.TestTarget;
+import tests.augment.annotation.TestTargets;
 import tests.augment.enums.Browser;
 import tests.augment.enums.OS;
 import tests.augment.enums.Scope;
 
+/**
+ * POJO-class to wrap annotation based testcase configuration
+ * 
+ * @see {@link TestTarget} and {@link TestTargets}
+ * @author m.kaufmann
+ */
 public class AnnotationRunnerConfiguration
 {
     private Browser browser;
@@ -14,7 +23,7 @@ public class AnnotationRunnerConfiguration
     private OS os;
 
     private Scope scope;
-    
+
     private String testCaseName;
 
     public AnnotationRunnerConfiguration(TestTarget target)
@@ -59,6 +68,21 @@ public class AnnotationRunnerConfiguration
     public Scope getScope()
     {
         return scope;
+    }
+
+    @Override
+    public String toString()
+    {
+        if (!StringUtils.isEmpty(testCaseName))
+        {
+            return testCaseName;
+        }
+
+        return browser.getDeviceType() + "_" + browser.getDeviceName() + "(" + browserVersion + ") on " + os + " @ " + scope;
+
+        // return "AnnotationRunnerConfiguration [browser=" + browser + ", browserVersion=" + browserVersion + ", os=" +
+        // os + ", scope=" +
+        // scope + ", testCaseName=" + testCaseName + "]";
     }
 
     public void setScope(Scope scope)
