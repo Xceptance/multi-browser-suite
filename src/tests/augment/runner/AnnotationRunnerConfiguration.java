@@ -78,8 +78,14 @@ public class AnnotationRunnerConfiguration
             return testCaseName;
         }
 
-        return browser.getDeviceType() + "_" + browser.getDeviceName() + "(" + browserVersion + ") on " + os + " @ " + scope;
-
+        if (browser.isMobileDevice())
+        {
+            return browser.getDeviceType() + "_" + browser.getDeviceName() + " on " + os + " @ " + scope;
+        }
+        else
+        {
+            return browser.getBrowserName() + "_" + browser.getDeviceName() + "(" + browserVersion + ") on " + os + " @ " + scope;
+        }
         // return "AnnotationRunnerConfiguration [browser=" + browser + ", browserVersion=" + browserVersion + ", os=" +
         // os + ", scope=" +
         // scope + ", testCaseName=" + testCaseName + "]";
