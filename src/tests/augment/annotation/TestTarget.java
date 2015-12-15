@@ -8,11 +8,11 @@ public @interface TestTarget
 {
     Browser browser();
 
-    String browserVersion();
+    String browserVersion() default "";
 
-    OS os();
+    OS os() default OS.Windows;
 
-    Scope scope();
+    Scope scope() default Scope.Local;
     
-    String testCaseName();
+    String testCaseName() default "";
 }

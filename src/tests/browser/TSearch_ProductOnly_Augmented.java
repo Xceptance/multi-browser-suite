@@ -1,11 +1,11 @@
 /*
  * NOTE: This file is generated. Do not edit! Your changes will be lost.
  */
-package tests.browser;
+package tests.search;
 
 import com.xceptance.xlt.api.engine.scripting.ScriptName;
 
-import tests.augment.AbstractAugmentedScriptTestCase;
+import tests.augment.AbstractAnnotatedScriptTestCase;
 import tests.augment.annotation.TestTarget;
 import tests.augment.annotation.TestTargets;
 import tests.augment.enums.Browser;
@@ -36,11 +36,16 @@ import tests.augment.enums.Scope;
         // OS.Windows,
         // scope = Scope.Local),
         // @TestTarget(testCaseName = "IE11-Testcase", browser = Browser.InternetExplorer, browserVersion = "11.0", os =
-       //  OS.Windows,
-       //  scope = Scope.SauceLabs),
-        @TestTarget(testCaseName = "FF-Testcase", browser = Browser.Chrome, browserVersion = "", os = OS.Windows, scope = Scope.Local),
-
+        // OS.Windows,
+        // scope = Scope.SauceLabs),
+        // @TestTarget(testCaseName = "Chrome-Testcase", browser = Browser.Chrome, browserVersion = "", os = OS.Windows,
+        // scope = Scope.Local),
+        // @TestTarget(testCaseName = "IE11-Testcase", browser = Browser.InternetExplorer, browserVersion = "11.0", os =
+        // OS.Windows, scope = Scope.SauceLabs)
+//        @TestTarget(browser = Browser.MobileIphone6Plus), @TestTarget(browser = Browser.MobileGalaxyS3),
+//        @TestTarget(browser = Browser.MobileNexus6)
+        @TestTarget(browser= Browser.MobileIphone4, scope = Scope.SauceLabs)
     })
-public class TSearch_ProductOnly_Augmented extends AbstractAugmentedScriptTestCase
+public class TSearch_ProductOnly_Augmented extends AbstractAnnotatedScriptTestCase
 {
 }
