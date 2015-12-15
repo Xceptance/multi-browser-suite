@@ -1,9 +1,9 @@
-/bin/
+bin/
 .classpath
 build.properties
 .properties
 .openscripts
-/classes/
-/.settings/
-/results/
-/target/
+classes/
+.settings/
+results/
+target/

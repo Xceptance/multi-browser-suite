@@ -2,154 +2,82 @@ package tests.augment.runner;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.HashMap;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import org.apache.commons.lang.IllegalClassException;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.Test;
+import org.junit.runner.Description;
 import org.junit.runners.model.FrameworkMethod;
-import org.openqa.selenium.Platform;
+import org.junit.runners.model.Statement;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.firefox.FirefoxDriver;
-import org.openqa.selenium.ie.InternetExplorerDriver;
-import org.openqa.selenium.remote.DesiredCapabilities;
-import org.openqa.selenium.remote.RemoteWebDriver;
-import org.openqa.selenium.safari.SafariDriver;
 
+import com.xceptance.xlt.api.engine.scripting.AbstractScriptTestCase;
 import com.xceptance.xlt.api.util.XltProperties;
-import com.xceptance.xlt.engine.scripting.junit.ScriptTestCaseRunner;
+import com.xceptance.xlt.engine.util.XltTestRunner;
 
-import tests.augment.AbstractAugmentedScriptTestCase;
+import tests.augment.AbstractAnnotatedScriptTestCase;
 import tests.augment.annotation.TestTarget;
 import tests.augment.annotation.TestTargets;
+import tests.augment.runner.helper.AnnotationRunnerHelper;
 
-public class AnnotationRunner extends ScriptTestCaseRunner
+/**
+ * JUnit runner used to run testcases that inherit from {@link AbstractAnnotatedScriptTestCase}. This class reads the
+ * annotation based configuration of {@link TestTargets} and executes the testcase multiple-times with different
+ * annotated configurations.
+ * 
+ * @author m.kaufmann
+ * @see {@link AbstractAnnotatedScriptTestCase}, {@link TestTargets}, {@link TestTarget}
+ */
+public class AnnotationRunner extends XltTestRunner
 {
+    /**
+     * The JUnit children of this runner.
+     */
+    private final List<FrameworkMethod> methods = new ArrayList<FrameworkMethod>();
 
-    Map<FrameworkMethod, AnnotationRunnerConfiguration> config = null;
+    // TODO: maybe this can be deleted
+    // static
+    // {
+    // XltProperties.getInstance();
+    // }
 
     /**
-     * {@inheritDoc}
+     * Sets the test instance up.
+     *
+     * @param method
+     *            the method
+     * @param test
+     *            the test instance
      */
-    @Override
     protected void setUpTest(final FrameworkMethod method, final Object test)
     {
-        super.setUpTest(method, test);
-
-        AbstractAugmentedScriptTestCase testCase = ((AbstractAugmentedScriptTestCase) test);
-
-        AnnotationRunnerConfiguration annotationRunnerConfiguration = config.get(method);
-
-        WebDriver driver = createWebdriverUrl(annotationRunnerConfiguration);
-        if (driver != null)
+        if (test instanceof AbstractScriptTestCase)
         {
-            testCase.setWebDriver(driver);
-        }
-    }
+            // set the test data set at the test instance
+            final AnnotatedFrameworkMethod frameworkMethod = (AnnotatedFrameworkMethod) method;
 
-    private DesiredCapabilities setUpBrowserCapabilities(AnnotationRunnerConfiguration config)
-    {
-        DesiredCapabilities capabilities = null;
-        switch (config.getBrowser())
-        {
-            case InternetExplorer:
-                capabilities = DesiredCapabilities.internetExplorer();
-                break;
+            // create configuration pojo from read annotation
+            AnnotationRunnerConfiguration config = new AnnotationRunnerConfiguration(frameworkMethod.annotation);
 
-            case Chrome:
-                capabilities = DesiredCapabilities.chrome();
-                break;
+            // instantiate webdriver and set browser window size
+            WebDriver driver = AnnotationRunnerHelper.createWebdriver(config);
+            AnnotationRunnerHelper.setBrowserWindowSize(config, driver);
 
-            case Firefox:
-                capabilities = DesiredCapabilities.firefox();
-                break;
-
-            case Safari:
-                capabilities = DesiredCapabilities.safari();
-
-            default:
-                break;
-        }
-
-        switch (config.getScope())
-        {
-            case SauceLabs:
-                switch (config.getBrowser())
-                {
-                    case InternetExplorer:
-                        if ("8.0".equals(config.getBrowserVersion()))
-                        {
-                            capabilities.setCapability("platform", Platform.WINDOWS);
-                        }
-                        else if ("11.0".equals(config.getBrowserVersion()))
-                        {
-                            capabilities.setCapability("platform", Platform.WIN8_1);
-                        }
-                        else
-                        {
-                            // default platform for all other versions of internet explorer
-                            capabilities.setCapability("platform", Platform.WIN8_1);
-                        }
-                        break;
-
-                    default:
-                        break;
-                }
-                break;
-
-            default:
-                break;
-        }
-
-        capabilities.setVersion(config.getBrowserVersion());
-
-        if (!StringUtils.isEmpty(config.getTestCaseName()))
-        {
-            capabilities.setCapability("name", config.getTestCaseName());
-        }
-
-        return capabilities;
-    }
-
-    private WebDriver createWebdriverUrl(AnnotationRunnerConfiguration config)
-    {
-        DesiredCapabilities capabilities = setUpBrowserCapabilities(config);
-        switch (config.getScope())
-        {
-            case SauceLabs:
-                return new RemoteWebDriver(createSauceLabUrl(), capabilities);
-
-            case Local:
-                switch (config.getBrowser())
-                {
-                    case InternetExplorer:
-                        return new InternetExplorerDriver(capabilities);
-
-                    case Chrome:
-                    	System.setProperty("webdriver.chrome.driver", "D:/Tools/chromedriver.exe");
-                        return new ChromeDriver(capabilities);
-
-                    case Firefox:
-                        return new FirefoxDriver(capabilities);
-
-                    case Safari:
-                        return new SafariDriver(capabilities);
-
-                    default:
-                        return null;
-                }
-
-            default:
-                return null;
+            if (driver != null)
+            {
+                ((AbstractScriptTestCase) test).setWebDriver(driver);
+            }
         }
     }
 
     public AnnotationRunner(Class<?> testCaseClass) throws Throwable
+    {
+        this(testCaseClass, testCaseClass.getSimpleName(), "");
+    }
+
+    public AnnotationRunner(Class<?> testCaseClass, String testCaseName, String defaultTestMethodName) throws Throwable
     {
         super(testCaseClass);
 
@@ -164,8 +92,6 @@ public class AnnotationRunner extends ScriptTestCaseRunner
         if (!StringUtils.isEmpty(chromeDriverPath))
             System.setProperty("webdriver.chrome.driver", chromeDriverPath);
 
-        config = new HashMap<FrameworkMethod, AnnotationRunnerConfiguration>();
-
         boolean foundTargetsAnnotation = false;
         boolean foundTargetAnnotation = false;
 
@@ -176,7 +102,6 @@ public class AnnotationRunner extends ScriptTestCaseRunner
             // only check TestTargets annotation with a list of nested TestTarget annotations
             if (annotation instanceof TestTargets)
             {
-                List<FrameworkMethod> listOfTests = getChildren();
                 foundTargetsAnnotation = true;
                 TestTargets targets = (TestTargets) annotation;
 
@@ -188,16 +113,9 @@ public class AnnotationRunner extends ScriptTestCaseRunner
                 {
                     for (final FrameworkMethod frameworkMethod : getTestClass().getAnnotatedMethods(Test.class))
                     {
-                        // get the test method to run
-                        final Method testMethod = frameworkMethod.getMethod();
-                        FrameworkMethod fm = new FrameworkMethod(testMethod);
-                        listOfTests.add(fm);
-                        AnnotationRunnerConfiguration annotationRunnerConfiguration = new AnnotationRunnerConfiguration(target);
-                        config.put(fm, annotationRunnerConfiguration);
+                        AnnotatedFrameworkMethod afm = new AnnotatedFrameworkMethod(frameworkMethod.getMethod(), "", target);
+                        methods.add(afm);
                     }
-                    // FrameworkMethod testMethod = new FrameworkMethod(null); // TODO: create framework method and add
-                    // it to list like its done in AbstractTestCaseRunner()
-
                 }
             }
         }
@@ -210,19 +128,108 @@ public class AnnotationRunner extends ScriptTestCaseRunner
             throw new IllegalClassException("The class (" + testCaseClass.getSimpleName() + ") does not have a single defined TestTarget.");
     }
 
-    private URL createSauceLabUrl()
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected List<FrameworkMethod> getChildren()
     {
-        XltProperties xltProperties = XltProperties.getInstance();
-        String saucelabUsername = xltProperties.getProperty("saucelab.username");
-        String saucelabAccesskey = xltProperties.getProperty("saucelab.accesskey");
+        return methods;
+    }
 
-        try
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Description getDescription()
+    {
+        final Description description = Description.createSuiteDescription(getTestClass().getJavaClass());
+
+        for (final FrameworkMethod frameworkMethod : getChildren())
         {
-            return new URL("http://" + saucelabUsername + ":" + saucelabAccesskey + "@ondemand.saucelabs.com:80/wd/hub");
+            description.addChild(Description.createTestDescription(getTestClass().getJavaClass(), frameworkMethod.getName()));
         }
-        catch (MalformedURLException e)
+
+        return description;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected Statement methodInvoker(final FrameworkMethod method, final Object test)
+    {
+        // prepare the test instance before executing it
+        // TODO: check whether there is a better place to do this
+        setUpTest(method, test);
+
+        // the real job is done here
+        return super.methodInvoker(method, test);
+    }
+
+    /**
+     * A specialization of {@link FrameworkMethod}, which replaces the default method name with the provided name and
+     * the test data set used.
+     */
+    private static class AnnotatedFrameworkMethod extends FrameworkMethod
+    {
+        /**
+         * The test data set to use.
+         */
+        private final TestTarget annotation;
+
+        /**
+         * The new method name.
+         */
+        private final String name;
+
+        /**
+         * Constructor.
+         *
+         * @param method
+         *            the test method
+         * @param testMethodName
+         *            the name to show for the test method
+         * @param index
+         *            the index of the test run
+         * @param dataSet
+         *            the test data set
+         */
+        public AnnotatedFrameworkMethod(final Method method, final String testMethodName, final TestTarget annotationParameter)
         {
-            throw new RuntimeException(e);
+            super(method);
+
+            this.annotation = annotationParameter;
+//            name = testMethodName + annotationParameter.testCaseName();
+            name = new AnnotationRunnerConfiguration(annotationParameter).toString();
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        public String getName()
+        {
+            return name;
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        public boolean equals(final Object obj)
+        {
+            return this == obj;
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        public int hashCode()
+        {
+            return System.identityHashCode(this);
         }
     }
+
 }
