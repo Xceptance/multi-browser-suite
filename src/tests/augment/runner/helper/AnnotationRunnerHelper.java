@@ -126,11 +126,6 @@ public final class AnnotationRunnerHelper
         capabilities.setVersion(config.getBrowserVersion());
 
         // set test case name
-        // TODO: overwrite toString from AnnotationRunnerConfiguration to return a nice-looking testcase name
-        // if (!StringUtils.isEmpty(config.getTestCaseName()))
-        // {
-        // capabilities.setCapability("name", config.getTestCaseName());
-        // }
         capabilities.setCapability("name", config.toString());
 
         return capabilities;
