@@ -16,7 +16,7 @@ This test case will only work when your browser window is smaller than 500 pixel
 - click on mobile menu
 - close mobile menu</description>
   <module name="modules.helper.FHelper_Session_flowToStartSession"/>
-  <action name="OpenMobileMainMenu"/>
+  <action name="OpenMobileMenu"/>
   <module name="modules.navigation.mobile.MNavigationMobile_openMobileMenu"/>
   <module name="modules.navigation.mobile.VNavigationMobile_validateMobileMenu"/>
   <action name="GoToClothing"/>
@@ -25,9 +25,9 @@ This test case will only work when your browser window is smaller than 500 pixel
   </module>
   <module name="modules.pages.catalog.VCatalog_validateSharedElements"/>
   <module name="modules.pages.catalog.mobile.VCatalog_validateMobileElementsOnly"/>
-  <action name="OpenMobileMainMenu"/>
+  <action name="OpenMobileMenu"/>
   <module name="modules.navigation.mobile.MNavigationMobile_openMobileMenu"/>
   <module name="modules.navigation.mobile.VNavigationMobile_validateMobileMenu"/>
-  <action name="CloseMobileMainMenu"/>
+  <action name="CloseMobileMenu"/>
   <module name="modules.navigation.mobile.MNavigationMobile_closeMobileNavigation"/>
 </testcase>
