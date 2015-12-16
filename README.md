@@ -59,14 +59,14 @@ test.lib.dir = path/to/xlt/lib
 ```
 # Step 2: WebDriver Configuration
 
-### Firefox
+## Firefox
 Note: installation and configuration not required. FirefoxWebdriver are integrated.
 - Open file `multi-browser-suite/config/default.properties` and set property to
 ```sh
 xlt.webDriver = firefox
 ```
 
-### Chrome
+## Chrome
 Note: For information about ChromeWebdriver, [click here](https://sites.google.com/a/chromium.org/chromedriver)
 - [Download ChromeDriver](https://sites.google.com/a/chromium.org/chromedriver/downloads) and unpack it (eg: D:/dev/webDriver/)
 - Open file `multi-browser-suite/config/default.properties`
@@ -76,7 +76,7 @@ xlt.webDriver = chrome
 xlt.webDriver.chrome.pathToDriverServer = path/to/webDriver/chromedriver.exe
 ```
 
-### Internet Explorer 11 (only Microsoft OS Support)
+## Internet Explorer 11 (only Microsoft OS Support)
 Note: For general information about IEWebdriver, [click here](https://code.google.com/p/selenium/wiki/InternetExplorerDriver). 
 Information about installation/configuration information can be found [here](https://code.google.com/p/selenium/wiki/InternetExplorerDriver#Required_Configuration).
 
@@ -109,7 +109,7 @@ $ ant test -Dtestcase=tests.search.TSearch_ProductOnly
 ```
 
 ### Run one test and create a JUnit test report via build.properties
-- Open file `multi-browser-suite/config/build.properties`
+- Open file `multi-browser-suite/build.properties`
 - Set the name of the testcase 
 ```sh
 test.cases.java = tests.search.TSearch_ProductOnly.java
@@ -117,21 +117,7 @@ test.cases.java = tests.search.TSearch_ProductOnly.java
 - start ant on console
 ```sh
 $ ant test
-```
 
-### Perform all functional tests and create a JUnit test report with a selected browser
-Firefox:
-```sh
-$ ant -Dwebdriver=firefox test
-```
-Chrome:
-```sh
-$ ant -Dwebdriver=chrome test
-```
-Internet Explorer:
-```sh
-$ ant -Dwebdriver=ie test
-```
 ## XLT Result Browser
 The result browser offers an integrated navigation to browse the complete page output of the transaction and to look at every single request in detail. For more information about the XLT Result Browser, [click here](https://lab.xceptance.de/releases/xlt/latest/user-manual.html#XLTResultBrowser).
 
