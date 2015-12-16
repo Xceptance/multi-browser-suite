@@ -100,11 +100,11 @@ saucelab.username  = xx
 saucelab.accesskey = xx
 ```
 ## Configuration testcase
-### preperation testcase
-- start Eclipse
-- open testcase eg. 'test.search/TSearch_ProductOnly.java'
-- replace row 'import com.xceptance.xlt.api.engine.scripting.AbstractScriptTestCase;'
-- with
+### Preperation testcase
+- Start Eclipse
+- Open testcase eg. 'test.search/TSearch_ProductOnly.java'
+- Replace row 'import com.xceptance.xlt.api.engine.scripting.AbstractScriptTestCase;'
+- With
 ```sh
 import com.xceptance.xlt.api.engine.scripting.ScriptName;
 import tests.augment.AbstractAnnotatedScriptTestCase;
@@ -125,28 +125,34 @@ import tests.augment.enums.Scope;
 public class Tcase_name extends AbstractAnnotatedScriptTestCase
 ```
 
-### one browser definition for a testcase
-- add  "@TestTarget("
+### One browser definition for a testcase
+- Add  "@TestTarget("
 	- [required value]'browser = xx' Example. Browser.Chrome, Browser.Firefox, Browser.InternetExplorer
 	- [optional value] 'testCaseName = xx' name for this testcase
 	- [optional value] 'browserVersion = xx' browser Version, Example: "11.0"
-	- [optional value] 'os = xx' Operating System, Example: "Windows", "Linux"
+	- [optional value] 'os = xx' Operating System, Example: "OS.Windows", "OS.Linux"
 	- [optional value] 'scope = xx' who run this testcase, Example: Scope.SauceLabs, Scope.Local
-- add )
+- Add )
 - Example row: InternetExplorer with Version 11 on SauceLabs
 ```sh
-@TestTarget(testCaseName = "IE11-Testcase", browser = Browser.InternetExplorer, browserVersion = "11.0", os = OS.Windows, scope = Scope.SauceLabs)
+@TestTargets(
+{
+@TestTarget(testCaseName = "IE11-Testcase", browser = Browser.InternetExplorer, browserVersion = "11.0", scope = Scope.SauceLabs)
+})
 ```
 
-### many browser definition for a testcase
-- it it possible to add more than one browser definition to the testcase
+### Many browser definition for a testcase
+- It it possible to add more than one browser definition to the testcase
+- Comma separated values
 Example:
 ```sh
-@TestTarget(browser = Browser.InternetExplorer, browserVersion = "11.0", os = OS.Windows, scope = Scope.SauceLabs)
-@TestTarget(browser = Browser.Chrome, os = OS.Windows, scope = Scope.local)
+@TestTarget(browser = Browser.InternetExplorer, browserVersion = "11.0", scope = Scope.SauceLabs),
+@TestTarget(browser = Browser.Chrome, scope = Scope.local)
 ```
 
-Full Example: InternetExplorer with Version 11 on SauceLabs
+Full Example: 
+- InternetExplorer with Version 8 and 11 on SauceLabs
+- Firefox and Chrome run local
 ```sh
 package tests.search;
 import com.xceptance.xlt.api.engine.scripting.ScriptName;
@@ -162,7 +168,10 @@ import tests.augment.enums.Scope;
 @ScriptName("xxxxxx")
 @TestTargets(
 {
-    @TestTarget(testCaseName = "IE11-Testcase", browser = Browser.InternetExplorer, browserVersion = "11.0", os = OS.Windows, scope = Scope.SauceLabs)
+    @TestTarget(browser = Browser.InternetExplorer, browserVersion = "8.0", os = OS.Windows, scope = Scope.SauceLabs),
+    @TestTarget(browser = Browser.InternetExplorer, browserVersion = "11.0", os = OS.Windows, scope = Scope.SauceLabs),
+    @TestTarget(browser = Browser.Firefox, scope = Scope.local),
+    @TestTarget(browser = Browser.Chrome, scope = Scope.local)
 })
 public class Tcase_name extends AbstractAnnotatedScriptTestCase
 {
