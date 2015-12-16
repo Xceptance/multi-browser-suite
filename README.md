@@ -23,7 +23,7 @@ See below for prerequisites and installation steps needed to run the test suite 
 - XLT&reg; Framework v4.5 (or higher) - [Download the XLT Framework](https://www.xceptance.com/en/xlt/download.html)
 - JDK 7 ([JSE](https://www.oracle.com/technetwork/java/javase/downloads)) or higher
 - Browser:
-    - (Firefox 31)[https://www.mozilla.org/firefox-download‎] up to latest version 42
+    - (Firefox 31)[https://www.mozilla.org/firefox-download] up to latest version 42
     - or (Google Chrome)[https://www.google.com/chrome/browser/desktop/index.html#] version 30 (or higher)
     - or Internet Explorer 11 
 - Execution Environment:
@@ -88,35 +88,100 @@ xlt.webDriver = ie
 xlt.webDriver.ie.pathToDriverServer = path/to/webDriver/IEDriverServer.exe
 ```
 
-# Step 3: Execution 
-## Start test case in Eclipse
-- select file src->test.search->'TSearch_ProductOnly.java' 
+# Step 3: Configuration and Execution testcase
+## Configuration Sourcelab account setting
+- Log into Sauce Labs
+- Navigate to the User Settings page: `https://saucelabs.com/beta/user-settings`
+- on section `Access Key` click the `[Show]` button
+- copy this `Access Key` into clipboard
+- open file `multi-browser-suite/config/default.properties` and enter properties
+```sh
+saucelab.username  = xx
+saucelab.accesskey = xx
+```
+## Configuration testcase
+### preperation testcase
+- start Eclipse
+- open testcase eg. 'test.search/TSearch_ProductOnly.java'
+- replace row 'import com.xceptance.xlt.api.engine.scripting.AbstractScriptTestCase;'
+- with
+```sh
+import com.xceptance.xlt.api.engine.scripting.ScriptName;
+import tests.augment.AbstractAnnotatedScriptTestCase;
+import tests.augment.annotation.TestTarget;
+import tests.augment.annotation.TestTargets;
+import tests.augment.enums.Browser;
+import tests.augment.enums.OS;
+import tests.augment.enums.Scope;
+```
+- replace AbstractScriptTestCase with AbstractAnnotatedScriptTestCase
+- below row '@ScriptName(..)' and 'public class ...' add new rows
+
+```sh
+@ScriptName("xxxxxx")
+@TestTargets(
+{
+})
+public class Tcase_name extends AbstractAnnotatedScriptTestCase
+```
+
+### one browser definition for a testcase
+- add  "@TestTarget("
+	- [required value]'browser = xx' Example. Browser.Chrome, Browser.Firefox, Browser.InternetExplorer
+	- [optional value] 'testCaseName = xx' name for this testcase
+	- [optional value] 'browserVersion = xx' browser Version, Example: "11.0"
+	- [optional value] 'os = xx' Operating System, Example: "Windows", "Linux"
+	- [optional value] 'scope = xx' who run this testcase, Example: Scope.SauceLabs, Scope.Local
+- add )
+- Example row: InternetExplorer with Version 11 on SauceLabs
+```sh
+@TestTarget(testCaseName = "IE11-Testcase", browser = Browser.InternetExplorer, browserVersion = "11.0", os = OS.Windows, scope = Scope.SauceLabs)
+```
+
+### many browser definition for a testcase
+- it it possible to add more than one browser definition to the testcase
+Example:
+```sh
+@TestTarget(browser = Browser.InternetExplorer, browserVersion = "11.0", os = OS.Windows, scope = Scope.SauceLabs)
+@TestTarget(browser = Browser.Chrome, os = OS.Windows, scope = Scope.local)
+```
+
+Full Example: InternetExplorer with Version 11 on SauceLabs
+```sh
+package tests.search;
+import com.xceptance.xlt.api.engine.scripting.ScriptName;
+import tests.augment.AbstractAnnotatedScriptTestCase;
+import tests.augment.annotation.TestTarget;
+import tests.augment.annotation.TestTargets;
+import tests.augment.enums.Browser;
+import tests.augment.enums.OS;
+import tests.augment.enums.Scope;
+
+//coment ...
+
+@ScriptName("xxxxxx")
+@TestTargets(
+{
+    @TestTarget(testCaseName = "IE11-Testcase", browser = Browser.InternetExplorer, browserVersion = "11.0", os = OS.Windows, scope = Scope.SauceLabs)
+})
+public class Tcase_name extends AbstractAnnotatedScriptTestCase
+{
+}
+```
+
+
+## Execution testcase
+### Start test case in Eclipse
+- select java file from the testcase eg. src->test.search->'TSearch_ProductOnly.java' 
 - 'Run as' item in context menu -> 'JUnit Test'
 
-## Run Apache Ant
+### Run Apache Ant
 Open the command prompt window: click the Start button picture of the Start button, then click All Programs, then Accessories, then Command Prompt.
 
-### Perform all functional tests and create a JUnit test report
 ```sh
-$ ant test
+$ ant test.java
 ```
 
-### Run one test and create a JUnit test report
-- 'tests.search' is the path to the test case
-- 'TSearch_ProductOnly' is the name of the example test case
-```sh
-$ ant test -Dtestcase=tests.search.TSearch_ProductOnly 
-```
-
-### Run one test and create a JUnit test report via build.properties
-- Open file `multi-browser-suite/build.properties`
-- Set the name of the testcase 
-```sh
-test.cases.java = tests.search.TSearch_ProductOnly.java
-```
-- start ant on console
-```sh
-$ ant test
 
 ## XLT Result Browser
 The result browser offers an integrated navigation to browse the complete page output of the transaction and to look at every single request in detail. For more information about the XLT Result Browser, [click here](https://lab.xceptance.de/releases/xlt/latest/user-manual.html#XLTResultBrowser).
