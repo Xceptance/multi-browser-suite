@@ -4,7 +4,5 @@
   <parameter name="searchText" desc="The search phrase to enter."/>
   <command name="type" target="css=#q.search-input" value="@{searchText}"/>
   <command name="clickAndWait" target="id=searchsubmit"/>
-  <module name="modules.helper.MHelper_WaitFor_DOMState">
-    <comment>This is used to prevent the tool from running over the redirect and getting pages that are visually ready but the JavaScript is still running.</comment>
-  </module>
+  <command name="waitForElementPresent" target="css=#sortby"/>
 </scriptmodule>
