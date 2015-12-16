@@ -32,19 +32,17 @@ import tests.augment.enums.Scope;
 @ScriptName("tests.search.TSearch_ProductOnly")
 @TestTargets(
     {
-        // @TestTarget(testCaseName = "IE8-Testcase", browser = Browser.InternetExplorer, browserVersion = "8.0", os =
-        // OS.Windows,
-        // scope = Scope.Local),
-        // @TestTarget(testCaseName = "IE11-Testcase", browser = Browser.InternetExplorer, browserVersion = "11.0", os =
-        // OS.Windows,
-        // scope = Scope.SauceLabs),
+        @TestTarget(testCaseName = "IE8-Testcase", browser = Browser.InternetExplorer, browserVersion = "8.0", os = OS.Windows,
+                    scope = Scope.Local),
+        @TestTarget(testCaseName = "IE11-Testcase", browser = Browser.InternetExplorer, browserVersion = "11.0", os = OS.Windows,
+                    scope = Scope.Local),
         // @TestTarget(testCaseName = "Chrome-Testcase", browser = Browser.Chrome, browserVersion = "", os = OS.Windows,
         // scope = Scope.Local),
         // @TestTarget(testCaseName = "IE11-Testcase", browser = Browser.InternetExplorer, browserVersion = "11.0", os =
         // OS.Windows, scope = Scope.SauceLabs)
-//        @TestTarget(browser = Browser.MobileIphone6Plus), @TestTarget(browser = Browser.MobileGalaxyS3),
-//        @TestTarget(browser = Browser.MobileNexus6)
-        @TestTarget(browser= Browser.MobileIphone4, scope = Scope.SauceLabs)
+        // @TestTarget(browser = Browser.MobileIphone6Plus), @TestTarget(browser = Browser.MobileGalaxyS3),
+        // @TestTarget(browser = Browser.MobileNexus6)
+        // @TestTarget(browser= Browser.MobileIphone4, scope = Scope.SauceLabs)
     })
 public class TSearch_ProductOnly_Augmented extends AbstractAnnotatedScriptTestCase
 {

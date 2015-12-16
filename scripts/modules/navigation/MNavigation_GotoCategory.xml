@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <scriptmodule xmlns="http://xlt.xceptance.com/xlt-script/2" version="6">
-  <description>Opens a Catalog Page by using the button in the desktop navgation
-# this module will only work at the desktop version</description>
   <parameter name="id"/>
   <command name="click" target="css=#nav @{id}"/>
   <command name="waitForElementPresent" target="id=sortby"/>

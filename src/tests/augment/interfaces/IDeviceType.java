@@ -15,4 +15,5 @@ public interface IDeviceType
     public boolean isMobileDevice();
     public boolean isDesktopDevice();
     public String getDeviceName();
+    public String getBrowserName();
 }
