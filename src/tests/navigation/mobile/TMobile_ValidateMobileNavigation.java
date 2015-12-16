@@ -9,6 +9,7 @@ import tests.augment.AbstractAnnotatedScriptTestCase;
 import tests.augment.annotation.TestTarget;
 import tests.augment.annotation.TestTargets;
 import tests.augment.enums.Browser;
+import tests.augment.enums.Scope;
 
 /**
  * <p>
@@ -30,15 +31,11 @@ import tests.augment.enums.Browser;
  * </ul>
  */
 @ScriptName("tests.navigation.mobile.TMobile_ValidateMobileNavigation")
-@TestTargets({
-    @TestTarget(browser = Browser.MobileGalaxyNote2, testCaseName = "Galaxy Not 2"), //
-    @TestTarget(browser = Browser.MobileIphone6Plus), //
-//    @TestTarget(browser = Browser.MobileGalaxyS3), //
-//    @TestTarget(browser = Browser.MobileGalaxyS4), //
-//    @TestTarget(browser = Browser.MobileIphone4), //
-//    @TestTarget(browser = Browser.MobileIphone6Plus), //
-//    @TestTarget(browser = Browser.MobileNexus6), //
-})
+@TestTargets(
+    {
+        @TestTarget(browser = Browser.MobileNexus6, scope = Scope.SauceLabs), //
+        @TestTarget(browser = Browser.MobileIphone5, scope = Scope.SauceLabs), //
+    })
 public class TMobile_ValidateMobileNavigation extends AbstractAnnotatedScriptTestCase
 {
 }
