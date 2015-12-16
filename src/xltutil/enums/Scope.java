@@ -1,4 +1,4 @@
-package tests.augment.enums;
+package xltutil.enums;
 
 public enum Scope
 {

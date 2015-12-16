@@ -1,6 +1,6 @@
-package tests.augment.enums;
+package xltutil.enums;
 
-import tests.augment.interfaces.IDeviceType;
+import xltutil.interfaces.IDeviceType;
 
 /**
  * Enumeration of different browser types including mobile devices. Devicenames reffer to Chrome device emulations. Do

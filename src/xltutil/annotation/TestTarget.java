@@ -1,8 +1,8 @@
-package tests.augment.annotation;
+package xltutil.annotation;
 
-import tests.augment.enums.Browser;
-import tests.augment.enums.OS;
-import tests.augment.enums.Scope;
+import xltutil.enums.Browser;
+import xltutil.enums.OS;
+import xltutil.enums.Scope;
 
 public @interface TestTarget
 {

@@ -1,7 +1,7 @@
-package tests.augment.interfaces;
+package xltutil.interfaces;
 
-import tests.augment.enums.Browser;
-import tests.augment.enums.DeviceType;
+import xltutil.enums.Browser;
+import xltutil.enums.DeviceType;
 
 /**
  * Interface designed for {@link Browser}

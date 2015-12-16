@@ -1,12 +1,12 @@
-package tests.augment;
+package xltutil;
 
 import org.junit.runner.RunWith;
 
 import com.xceptance.xlt.api.engine.scripting.AbstractScriptTestCase;
 
-import tests.augment.annotation.TestTarget;
-import tests.augment.annotation.TestTargets;
-import tests.augment.runner.AnnotationRunner;
+import xltutil.annotation.TestTarget;
+import xltutil.annotation.TestTargets;
+import xltutil.runner.AnnotationRunner;
 
 /**
  * This is a wrapper-class designed to run XLT-testcases. To use this class you simply inherit from this and add

@@ -1,4 +1,4 @@
-package tests.augment.runner.helper;
+package xltutil.runner.helper;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -19,8 +19,8 @@ import org.openqa.selenium.safari.SafariDriver;
 import com.xceptance.xlt.api.util.XltProperties;
 import com.xceptance.xlt.engine.SessionImpl;
 
-import tests.augment.annotation.TestTargets;
-import tests.augment.runner.AnnotationRunnerConfiguration;
+import xltutil.annotation.TestTargets;
+import xltutil.runner.AnnotationRunnerConfiguration;
 
 public final class AnnotationRunnerHelper
 {

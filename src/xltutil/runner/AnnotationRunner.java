@@ -1,4 +1,4 @@
-package tests.augment.runner;
+package xltutil.runner;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
@@ -17,10 +17,10 @@ import com.xceptance.xlt.api.engine.scripting.AbstractScriptTestCase;
 import com.xceptance.xlt.api.util.XltProperties;
 import com.xceptance.xlt.engine.util.XltTestRunner;
 
-import tests.augment.AbstractAnnotatedScriptTestCase;
-import tests.augment.annotation.TestTarget;
-import tests.augment.annotation.TestTargets;
-import tests.augment.runner.helper.AnnotationRunnerHelper;
+import xltutil.AbstractAnnotatedScriptTestCase;
+import xltutil.annotation.TestTarget;
+import xltutil.annotation.TestTargets;
+import xltutil.runner.helper.AnnotationRunnerHelper;
 
 /**
  * JUnit runner used to run testcases that inherit from {@link AbstractAnnotatedScriptTestCase}. This class reads the

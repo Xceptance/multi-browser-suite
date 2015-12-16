@@ -1,12 +1,12 @@
-package tests.augment.runner;
+package xltutil.runner;
 
 import org.apache.commons.lang3.StringUtils;
 
-import tests.augment.annotation.TestTarget;
-import tests.augment.annotation.TestTargets;
-import tests.augment.enums.Browser;
-import tests.augment.enums.OS;
-import tests.augment.enums.Scope;
+import xltutil.annotation.TestTarget;
+import xltutil.annotation.TestTargets;
+import xltutil.enums.Browser;
+import xltutil.enums.OS;
+import xltutil.enums.Scope;
 
 /**
  * POJO-class to wrap annotation based testcase configuration

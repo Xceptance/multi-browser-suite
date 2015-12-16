@@ -5,10 +5,10 @@ package tests.navigation;
 
 import com.xceptance.xlt.api.engine.scripting.ScriptName;
 
-import tests.augment.AbstractAnnotatedScriptTestCase;
-import tests.augment.annotation.TestTarget;
-import tests.augment.annotation.TestTargets;
-import tests.augment.enums.Browser;
+import xltutil.AbstractAnnotatedScriptTestCase;
+import xltutil.annotation.TestTarget;
+import xltutil.annotation.TestTargets;
+import xltutil.enums.Browser;
 
 /**
  * <p>

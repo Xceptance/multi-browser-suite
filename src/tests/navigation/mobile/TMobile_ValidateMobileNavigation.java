@@ -5,11 +5,11 @@ package tests.navigation.mobile;
 
 import com.xceptance.xlt.api.engine.scripting.ScriptName;
 
-import tests.augment.AbstractAnnotatedScriptTestCase;
-import tests.augment.annotation.TestTarget;
-import tests.augment.annotation.TestTargets;
-import tests.augment.enums.Browser;
-import tests.augment.enums.Scope;
+import xltutil.AbstractAnnotatedScriptTestCase;
+import xltutil.annotation.TestTarget;
+import xltutil.annotation.TestTargets;
+import xltutil.enums.Browser;
+import xltutil.enums.Scope;
 
 /**
  * <p>
