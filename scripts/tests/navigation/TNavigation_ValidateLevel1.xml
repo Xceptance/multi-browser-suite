@@ -33,7 +33,7 @@
   </module>
   <action name="OpenClothing"/>
   <module name="modules.navigation.MNavigation_GotoCategory">
-    <parameter name="id" value="#mm-subclothingviewall"/>
+    <parameter name="id" value="#mm_subclothingviewall"/>
   </module>
   <module name="modules.pages.catalog.VCatalog_validateSharedElements"/>
   <module name="modules.pages.catalog.VCatalog_validateCatalogPageDesktopOnly">
