@@ -92,9 +92,9 @@ xlt.webDriver.ie.pathToDriverServer = path/to/webDriver/IEDriverServer.exe
 ## Configuration Sourcelab account setting
 - Log into Sauce Labs
 - Navigate to the User Settings page: `https://saucelabs.com/beta/user-settings`
-- on section `Access Key` click the `[Show]` button
-- copy this `Access Key` into clipboard
-- open file `multi-browser-suite/config/default.properties` and enter properties
+- On section `Access Key` click the `[Show]` button
+- Copy this `Access Key` into clipboard
+- Open file `multi-browser-suite/config/default.properties` and set properties
 ```sh
 saucelab.username  = xx
 saucelab.accesskey = xx
@@ -104,7 +104,7 @@ saucelab.accesskey = xx
 - Start Eclipse
 - Open testcase eg. 'test.search/TSearch_ProductOnly.java'
 - Replace row 'import com.xceptance.xlt.api.engine.scripting.AbstractScriptTestCase;'
-- With
+with
 ```sh
 import com.xceptance.xlt.api.engine.scripting.ScriptName;
 import tests.augment.AbstractAnnotatedScriptTestCase;
@@ -114,8 +114,8 @@ import tests.augment.enums.Browser;
 import tests.augment.enums.OS;
 import tests.augment.enums.Scope;
 ```
-- replace AbstractScriptTestCase with AbstractAnnotatedScriptTestCase
-- below row '@ScriptName(..)' and 'public class ...' add new rows
+- Replace AbstractScriptTestCase with AbstractAnnotatedScriptTestCase
+- Below row '@ScriptName(..)' and 'public class ...' add new rows
 
 ```sh
 @ScriptName("xxxxxx")
@@ -132,22 +132,26 @@ public class Tcase_name extends AbstractAnnotatedScriptTestCase
 	- [optional value] 'browserVersion = xx' browser Version, Example: "11.0"
 	- [optional value] 'os = xx' Operating System, Example: "OS.Windows", "OS.Linux"
 	- [optional value] 'scope = xx' who run this testcase, Example: Scope.SauceLabs, Scope.Local
-- Add )
-- Example row: InternetExplorer with Version 11 on SauceLabs
+- Add ")"
+Example row: InternetExplorer with Version 11 on SauceLabs
 ```sh
 @TestTargets(
 {
-@TestTarget(testCaseName = "IE11-Testcase", browser = Browser.InternetExplorer, browserVersion = "11.0", scope = Scope.SauceLabs)
+	@TestTarget(testCaseName = "IE11-Testcase", browser = Browser.InternetExplorer, browserVersion = "11.0", scope = Scope.SauceLabs)
 })
 ```
 
 ### Many browser definition for a testcase
 - It it possible to add more than one browser definition to the testcase
 - Comma separated values
+
 Example:
 ```sh
-@TestTarget(browser = Browser.InternetExplorer, browserVersion = "11.0", scope = Scope.SauceLabs),
-@TestTarget(browser = Browser.Chrome, scope = Scope.local)
+@TestTargets(
+{
+	@TestTarget(browser = Browser.InternetExplorer, browserVersion = "11.0", scope = Scope.SauceLabs),
+	@TestTarget(browser = Browser.Chrome, scope = Scope.local)
+})
 ```
 
 Full Example: 
@@ -181,7 +185,7 @@ public class Tcase_name extends AbstractAnnotatedScriptTestCase
 
 ## Execution testcase
 ### Start test case in Eclipse
-- select java file from the testcase eg. src->test.search->'TSearch_ProductOnly.java' 
+- Select java file from the testcase eg. src->test.search->'TSearch_ProductOnly.java' 
 - 'Run as' item in context menu -> 'JUnit Test'
 
 ### Run Apache Ant
