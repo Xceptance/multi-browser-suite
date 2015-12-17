@@ -21,9 +21,9 @@ See below for prerequisites and installation steps needed to run the test suite 
 
 # Prerequisites
 - XLT&reg; Framework v4.5 (or higher) - [Download the XLT Framework](https://www.xceptance.com/en/xlt/download.html)
-- JDK 7 ([JSE](https://www.oracle.com/technetwork/java/javase/download)) or higher
+- JDK 7 ([JSE](https://www.oracle.com/technetwork/java/javase/downloads)) or higher
 - Browser:
-    - (Firefox 31)[https://www.mozilla.org/firefox-download‎] up to latest version 42
+    - (Firefox 31)[https://www.mozilla.org/firefox-download] up to latest version 42
     - or (Google Chrome)[https://www.google.com/chrome/browser/desktop/index.html#] version 30 (or higher)
     - or Internet Explorer 11 
 - Execution Environment:
@@ -59,14 +59,14 @@ test.lib.dir = path/to/xlt/lib
 ```
 # Step 2: WebDriver Configuration
 
-### Firefox
+## Firefox
 Note: installation and configuration not required. FirefoxWebdriver are integrated.
 - Open file `multi-browser-suite/config/default.properties` and set property to
 ```sh
 xlt.webDriver = firefox
 ```
 
-### Chrome
+## Chrome
 Note: For information about ChromeWebdriver, [click here](https://sites.google.com/a/chromium.org/chromedriver)
 - [Download ChromeDriver](https://sites.google.com/a/chromium.org/chromedriver/downloads) and unpack it (eg: D:/dev/webDriver/)
 - Open file `multi-browser-suite/config/default.properties`
@@ -76,7 +76,7 @@ xlt.webDriver = chrome
 xlt.webDriver.chrome.pathToDriverServer = path/to/webDriver/chromedriver.exe
 ```
 
-### Internet Explorer 11 (only Microsoft OS Support)
+## Internet Explorer 11 (only Microsoft OS Support)
 Note: For general information about IEWebdriver, [click here](https://code.google.com/p/selenium/wiki/InternetExplorerDriver). 
 Information about installation/configuration information can be found [here](https://code.google.com/p/selenium/wiki/InternetExplorerDriver#Required_Configuration).
 
@@ -88,50 +88,114 @@ xlt.webDriver = ie
 xlt.webDriver.ie.pathToDriverServer = path/to/webDriver/IEDriverServer.exe
 ```
 
-# Step 3: Execution 
-## Start test case in Eclipse
-- select file src->test.search->'TSearch_ProductOnly.java' 
+# Step 3: Configuration and Execution testcase
+## Configuration Sourcelab account setting
+- Log into Sauce Labs
+- Navigate to the User Settings page: `https://saucelabs.com/beta/user-settings`
+- On section `Access Key` click the `[Show]` button
+- Copy this `Access Key` into clipboard
+- Open file `multi-browser-suite/config/default.properties` and set properties
+```sh
+saucelab.username  = xx
+saucelab.accesskey = xx
+```
+## Configuration testcase
+### Preperation testcase
+- Start Eclipse
+- Open testcase eg. 'test.search/TSearch_ProductOnly.java'
+- Replace row 'import com.xceptance.xlt.api.engine.scripting.AbstractScriptTestCase;'
+with
+```sh
+import com.xceptance.xlt.api.engine.scripting.ScriptName;
+import tests.augment.AbstractAnnotatedScriptTestCase;
+import tests.augment.annotation.TestTarget;
+import tests.augment.annotation.TestTargets;
+import tests.augment.enums.Browser;
+import tests.augment.enums.OS;
+import tests.augment.enums.Scope;
+```
+- Replace AbstractScriptTestCase with AbstractAnnotatedScriptTestCase
+- Below row '@ScriptName(..)' and 'public class ...' add new rows
+
+```sh
+@ScriptName("xxxxxx")
+@TestTargets(
+{
+})
+public class Tcase_name extends AbstractAnnotatedScriptTestCase
+```
+
+### One browser definition for a testcase
+- Add  "@TestTarget("
+	- [required value]'browser = xx' Example. Browser.Chrome, Browser.Firefox, Browser.InternetExplorer
+	- [optional value] 'testCaseName = xx' name for this testcase
+	- [optional value] 'browserVersion = xx' browser Version, Example: "11.0"
+	- [optional value] 'os = xx' Operating System, Example: "OS.Windows", "OS.Linux"
+	- [optional value] 'scope = xx' who run this testcase, Example: Scope.SauceLabs, Scope.Local
+- Add ")"
+Example row: InternetExplorer with Version 11 on SauceLabs
+```sh
+@TestTargets(
+{
+	@TestTarget(testCaseName = "IE11-Testcase", browser = Browser.InternetExplorer, browserVersion = "11.0", scope = Scope.SauceLabs)
+})
+```
+
+### Many browser definition for a testcase
+- It it possible to add more than one browser definition to the testcase
+- Comma separated values
+
+Example:
+```sh
+@TestTargets(
+{
+	@TestTarget(browser = Browser.InternetExplorer, browserVersion = "11.0", scope = Scope.SauceLabs),
+	@TestTarget(browser = Browser.Chrome, scope = Scope.local)
+})
+```
+
+Full Example: 
+- InternetExplorer with Version 8 and 11 on SauceLabs
+- Firefox and Chrome run local
+```sh
+package tests.search;
+import com.xceptance.xlt.api.engine.scripting.ScriptName;
+import tests.augment.AbstractAnnotatedScriptTestCase;
+import tests.augment.annotation.TestTarget;
+import tests.augment.annotation.TestTargets;
+import tests.augment.enums.Browser;
+import tests.augment.enums.OS;
+import tests.augment.enums.Scope;
+
+//coment ...
+
+@ScriptName("xxxxxx")
+@TestTargets(
+{
+    @TestTarget(browser = Browser.InternetExplorer, browserVersion = "8.0", os = OS.Windows, scope = Scope.SauceLabs),
+    @TestTarget(browser = Browser.InternetExplorer, browserVersion = "11.0", os = OS.Windows, scope = Scope.SauceLabs),
+    @TestTarget(browser = Browser.Firefox, scope = Scope.local),
+    @TestTarget(browser = Browser.Chrome, scope = Scope.local)
+})
+public class Tcase_name extends AbstractAnnotatedScriptTestCase
+{
+}
+```
+
+
+## Execution testcase
+### Start test case in Eclipse
+- Select java file from the testcase eg. src->test.search->'TSearch_ProductOnly.java' 
 - 'Run as' item in context menu -> 'JUnit Test'
 
-## Run Apache Ant
+### Run Apache Ant
 Open the command prompt window: click the Start button picture of the Start button, then click All Programs, then Accessories, then Command Prompt.
 
-### Perform all functional tests and create a JUnit test report
 ```sh
-$ ant test
+$ ant test.java
 ```
 
-### Run one test and create a JUnit test report
-- 'tests.search' is the path to the test case
-- 'TSearch_ProductOnly' is the name of the example test case
-```sh
-$ ant test -Dtestcase=tests.search.TSearch_ProductOnly 
-```
 
-### Run one test and create a JUnit test report via build.properties
-- Open file `multi-browser-suite/config/build.properties`
-- Set the name of the testcase 
-```sh
-test.cases.java = tests.search.TSearch_ProductOnly.java
-```
-- start ant on console
-```sh
-$ ant test
-```
-
-### Perform all functional tests and create a JUnit test report with a selected browser
-Firefox:
-```sh
-$ ant -Dwebdriver=firefox test
-```
-Chrome:
-```sh
-$ ant -Dwebdriver=chrome test
-```
-Internet Explorer:
-```sh
-$ ant -Dwebdriver=ie test
-```
 ## XLT Result Browser
 The result browser offers an integrated navigation to browse the complete page output of the transaction and to look at every single request in detail. For more information about the XLT Result Browser, [click here](https://lab.xceptance.de/releases/xlt/latest/user-manual.html#XLTResultBrowser).
 
