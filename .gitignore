@@ -1,4 +1,5 @@
 bin/
+config/
 .classpath
 build.properties
 .properties
