@@ -32,17 +32,15 @@ import tests.augment.enums.Scope;
 @ScriptName("tests.search.TSearch_ProductOnly")
 @TestTargets(
     {
-        @TestTarget(testCaseName = "IE8-Testcase", browser = Browser.InternetExplorer, browserVersion = "8.0", os = OS.Windows,
-                    scope = Scope.Local),
-        @TestTarget(testCaseName = "IE11-Testcase", browser = Browser.InternetExplorer, browserVersion = "11.0", os = OS.Windows,
-                    scope = Scope.Local),
-        // @TestTarget(testCaseName = "Chrome-Testcase", browser = Browser.Chrome, browserVersion = "", os = OS.Windows,
-        // scope = Scope.Local),
-        // @TestTarget(testCaseName = "IE11-Testcase", browser = Browser.InternetExplorer, browserVersion = "11.0", os =
-        // OS.Windows, scope = Scope.SauceLabs)
-        // @TestTarget(browser = Browser.MobileIphone6Plus), @TestTarget(browser = Browser.MobileGalaxyS3),
-        // @TestTarget(browser = Browser.MobileNexus6)
-        // @TestTarget(browser= Browser.MobileIphone4, scope = Scope.SauceLabs)
+    	@TestTarget(testCaseName = "IE8-SauceLabs-Testcase", browser = Browser.InternetExplorer, browserVersion = "8.0", scope = Scope.SauceLabs),
+        @TestTarget(testCaseName = "IE11-SauceLabs-Testcase", browser = Browser.InternetExplorer, browserVersion = "11.0", scope = Scope.SauceLabs),
+        @TestTarget(testCaseName = "IE11-Local-Testcase", browser = Browser.InternetExplorer, browserVersion = "11.0", scope = Scope.Local),
+        @TestTarget(testCaseName = "Firefox-Local-Testcase", browser = Browser.Firefox, scope = Scope.Local),
+        @TestTarget(testCaseName = "Chrome-Local-Testcase", browser = Browser.Chrome, scope = Scope.Local),
+        @TestTarget(browser = Browser.MobileIphone6Plus, scope = Scope.Local),
+        @TestTarget(browser = Browser.MobileGalaxyS3, scope = Scope.Local),
+        @TestTarget(browser = Browser.MobileNexus6, scope = Scope.Local),
+        @TestTarget(browser = Browser.MobileIphone4, scope = Scope.Local)
     })
 public class TSearch_ProductOnly_Augmented extends AbstractAnnotatedScriptTestCase
 {

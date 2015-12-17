@@ -2,8 +2,14 @@
  * NOTE: This file is generated. Do not edit! Your changes will be lost.
  */
 package tests.search;
-import com.xceptance.xlt.api.engine.scripting.AbstractScriptTestCase;
 import com.xceptance.xlt.api.engine.scripting.ScriptName;
+import tests.augment.AbstractAnnotatedScriptTestCase;
+import tests.augment.annotation.TestTarget;
+import tests.augment.annotation.TestTargets;
+import tests.augment.enums.Browser;
+import tests.augment.enums.OS;
+import tests.augment.enums.Scope;
+
 
 
 /**
@@ -23,6 +29,18 @@ import com.xceptance.xlt.api.engine.scripting.ScriptName;
  */
 @ScriptName
 ("tests.search.TSearch_ProductOnly")
-public class TSearch_ProductOnly extends AbstractScriptTestCase
+@TestTargets(
+	    {
+	    	@TestTarget(testCaseName = "IE8-SauceLabs-Testcase", browser = Browser.InternetExplorer, browserVersion = "8.0", scope = Scope.SauceLabs),
+	        @TestTarget(testCaseName = "IE11-SauceLabs-Testcase", browser = Browser.InternetExplorer, browserVersion = "11.0", scope = Scope.SauceLabs),
+	        @TestTarget(testCaseName = "IE11-Local-Testcase", browser = Browser.InternetExplorer, browserVersion = "11.0", scope = Scope.Local),
+	        @TestTarget(testCaseName = "Firefox-Local-Testcase", browser = Browser.Firefox, scope = Scope.Local),
+	        @TestTarget(testCaseName = "Chrome-Local-Testcase", browser = Browser.Chrome, scope = Scope.Local),
+	        @TestTarget(browser = Browser.MobileIphone6Plus, scope = Scope.Local),
+	        @TestTarget(browser = Browser.MobileGalaxyS3, scope = Scope.Local),
+	        @TestTarget(browser = Browser.MobileNexus6, scope = Scope.Local),
+	        @TestTarget(browser = Browser.MobileIphone4, scope = Scope.Local)
+	    })
+	public class TSearch_ProductOnly extends AbstractAnnotatedScriptTestCase
 {
 }

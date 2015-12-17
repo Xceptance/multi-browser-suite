@@ -102,9 +102,8 @@ saucelab.accesskey = xx
 ## Configuration testcase
 ### Preperation testcase
 - Start Eclipse
-- Open testcase eg. 'test.search/TSearch_ProductOnly.java'
-- Replace row 'import com.xceptance.xlt.api.engine.scripting.AbstractScriptTestCase;'
-with
+- Open testcase eg. `test.search/TSearch_ProductOnly.java`
+- Replace row `import com.xceptance.xlt.api.engine.scripting.AbstractScriptTestCase;` with
 ```sh
 import com.xceptance.xlt.api.engine.scripting.ScriptName;
 import tests.augment.AbstractAnnotatedScriptTestCase;
@@ -114,8 +113,8 @@ import tests.augment.enums.Browser;
 import tests.augment.enums.OS;
 import tests.augment.enums.Scope;
 ```
-- Replace AbstractScriptTestCase with AbstractAnnotatedScriptTestCase
-- Below row '@ScriptName(..)' and 'public class ...' add new rows
+- Replace `AbstractScriptTestCase` with `AbstractAnnotatedScriptTestCase`
+- Below row `@ScriptName(..)` and `public class ...` add new rows
 
 ```sh
 @ScriptName("xxxxxx")
@@ -127,12 +126,13 @@ public class Tcase_name extends AbstractAnnotatedScriptTestCase
 
 ### One browser definition for a testcase
 - Add  "@TestTarget("
-	- [required value]'browser = xx' Example. Browser.Chrome, Browser.Firefox, Browser.InternetExplorer
-	- [optional value] 'testCaseName = xx' name for this testcase
-	- [optional value] 'browserVersion = xx' browser Version, Example: "11.0"
-	- [optional value] 'os = xx' Operating System, Example: "OS.Windows", "OS.Linux"
-	- [optional value] 'scope = xx' who run this testcase, Example: Scope.SauceLabs, Scope.Local
+	- [required value] `browser = xx` , Example. Browser.Chrome, Browser.Firefox, Browser.InternetExplorer
+	- [optional value] `testCaseName = xx`' name for this testcase
+	- [optional value] `browserVersion = xx` browser Version, Example: "11.0"
+	- [optional value] `os = xx` Operating System, Example: "OS.Windows", "OS.Linux"
+	- [optional value] `scope = xx` who run this testcase, Example: Scope.SauceLabs, Scope.Local
 - Add ")"
+
 Example row: InternetExplorer with Version 11 on SauceLabs
 ```sh
 @TestTargets(
@@ -150,7 +150,7 @@ Example:
 @TestTargets(
 {
 	@TestTarget(browser = Browser.InternetExplorer, browserVersion = "11.0", scope = Scope.SauceLabs),
-	@TestTarget(browser = Browser.Chrome, scope = Scope.local)
+	@TestTarget(browser = Browser.Chrome, scope = Scope.Local)
 })
 ```
 
@@ -174,8 +174,8 @@ import tests.augment.enums.Scope;
 {
     @TestTarget(browser = Browser.InternetExplorer, browserVersion = "8.0", os = OS.Windows, scope = Scope.SauceLabs),
     @TestTarget(browser = Browser.InternetExplorer, browserVersion = "11.0", os = OS.Windows, scope = Scope.SauceLabs),
-    @TestTarget(browser = Browser.Firefox, scope = Scope.local),
-    @TestTarget(browser = Browser.Chrome, scope = Scope.local)
+    @TestTarget(browser = Browser.Firefox, scope = Scope.Local),
+    @TestTarget(browser = Browser.Chrome, scope = Scope.Local)
 })
 public class Tcase_name extends AbstractAnnotatedScriptTestCase
 {
@@ -185,8 +185,8 @@ public class Tcase_name extends AbstractAnnotatedScriptTestCase
 
 ## Execution testcase
 ### Start test case in Eclipse
-- Select java file from the testcase eg. src->test.search->'TSearch_ProductOnly.java' 
-- 'Run as' item in context menu -> 'JUnit Test'
+- Select java file from the testcase eg. src->test.search->`TSearch_ProductOnly.java` 
+- `Run as` item in context menu -> `JUnit Test`
 
 ### Run Apache Ant
 Open the command prompt window: click the Start button picture of the Start button, then click All Programs, then Accessories, then Command Prompt.
@@ -244,3 +244,4 @@ This section gives a small introduction to the multi-browser-suite structure.
     `---- global_testdata.properties         # global testdata properties
 ```
 Please note there is a special folder src/tests/others to collect Java-based test examples e.g. testing via RemoteWebDriver against [Sauce Labs](https://saucelabs.com/).
+
