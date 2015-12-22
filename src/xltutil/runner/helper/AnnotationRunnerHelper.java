@@ -9,6 +9,7 @@ import java.util.Map;
 
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.ie.InternetExplorerDriver;
@@ -93,33 +94,41 @@ public final class AnnotationRunnerHelper
      */
     public static void setBrowserWindowSize(BrowserConfigurationDto config, WebDriver driver)
     {
-        // if (config.getBrowser().isDesktopDevice())
+        XltProperties props = XltProperties.getInstance();
+
+        // get the configured window size and set it if defined
+        int windowWidth = props.getProperty(getEffectiveKey(PROP_PREFIX_WEB_DRIVER + ".window.width"), -1);
+        int windowHeight = props.getProperty(getEffectiveKey(PROP_PREFIX_WEB_DRIVER + ".window.height"), -1);
+
+        int configuredBrowserWidth = config.getBrowserWidth();
+        int configuredBrowserHeight = config.getBrowserHeight();
+
+        Dimension browserSize = null;
+        // first check if the configured browserprofile has a defined size, else use the xlt default browser size
+        if (configuredBrowserWidth > 0 && configuredBrowserHeight > 0)
         {
-            final int screenWidth;
-            final int screenHeight;
+            browserSize = new Dimension(configuredBrowserWidth, configuredBrowserHeight);
+        }
+        else if (windowWidth > 0 && windowHeight > 0)
+        {
+            browserSize = new Dimension(windowWidth, windowHeight);
+        }
 
-            // get the configured window size and set it if defined
-            final XltProperties props = XltProperties.getInstance();
-
-            final int windowWidth = props.getProperty(getEffectiveKey(PROP_PREFIX_WEB_DRIVER + ".window.width"), -1);
-            final int windowHeight = props.getProperty(getEffectiveKey(PROP_PREFIX_WEB_DRIVER + ".window.height"), -1);
-
-            if (windowWidth > 0 && windowHeight > 0)
-            {
-                screenWidth = windowWidth;
-                screenHeight = windowHeight;
-            }
-            else
-            {
-                // use average browser size as default according to
-                // http://www.w3schools.com/browsers/browsers_display.asp
-                // "As of today, about 97% of our visitors have a screen resolution of 1024x768 pixels or higher:"
-                screenWidth = 1024;
-                screenHeight = 768;
-            }
-
-            Dimension browserSize = new Dimension(screenWidth, screenHeight);
+        try
+        {
             driver.manage().window().setSize(browserSize);
+        }
+        catch (WebDriverException e)
+        {
+            // on saucelabs in some cases like iphone emulation you cant resize the browser.
+            // they throw an unchecked WebDriverException with the message "Not yet implemented"
+            // if we catch an exception we check the message. if another message is set we throw the exception else
+            // we
+            // suppress it
+            if (!e.getMessage().contains("Not yet implemented"))
+            {
+                throw e;
+            }
         }
     }
 
