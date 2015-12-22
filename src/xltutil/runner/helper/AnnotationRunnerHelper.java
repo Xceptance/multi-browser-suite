@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.openqa.selenium.Dimension;
+import org.openqa.selenium.UnsupportedCommandException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.chrome.ChromeDriver;
@@ -118,17 +119,20 @@ public final class AnnotationRunnerHelper
         {
             driver.manage().window().setSize(browserSize);
         }
+        catch (UnsupportedCommandException e)
+        {
+            // same as the exception handling below
+            if (!e.getMessage().contains("not yet supported"))
+                throw e;
+        }
         catch (WebDriverException e)
         {
             // on saucelabs in some cases like iphone emulation you cant resize the browser.
             // they throw an unchecked WebDriverException with the message "Not yet implemented"
             // if we catch an exception we check the message. if another message is set we throw the exception else
-            // we
-            // suppress it
+            // we suppress it
             if (!e.getMessage().contains("Not yet implemented"))
-            {
                 throw e;
-            }
         }
     }
 
