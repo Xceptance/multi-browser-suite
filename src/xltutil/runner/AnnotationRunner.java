@@ -44,11 +44,11 @@ import xltutil.runner.helper.AnnotationRunnerHelper;
 
 /**
  * JUnit runner used to run testcases that inherit from {@link AbstractAnnotatedScriptTestCase}. This class reads the
- * annotation based configuration of {@link TestTargets} and executes the testcase multiple-times with different
- * annotated configurations.
+ * annotation based configuration of {@link TestTarget} and executes the testcase multiple-times with different
+ * configurations.
  * 
  * @author m.kaufmann
- * @see {@link AbstractAnnotatedScriptTestCase}, {@link TestTargets}, {@link TestTarget}
+ * @see {@link AbstractAnnotatedScriptTestCase}, {@link TestTarget}
  */
 public class AnnotationRunner extends XltTestRunner
 {
