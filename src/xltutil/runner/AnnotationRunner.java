@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.lang.annotation.Annotation;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedHashSet;
@@ -33,6 +34,7 @@ import com.xceptance.xlt.api.util.XltLogger;
 import com.xceptance.xlt.api.util.XltProperties;
 import com.xceptance.xlt.engine.data.DataSetProviderFactory;
 import com.xceptance.xlt.engine.scripting.XlteniumScriptInterpreter;
+import com.xceptance.xlt.engine.util.ScriptingUtils;
 import com.xceptance.xlt.engine.util.XltTestRunner;
 
 import xltutil.AbstractAnnotatedScriptTestCase;
@@ -135,7 +137,8 @@ public class AnnotationRunner extends XltTestRunner
 
     public AnnotationRunner(Class<?> testCaseClass) throws Throwable
     {
-        this(testCaseClass, testCaseClass.getSimpleName(), "", dataSetFileDirs);
+        this(testCaseClass, testCaseClass.getSimpleName(), ScriptingUtils.getScriptBaseName(ScriptingUtils.getScriptName(testCaseClass)),
+             dataSetFileDirs);
     }
 
     public AnnotationRunner(Class<?> testCaseClass, String testCaseName, String defaultTestMethodName, final List<File> dataSetFileDirs)
@@ -185,11 +188,17 @@ public class AnnotationRunner extends XltTestRunner
 
                     for (final FrameworkMethod frameworkMethod : getTestClass().getAnnotatedMethods(Test.class))
                     {
+                        // get the test method to run
+                        final Method testMethod = frameworkMethod.getMethod();
+
+                        // check whether to override the test method name
+                        final String testMethodName = (defaultTestMethodName == null) ? testMethod.getName() : defaultTestMethodName;
+
                         // create the JUnit children
                         if (dataSets == null || dataSets.isEmpty())
                         {
-                            methods.add(new AnnotatedFrameworkMethod(frameworkMethod.getMethod(), "", foundBrowserConfiguration, -1,
-                                                                     EMPTY_DATA_SET));
+                            methods.add(new AnnotatedFrameworkMethod(frameworkMethod.getMethod(), testMethodName, foundBrowserConfiguration,
+                                                                     -1, EMPTY_DATA_SET));
                         }
                         else
                         {
@@ -197,8 +206,8 @@ public class AnnotationRunner extends XltTestRunner
                             int i = 0;
                             for (final Map<String, String> dataSet : dataSets)
                             {
-                                methods.add(new AnnotatedFrameworkMethod(frameworkMethod.getMethod(), "", foundBrowserConfiguration, i++,
-                                                                         dataSet));
+                                methods.add(new AnnotatedFrameworkMethod(frameworkMethod.getMethod(), testMethodName,
+                                                                         foundBrowserConfiguration, i++, dataSet));
                             }
                         }
                     }
