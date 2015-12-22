@@ -6,7 +6,6 @@ import org.openqa.selenium.WebDriver;
 
 import com.xceptance.xlt.api.engine.scripting.AbstractScriptTestCase;
 
-import xltutil.annotation.TestTarget;
 import xltutil.annotation.TestTargets;
 import xltutil.runner.AnnotationRunner;
 

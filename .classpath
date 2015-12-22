@@ -41,7 +41,7 @@
 	<classpathentry kind="lib" path="C:/xlt/lib/jetty-websocket-8.1.15.v20140411.jar"/>
 	<classpathentry kind="lib" path="C:/xlt/lib/jfreechart-1.0.19.jar"/>
 	<classpathentry kind="lib" path="C:/xlt/lib/jna-3.4.0.jar"/>
-	<classpathentry kind="lib" path="C:/xlt/lib/joda-time-2.7.jar"/>
+	<classpathentry kind="lib" path="C:/xlt/lib/joda-time-2.9.1.jar"/>
 	<classpathentry kind="lib" path="C:/xlt/lib/json-20140107.jar"/>
 	<classpathentry kind="lib" path="C:/xlt/lib/junit-4.11.jar"/>
 	<classpathentry kind="lib" path="C:/xlt/lib/log4j-1.2.17.jar"/>
@@ -67,7 +67,7 @@
 	<classpathentry kind="lib" path="C:/xlt/lib/webbit-0.4.14.jar"/>
 	<classpathentry kind="lib" path="C:/xlt/lib/xalan-2.7.1.jar"/>
 	<classpathentry kind="lib" path="C:/xlt/lib/xercesImpl-2.11.0.jar"/>
-	<classpathentry kind="lib" path="C:/xlt/lib/xlt-4.5.4.jar"/>
+	<classpathentry kind="lib" path="C:/xlt/lib/xlt-4.5.8.jar" sourcepath="/xlt/src"/>
 	<classpathentry kind="lib" path="C:/xlt/lib/xml-apis-1.4.01.jar"/>
 	<classpathentry kind="lib" path="C:/xlt/lib/xmlpull-1.1.3.1.jar"/>
 	<classpathentry kind="lib" path="C:/xlt/lib/xpp3_min-1.1.4c.jar"/>

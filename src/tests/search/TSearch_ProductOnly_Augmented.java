@@ -6,11 +6,7 @@ package tests.search;
 import com.xceptance.xlt.api.engine.scripting.ScriptName;
 
 import xltutil.AbstractAnnotatedScriptTestCase;
-import xltutil.annotation.TestTarget;
 import xltutil.annotation.TestTargets;
-import xltutil.enums.Browser;
-import xltutil.enums.OS;
-import xltutil.enums.Scope;
 
 /**
  * <p>
@@ -31,11 +27,13 @@ import xltutil.enums.Scope;
  */
 @ScriptName("tests.search.TSearch_ProductOnly")
 @TestTargets(
-    {
-        @TestTarget(testCaseName = "IE8-Testcase", browser = Browser.InternetExplorer, browserVersion = "8.0", os = OS.Windows,
-                    scope = Scope.Local),
-        @TestTarget(testCaseName = "IE11-Testcase", browser = Browser.InternetExplorer, browserVersion = "11.0", os = OS.Windows,
-                    scope = Scope.Local),
+    {"chrome_local", "ie11_local"
+        // @TestTarget(testCaseName = "IE8-Testcase", browser = Browser.InternetExplorer, browserVersion = "8.0", os =
+        // OS.Windows,
+        // scope = Scope.Local),
+        // @TestTarget(testCaseName = "IE11-Testcase", browser = Browser.InternetExplorer, browserVersion = "11.0", os =
+        // OS.Windows,
+        // scope = Scope.Local),
         // @TestTarget(testCaseName = "Chrome-Testcase", browser = Browser.Chrome, browserVersion = "", os = OS.Windows,
         // scope = Scope.Local),
         // @TestTarget(testCaseName = "IE11-Testcase", browser = Browser.InternetExplorer, browserVersion = "11.0", os =

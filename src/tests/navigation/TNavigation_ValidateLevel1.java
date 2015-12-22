@@ -6,9 +6,7 @@ package tests.navigation;
 import com.xceptance.xlt.api.engine.scripting.ScriptName;
 
 import xltutil.AbstractAnnotatedScriptTestCase;
-import xltutil.annotation.TestTarget;
 import xltutil.annotation.TestTargets;
-import xltutil.enums.Browser;
 
 /**
  * <p>
@@ -28,8 +26,8 @@ import xltutil.enums.Browser;
  */
 @ScriptName("tests.navigation.TNavigation_ValidateLevel1")
 @TestTargets(
-    {
-        @TestTarget(browser = Browser.Firefox)
+    {"chrome_local", "ie11_local"
+//        @TestTarget(browser = Browser.Firefox)
     })
 public class TNavigation_ValidateLevel1 extends AbstractAnnotatedScriptTestCase
 {

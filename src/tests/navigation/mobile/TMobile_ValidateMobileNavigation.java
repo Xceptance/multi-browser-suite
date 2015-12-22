@@ -6,10 +6,7 @@ package tests.navigation.mobile;
 import com.xceptance.xlt.api.engine.scripting.ScriptName;
 
 import xltutil.AbstractAnnotatedScriptTestCase;
-import xltutil.annotation.TestTarget;
 import xltutil.annotation.TestTargets;
-import xltutil.enums.Browser;
-import xltutil.enums.Scope;
 
 /**
  * <p>
@@ -33,8 +30,9 @@ import xltutil.enums.Scope;
 @ScriptName("tests.navigation.mobile.TMobile_ValidateMobileNavigation")
 @TestTargets(
     {
-        @TestTarget(browser = Browser.MobileNexus6, scope = Scope.SauceLabs), //
-        @TestTarget(browser = Browser.MobileIphone5, scope = Scope.SauceLabs), //
+        "iphone5"
+        // @TestTarget(browser = Browser.MobileNexus6, scope = Scope.SauceLabs), //
+        // @TestTarget(browser = Browser.MobileIphone5, scope = Scope.SauceLabs), //
     })
 public class TMobile_ValidateMobileNavigation extends AbstractAnnotatedScriptTestCase
 {

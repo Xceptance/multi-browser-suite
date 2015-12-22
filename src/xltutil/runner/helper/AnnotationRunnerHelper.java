@@ -2,28 +2,50 @@ package xltutil.runner.helper;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.openqa.selenium.Dimension;
-import org.openqa.selenium.Platform;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.ie.InternetExplorerDriver;
+import org.openqa.selenium.remote.BrowserType;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.RemoteWebDriver;
-import org.openqa.selenium.safari.SafariDriver;
 
 import com.xceptance.xlt.api.util.XltProperties;
 import com.xceptance.xlt.engine.SessionImpl;
 
 import xltutil.annotation.TestTargets;
-import xltutil.runner.AnnotationRunnerConfiguration;
+import xltutil.dto.BrowserConfigurationDto;
+import xltutil.mapper.PropertiesToBrowserConfigurationMapper;
 
 public final class AnnotationRunnerHelper
 {
+
+    private static List<String> chromeBrowsers = new ArrayList<String>();
+
+    private static List<String> firefoxBrowsers = new ArrayList<String>();
+
+    private static List<String> internetExplorerBrowsers = new ArrayList<String>();
+
+    static
+    {
+        chromeBrowsers.add(BrowserType.ANDROID);
+        chromeBrowsers.add(BrowserType.CHROME);
+
+        firefoxBrowsers.add(BrowserType.FIREFOX);
+        firefoxBrowsers.add(BrowserType.FIREFOX_CHROME);
+        firefoxBrowsers.add(BrowserType.FIREFOX_PROXY);
+
+        internetExplorerBrowsers.add(BrowserType.IE);
+        internetExplorerBrowsers.add(BrowserType.IE_HTA);
+        internetExplorerBrowsers.add(BrowserType.IEXPLORE);
+        internetExplorerBrowsers.add(BrowserType.IEXPLORE_PROXY);
+    }
 
     /**
      * The prefix of all factory-related configuration settings.
@@ -58,79 +80,6 @@ public final class AnnotationRunnerHelper
         }
     }
 
-    public static DesiredCapabilities setUpBrowserCapabilities(AnnotationRunnerConfiguration config)
-    {
-        DesiredCapabilities capabilities = null;
-
-        boolean isMobileDevice = config.getBrowser().isMobileDevice();
-
-        // instantiate browser driver
-        switch (config.getBrowser())
-        {
-            case InternetExplorer:
-                capabilities = DesiredCapabilities.internetExplorer();
-                break;
-
-            case Chrome:
-                capabilities = DesiredCapabilities.chrome();
-                break;
-
-            case Firefox:
-                capabilities = DesiredCapabilities.firefox();
-                break;
-
-            case Safari:
-                capabilities = DesiredCapabilities.safari();
-
-            default:
-                // mobile emulation is currently only available with chrome
-                if (isMobileDevice)
-                {
-                    capabilities = DesiredCapabilities.chrome();
-                }
-                break;
-        }
-
-        // set specific os-version for saucelab browser-version/os-version mapping
-        switch (config.getScope())
-        {
-            case SauceLabs:
-                switch (config.getBrowser())
-                {
-                    case InternetExplorer:
-                        if ("8.0".equals(config.getBrowserVersion()))
-                        {
-                            capabilities.setCapability("platform", Platform.WINDOWS);
-                        }
-                        else if ("11.0".equals(config.getBrowserVersion()))
-                        {
-                            capabilities.setCapability("platform", Platform.WIN8_1);
-                        }
-                        else
-                        {
-                            // default platform for all other versions of internet explorer
-                            capabilities.setCapability("platform", Platform.WIN8_1);
-                        }
-                        break;
-
-                    default:
-                        break;
-                }
-                break;
-
-            default:
-                break;
-        }
-
-        // set browser version
-        capabilities.setVersion(config.getBrowserVersion());
-
-        // set test case name
-        capabilities.setCapability("name", config.toString());
-
-        return capabilities;
-    }
-
     /**
      * Sets the browser window size
      * <p>
@@ -138,13 +87,13 @@ public final class AnnotationRunnerHelper
      * device-emulation test. In case of device-emulation the emulated device specifies the size of the browser window.
      * <p>
      * If there is no window size defined in properties, there is an fallback to 1024 X 768
-     * 
+     *
      * @param config
      * @param driver
      */
-    public static void setBrowserWindowSize(AnnotationRunnerConfiguration config, WebDriver driver)
+    public static void setBrowserWindowSize(BrowserConfigurationDto config, WebDriver driver)
     {
-        if (config.getBrowser().isDesktopDevice())
+        // if (config.getBrowser().isDesktopDevice())
         {
             final int screenWidth;
             final int screenHeight;
@@ -176,25 +125,13 @@ public final class AnnotationRunnerHelper
 
     /**
      * Instantiate the {@link WebDriver} according to the configuration read from {@link TestTargets} annotations.
-     * 
+     *
      * @param config
      * @return
      */
-    public static WebDriver createWebdriver(AnnotationRunnerConfiguration config)
+    public static WebDriver createWebdriver(BrowserConfigurationDto config)
     {
-        DesiredCapabilities capabilities = setUpBrowserCapabilities(config);
-
-        // check for mobile device emulation (only available on chrome) and set required capabilities
-        boolean isMobileDevice = config.getBrowser().isMobileDevice();
-        if (isMobileDevice)
-        {
-            Map<String, String> mobileEmulation = new HashMap<String, String>();
-            mobileEmulation.put("deviceName", config.getBrowser().getDeviceName());
-
-            Map<String, Object> chromeOptions = new HashMap<String, Object>();
-            chromeOptions.put("mobileEmulation", mobileEmulation);
-            capabilities.setCapability(ChromeOptions.CAPABILITY, chromeOptions);
-        }
+        DesiredCapabilities capabilities = config.getCapabilities(); // setUpBrowserCapabilities(config);
 
         switch (config.getScope())
         {
@@ -202,33 +139,64 @@ public final class AnnotationRunnerHelper
                 return new RemoteWebDriver(AnnotationRunnerHelper.createSauceLabUrl(), capabilities);
 
             case Local:
-                switch (config.getBrowser())
+                String browserName = config.getCapabilities().getBrowserName();
+                if (chromeBrowsers.contains(browserName))
                 {
-                    case InternetExplorer:
-                        return new InternetExplorerDriver(capabilities);
+                    return new ChromeDriver(capabilities);
 
-                    case Chrome:
-                        return new ChromeDriver(capabilities);
-
-                    case Firefox:
-                        return new FirefoxDriver(capabilities);
-
-                    case Safari:
-                        return new SafariDriver(capabilities);
-
-                    default:
-                        if (isMobileDevice)
-                        {
-                            return new ChromeDriver(capabilities);
-                        }
-                        break;
                 }
+                else if (firefoxBrowsers.contains(browserName))
+                {
+                    return new FirefoxDriver(capabilities);
+                }
+                else if (internetExplorerBrowsers.contains(browserName))
+                {
+                    return new InternetExplorerDriver(capabilities);
+                }
+
+                break;
 
             default:
                 break;
         }
 
         return null;
+    }
+
+    public static Map<String, BrowserConfigurationDto> parseBrowserProperties(XltProperties properties)
+    {
+        // property prefix for browser configurations
+        String propertyKeyBrowsers = "browserprofile";
+
+        // holds all found browser configurations
+        Map<String, String> browserProperties = properties.getPropertiesForKey(propertyKeyBrowsers);
+
+        // a temporary list to hold all found browser tags
+        List<String> browserTags = new ArrayList<String>();
+
+        // create a list of tags referencing browser configurations
+        for (String key : browserProperties.keySet())
+        {
+            String[] parts = key.split("\\.");
+            if (!browserTags.contains(parts[0]))
+                browserTags.add(parts[0]);
+        }
+
+        // map to hold all browser configurations. lookup via browser tag
+        Map<String, BrowserConfigurationDto> browserConfigurations = new HashMap<String, BrowserConfigurationDto>();
+
+        // parse all browser properties and add them to the map
+        PropertiesToBrowserConfigurationMapper mapper = new PropertiesToBrowserConfigurationMapper();
+        for (String browserTag : browserTags)
+        {
+            browserProperties = properties.getPropertiesForKey(propertyKeyBrowsers + "." + browserTag);
+            browserProperties.put("browserTag", browserTag);
+
+            if (browserConfigurations.get(browserTag) == null)
+                browserConfigurations.put(browserTag, mapper.toDto(browserProperties));
+        }
+
+        return browserConfigurations;
     }
 
     /**

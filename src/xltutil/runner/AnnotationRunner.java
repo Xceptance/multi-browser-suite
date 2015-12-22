@@ -4,6 +4,7 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.lang.IllegalClassException;
 import org.apache.commons.lang3.StringUtils;
@@ -18,8 +19,8 @@ import com.xceptance.xlt.api.util.XltProperties;
 import com.xceptance.xlt.engine.util.XltTestRunner;
 
 import xltutil.AbstractAnnotatedScriptTestCase;
-import xltutil.annotation.TestTarget;
 import xltutil.annotation.TestTargets;
+import xltutil.dto.BrowserConfigurationDto;
 import xltutil.runner.helper.AnnotationRunnerHelper;
 
 /**
@@ -37,12 +38,6 @@ public class AnnotationRunner extends XltTestRunner
      */
     private final List<FrameworkMethod> methods = new ArrayList<FrameworkMethod>();
 
-    // TODO: maybe this can be deleted
-    // static
-    // {
-    // XltProperties.getInstance();
-    // }
-
     /**
      * Sets the test instance up.
      *
@@ -59,11 +54,13 @@ public class AnnotationRunner extends XltTestRunner
             final AnnotatedFrameworkMethod frameworkMethod = (AnnotatedFrameworkMethod) method;
 
             // create configuration pojo from read annotation
-            AnnotationRunnerConfiguration config = new AnnotationRunnerConfiguration(frameworkMethod.annotation);
+            // AnnotationRunnerConfiguration config = new AnnotationRunnerConfiguration(frameworkMethod.annotation);
+
+            BrowserConfigurationDto config = frameworkMethod.browserConfiguration;
 
             // instantiate webdriver and set browser window size
             WebDriver driver = AnnotationRunnerHelper.createWebdriver(config);
-            AnnotationRunnerHelper.setBrowserWindowSize(config, driver);
+            // AnnotationRunnerHelper.setBrowserWindowSize(config, driver);
 
             if (driver != null)
             {
@@ -83,6 +80,8 @@ public class AnnotationRunner extends XltTestRunner
 
         XltProperties xltProperties = XltProperties.getInstance();
 
+        Map<String, BrowserConfigurationDto> parsedBrowserProperties = AnnotationRunnerHelper.parseBrowserProperties(xltProperties);
+
         String ieDriverPath = xltProperties.getProperty("xlt.webDriver.ie.pathToDriverServer");
         String chromeDriverPath = xltProperties.getProperty("xlt.webDriver.chrome.pathToDriverServer");
 
@@ -93,7 +92,6 @@ public class AnnotationRunner extends XltTestRunner
             System.setProperty("webdriver.chrome.driver", chromeDriverPath);
 
         boolean foundTargetsAnnotation = false;
-        boolean foundTargetAnnotation = false;
 
         // Get annotations of test class.
         Annotation[] annotations = testCaseClass.getAnnotations();
@@ -103,18 +101,20 @@ public class AnnotationRunner extends XltTestRunner
             if (annotation instanceof TestTargets)
             {
                 foundTargetsAnnotation = true;
-                TestTargets targets = (TestTargets) annotation;
 
-                if (targets.value().length > 0)
-                    foundTargetAnnotation = true;
+                String[] targets = ((TestTargets) annotation).value();
 
-                // iterate over all defined test targets and check with current testscope
-                for (TestTarget target : targets.value())
+                for (String target : targets)
                 {
+                    BrowserConfigurationDto foundBrowserConfiguration = parsedBrowserProperties.get(target);
+                    if (foundBrowserConfiguration == null)
+                    {
+                        throw new IllegalArgumentException("Can not find browser configuration with tag: " + target);
+                    }
+
                     for (final FrameworkMethod frameworkMethod : getTestClass().getAnnotatedMethods(Test.class))
                     {
-                        AnnotatedFrameworkMethod afm = new AnnotatedFrameworkMethod(frameworkMethod.getMethod(), "", target);
-                        methods.add(afm);
+                        methods.add(new AnnotatedFrameworkMethod(frameworkMethod.getMethod(), "", foundBrowserConfiguration));
                     }
                 }
             }
@@ -123,9 +123,6 @@ public class AnnotationRunner extends XltTestRunner
         if (!foundTargetsAnnotation)
             throw new IllegalClassException("The class (" + testCaseClass.getSimpleName() +
                                             ") does not have a required TestTargets annotation.");
-
-        if (!foundTargetAnnotation)
-            throw new IllegalClassException("The class (" + testCaseClass.getSimpleName() + ") does not have a single defined TestTarget.");
     }
 
     /**
@@ -160,7 +157,6 @@ public class AnnotationRunner extends XltTestRunner
     protected Statement methodInvoker(final FrameworkMethod method, final Object test)
     {
         // prepare the test instance before executing it
-        // TODO: check whether there is a better place to do this
         setUpTest(method, test);
 
         // the real job is done here
@@ -174,9 +170,9 @@ public class AnnotationRunner extends XltTestRunner
     private static class AnnotatedFrameworkMethod extends FrameworkMethod
     {
         /**
-         * The test data set to use.
+         * The browser configuration to use.
          */
-        private final TestTarget annotation;
+        private final BrowserConfigurationDto browserConfiguration;
 
         /**
          * The new method name.
@@ -195,13 +191,14 @@ public class AnnotationRunner extends XltTestRunner
          * @param dataSet
          *            the test data set
          */
-        public AnnotatedFrameworkMethod(final Method method, final String testMethodName, final TestTarget annotationParameter)
+        public AnnotatedFrameworkMethod(final Method method, final String testMethodName,
+                                        final BrowserConfigurationDto browserConfiguration)
         {
             super(method);
 
-            this.annotation = annotationParameter;
-//            name = testMethodName + annotationParameter.testCaseName();
-            name = new AnnotationRunnerConfiguration(annotationParameter).toString();
+            this.browserConfiguration = browserConfiguration;
+            // name = new AnnotationRunnerConfiguration(annotationParameter).toString();
+            name = browserConfiguration.toString();
         }
 
         /**
