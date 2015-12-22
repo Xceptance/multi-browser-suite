@@ -1,7 +1,6 @@
 package xltutil.runner;
 
 import java.lang.annotation.Annotation;
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -56,7 +55,7 @@ public class AnnotationRunner extends XltTestRunner
             // create configuration pojo from read annotation
             // AnnotationRunnerConfiguration config = new AnnotationRunnerConfiguration(frameworkMethod.annotation);
 
-            BrowserConfigurationDto config = frameworkMethod.browserConfiguration;
+            BrowserConfigurationDto config = frameworkMethod.getBrowserConfiguration();
 
             // instantiate webdriver and set browser window size
             WebDriver driver = AnnotationRunnerHelper.createWebdriver(config);
@@ -161,71 +160,6 @@ public class AnnotationRunner extends XltTestRunner
 
         // the real job is done here
         return super.methodInvoker(method, test);
-    }
-
-    /**
-     * A specialization of {@link FrameworkMethod}, which replaces the default method name with the provided name and
-     * the test data set used.
-     */
-    private static class AnnotatedFrameworkMethod extends FrameworkMethod
-    {
-        /**
-         * The browser configuration to use.
-         */
-        private final BrowserConfigurationDto browserConfiguration;
-
-        /**
-         * The new method name.
-         */
-        private final String name;
-
-        /**
-         * Constructor.
-         *
-         * @param method
-         *            the test method
-         * @param testMethodName
-         *            the name to show for the test method
-         * @param index
-         *            the index of the test run
-         * @param dataSet
-         *            the test data set
-         */
-        public AnnotatedFrameworkMethod(final Method method, final String testMethodName,
-                                        final BrowserConfigurationDto browserConfiguration)
-        {
-            super(method);
-
-            this.browserConfiguration = browserConfiguration;
-            name = browserConfiguration.getName();
-        }
-
-        /**
-         * {@inheritDoc}
-         */
-        @Override
-        public String getName()
-        {
-            return name;
-        }
-
-        /**
-         * {@inheritDoc}
-         */
-        @Override
-        public boolean equals(final Object obj)
-        {
-            return this == obj;
-        }
-
-        /**
-         * {@inheritDoc}
-         */
-        @Override
-        public int hashCode()
-        {
-            return System.identityHashCode(this);
-        }
     }
 
 }

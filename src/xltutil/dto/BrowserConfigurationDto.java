@@ -4,6 +4,11 @@ import org.openqa.selenium.remote.DesiredCapabilities;
 
 import xltutil.enums.Scope;
 
+/**
+ * POJO class to hold browser configurations
+ * 
+ * @author m.kaufmann
+ */
 public class BrowserConfigurationDto
 {
     private String browserTag;
