@@ -82,12 +82,8 @@ public class PropertiesToBrowserConfigurationMapper implements IMapper<Map<Strin
          */
         String emulatedPlatform = o.get(PLATFORM);
         if (!StringUtils.isEmpty(emulatedPlatform))
-        {
-            // if platform is set then it is the indicator that we use SauceLabs
-            r.setScope(Scope.SauceLabs);
             capabilities.setCapability("platform", emulatedPlatform);
-        }
-        
+
         String emulatedVersion = o.get(BROWSER_VERSION);
         if (!StringUtils.isEmpty(emulatedVersion))
             capabilities.setCapability("version", emulatedVersion);
@@ -154,6 +150,7 @@ public class PropertiesToBrowserConfigurationMapper implements IMapper<Map<Strin
             }
         }
 
+        capabilities.setCapability("name", o.get("name"));
         r.setCapabilities(capabilities);
         r.setConfigTag(o.get("browserTag"));
         r.setName(o.get("name"));
