@@ -125,12 +125,16 @@ public class AnnotationRunner extends XltTestRunner
 
             // instantiate webdriver and set browser window size
             WebDriver driver = AnnotationRunnerHelper.createWebdriver(config);
-            AnnotationRunnerHelper.setBrowserWindowSize(config, driver);
-
             if (driver != null)
             {
+                AnnotationRunnerHelper.setBrowserWindowSize(config, driver);
                 ((AbstractScriptTestCase) test).setWebDriver(driver);
                 ((AbstractScriptTestCase) test).setTestDataSet(frameworkMethod.getDataSet());
+            }
+            else
+            {
+                throw new RuntimeException("Could not create driver for browsertag: " + config.getConfigTag() +
+                                           ". Please check your browserconfigurations.");
             }
         }
     }
