@@ -1,10 +1,22 @@
 package xltutil.runner;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.lang.annotation.Annotation;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.IllegalClassException;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.Test;
@@ -13,8 +25,14 @@ import org.junit.runners.model.FrameworkMethod;
 import org.junit.runners.model.Statement;
 import org.openqa.selenium.WebDriver;
 
+import com.xceptance.xlt.api.data.DataSetProvider;
+import com.xceptance.xlt.api.data.DataSetProviderException;
+import com.xceptance.xlt.api.engine.Session;
 import com.xceptance.xlt.api.engine.scripting.AbstractScriptTestCase;
+import com.xceptance.xlt.api.util.XltLogger;
 import com.xceptance.xlt.api.util.XltProperties;
+import com.xceptance.xlt.engine.data.DataSetProviderFactory;
+import com.xceptance.xlt.engine.scripting.XlteniumScriptInterpreter;
 import com.xceptance.xlt.engine.util.XltTestRunner;
 
 import xltutil.AbstractAnnotatedScriptTestCase;
@@ -32,6 +50,54 @@ import xltutil.runner.helper.AnnotationRunnerHelper;
  */
 public class AnnotationRunner extends XltTestRunner
 {
+
+    /**
+     * The list of directories to be searched for data set files.
+     */
+    private static final List<File> dataSetFileDirs = new ArrayList<File>();
+
+    /**
+     * An empty data set.
+     */
+    private static final Map<String, String> EMPTY_DATA_SET = Collections.emptyMap();
+
+    /**
+     * The current directory.
+     */
+    protected static final File CURRENT_DIR = new File(".");
+
+    /**
+     * The data sets directory as specified in the XLT configuration. Maybe <code>null</code> if not configured.
+     */
+    protected static final File DATA_SETS_DIR;
+
+    static
+    {
+        final String dataSetFileDirectoryName = XltProperties.getInstance().getProperty("com.xceptance.xlt.data.dataSets.dir", "");
+        if (dataSetFileDirectoryName.length() > 0)
+        {
+            final File dir = new File(dataSetFileDirectoryName);
+
+            DATA_SETS_DIR = dir.isDirectory() ? dir : null;
+        }
+        else
+        {
+            DATA_SETS_DIR = null;
+        }
+
+        // 1. the current directory
+        dataSetFileDirs.add(CURRENT_DIR);
+
+        // 2. the data sets directory if available
+        if (DATA_SETS_DIR != null)
+        {
+            dataSetFileDirs.add(DATA_SETS_DIR);
+        }
+
+        // 3. the scripts directory
+        dataSetFileDirs.add(XlteniumScriptInterpreter.SCRIPTS_DIRECTORY);
+    }
+
     /**
      * The JUnit children of this runner.
      */
@@ -52,9 +118,7 @@ public class AnnotationRunner extends XltTestRunner
             // set the test data set at the test instance
             final AnnotatedFrameworkMethod frameworkMethod = (AnnotatedFrameworkMethod) method;
 
-            // create configuration pojo from read annotation
-            // AnnotationRunnerConfiguration config = new AnnotationRunnerConfiguration(frameworkMethod.annotation);
-
+            // get the browser configuration for this testcase
             BrowserConfigurationDto config = frameworkMethod.getBrowserConfiguration();
 
             // instantiate webdriver and set browser window size
@@ -64,18 +128,26 @@ public class AnnotationRunner extends XltTestRunner
             if (driver != null)
             {
                 ((AbstractScriptTestCase) test).setWebDriver(driver);
+                ((AbstractScriptTestCase) test).setTestDataSet(frameworkMethod.getDataSet());
             }
         }
     }
 
     public AnnotationRunner(Class<?> testCaseClass) throws Throwable
     {
-        this(testCaseClass, testCaseClass.getSimpleName(), "");
+        this(testCaseClass, testCaseClass.getSimpleName(), "", dataSetFileDirs);
     }
 
-    public AnnotationRunner(Class<?> testCaseClass, String testCaseName, String defaultTestMethodName) throws Throwable
+    public AnnotationRunner(Class<?> testCaseClass, String testCaseName, String defaultTestMethodName, final List<File> dataSetFileDirs)
+        throws Throwable
     {
         super(testCaseClass);
+
+        // get the short (package-less) test case name
+        final String shortTestCaseName = StringUtils.contains(testCaseName, '.') ? StringUtils.substringAfterLast(testCaseName, ".")
+                                                                                 : testCaseName;
+        // get the data sets
+        final List<Map<String, String>> dataSets = getDataSets(testCaseClass, testCaseName, shortTestCaseName, dataSetFileDirs);
 
         XltProperties xltProperties = XltProperties.getInstance();
 
@@ -113,7 +185,22 @@ public class AnnotationRunner extends XltTestRunner
 
                     for (final FrameworkMethod frameworkMethod : getTestClass().getAnnotatedMethods(Test.class))
                     {
-                        methods.add(new AnnotatedFrameworkMethod(frameworkMethod.getMethod(), "", foundBrowserConfiguration));
+                        // create the JUnit children
+                        if (dataSets == null || dataSets.isEmpty())
+                        {
+                            methods.add(new AnnotatedFrameworkMethod(frameworkMethod.getMethod(), "", foundBrowserConfiguration, -1,
+                                                                     EMPTY_DATA_SET));
+                        }
+                        else
+                        {
+                            // run the method once for each data set
+                            int i = 0;
+                            for (final Map<String, String> dataSet : dataSets)
+                            {
+                                methods.add(new AnnotatedFrameworkMethod(frameworkMethod.getMethod(), "", foundBrowserConfiguration, i++,
+                                                                         dataSet));
+                            }
+                        }
                     }
                 }
             }
@@ -162,4 +249,183 @@ public class AnnotationRunner extends XltTestRunner
         return super.methodInvoker(method, test);
     }
 
+    /**
+     * Returns the test data sets associated with the given test case class.
+     *
+     * @param testClass
+     *            the test case class
+     * @param fullTestCaseName
+     *            the full test case name
+     * @param shortTestCaseName
+     *            the short test case name
+     * @param dataSetFileDirs
+     *            the list of directories to search for data set files
+     * @return the data sets, or <code>null</code> if there are no associated test data sets
+     * @throws DataSetProviderException
+     *             if the responsible data set provider cannot be created
+     * @throws FileNotFoundException
+     *             if an explicitly configured data set file cannot be found
+     * @throws IOException
+     */
+    private List<Map<String, String>> getDataSets(final Class<?> testClass, final String fullTestCaseName, final String shortTestCaseName,
+                                                  final List<File> dataSetFileDirs)
+                                                      throws DataSetProviderException, FileNotFoundException, IOException
+    {
+        // check whether we are in load test mode
+        if (Session.getCurrent().isLoadTest())
+        {
+            // data set providers are not supported in load test mode
+            return null;
+        }
+
+        // check whether data-driven tests are enabled
+        final boolean enabled = XltProperties.getInstance().getProperty("com.xceptance.xlt.data.dataDrivenTests.enabled", true);
+        if (!enabled)
+        {
+            return null;
+        }
+
+        // check whether a specific file has been configured
+        final String specificFileNameKey1 = testClass.getName() + ".dataSetsFile";
+        String specificFileName = XltProperties.getInstance().getProperty(specificFileNameKey1, "");
+        if (specificFileName.length() == 0)
+        {
+            final String specificFileNameKey2 = fullTestCaseName + ".dataSetsFile";
+            specificFileName = XltProperties.getInstance().getProperty(specificFileNameKey2, "");
+        }
+
+        if (specificFileName.length() != 0)
+        {
+            // there is a specific file
+            File batchDataFile = new File(specificFileName);
+            if (batchDataFile.isAbsolute())
+            {
+                // absolute -> try it as is
+                return readDataSets(batchDataFile);
+            }
+            else
+            {
+                // relative -> search for it in the usual directories
+                for (final File directory : dataSetFileDirs)
+                {
+                    batchDataFile = new File(directory, specificFileName);
+                    if (batchDataFile.isFile())
+                    {
+                        return readDataSets(batchDataFile);
+                    }
+                }
+
+                throw new FileNotFoundException("Specific test data set file name configured, but file could not be found: " +
+                                                specificFileName);
+            }
+        }
+        else
+        {
+            // no specific file -> try the usual suspects
+            final Set<String> fileNames = new LinkedHashSet<String>();
+
+            final String dottedName = fullTestCaseName;
+            final String slashedName = dottedName.replace('.', '/');
+
+            final DataSetProviderFactory dataSetProviderFactory = DataSetProviderFactory.getInstance();
+            for (final String fileExtension : dataSetProviderFactory.getRegisteredFileExtensions())
+            {
+                final String suffix = "_datasets." + fileExtension;
+
+                fileNames.add(slashedName + suffix);
+                fileNames.add(dottedName + suffix);
+            }
+
+            // look for such a file in the usual directories
+            return getDataSets(dataSetFileDirs, fileNames, testClass);
+        }
+    }
+
+    /**
+     * Looks for a data set file and, if found, returns its the data sets. Tries all the specified file names in all the
+     * passed directories and finally in the class path.
+     *
+     * @param dataSetFileDirs
+     *            the directories to search
+     * @param fileNames
+     *            the file names to try
+     * @param testClass
+     *            the test case class as the class path context
+     * @return the data sets, or <code>null</code> if no data sets file was found
+     * @throws IOException
+     *             if an I/O error occurred
+     * @throws DataSetProviderException
+     *             if there is no responsible data set provider
+     */
+    private List<Map<String, String>> getDataSets(final List<File> dataSetFileDirs, final Set<String> fileNames, final Class<?> testClass)
+        throws IOException
+    {
+        // look for a data set file in the passed directories
+        for (final File directory : dataSetFileDirs)
+        {
+            for (final String fileName : fileNames)
+            {
+                final File batchDataFile = new File(directory, fileName);
+                if (batchDataFile.isFile())
+                {
+                    return readDataSets(batchDataFile);
+                }
+            }
+        }
+
+        // look for a data set file in the class path
+        for (final String fileName : fileNames)
+        {
+            final InputStream input = testClass.getResourceAsStream("/" + fileName);
+            if (input != null)
+            {
+                OutputStream output = null;
+                File batchDataFile = null;
+
+                try
+                {
+                    // copy the stream to a temporary file
+                    final String extension = "." + FilenameUtils.getExtension(fileName);
+                    batchDataFile = File.createTempFile("dataSets_", extension);
+                    output = new FileOutputStream(batchDataFile);
+
+                    IOUtils.copy(input, output);
+                    output.flush();
+
+                    // read the data sets from the temporary file
+                    return readDataSets(batchDataFile);
+                }
+                finally
+                {
+                    // clean up
+                    IOUtils.closeQuietly(input);
+                    IOUtils.closeQuietly(output);
+                    FileUtils.deleteQuietly(batchDataFile);
+                }
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * Returns the test data sets contained in the given test data file. The data set provider used to read the file is
+     * determined from the data file's extension.
+     *
+     * @param dataSetsFile
+     *            the test data set file
+     * @return the data sets
+     * @throws DataSetProviderException
+     *             if there is no responsible data set provider
+     */
+    private List<Map<String, String>> readDataSets(final File dataSetsFile) throws DataSetProviderException
+    {
+        XltLogger.runTimeLogger.debug("Test data set file used: " + dataSetsFile.getAbsolutePath());
+
+        final DataSetProviderFactory dataSetProviderFactory = DataSetProviderFactory.getInstance();
+        final String fileExtension = FilenameUtils.getExtension(dataSetsFile.getName());
+        final DataSetProvider dataSetProvider = dataSetProviderFactory.createDataSetProvider(fileExtension);
+
+        return dataSetProvider.getAllDataSets(dataSetsFile);
+    }
 }

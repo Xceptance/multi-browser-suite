@@ -1,6 +1,7 @@
 package xltutil.runner;
 
 import java.lang.reflect.Method;
+import java.util.Map;
 
 import org.junit.runners.model.FrameworkMethod;
 
@@ -12,6 +13,11 @@ import xltutil.dto.BrowserConfigurationDto;
  */
 public class AnnotatedFrameworkMethod extends FrameworkMethod
 {
+    /**
+     * The test data set to use.
+     */
+    private final Map<String, String> dataSet;
+
     /**
      * The browser configuration to use.
      */
@@ -34,12 +40,22 @@ public class AnnotatedFrameworkMethod extends FrameworkMethod
      * @param dataSet
      *            the test data set
      */
-    public AnnotatedFrameworkMethod(final Method method, final String testMethodName, final BrowserConfigurationDto browserConfiguration)
+    public AnnotatedFrameworkMethod(final Method method, final String testMethodName, final BrowserConfigurationDto browserConfiguration,
+                                    final int index, final Map<String, String> dataSet)
     {
         super(method);
 
+        this.dataSet = dataSet;
         this.browserConfiguration = browserConfiguration;
-        name = browserConfiguration.getName();
+
+        if (index == -1)
+        {
+            name = String.format("%s - %s", browserConfiguration.getName(), testMethodName);
+        }
+        else
+        {
+            name = String.format("%s - %s[%d] - %s", browserConfiguration.getName(), testMethodName, index, dataSet);
+        }
     }
 
     /**
@@ -72,5 +88,10 @@ public class AnnotatedFrameworkMethod extends FrameworkMethod
     public BrowserConfigurationDto getBrowserConfiguration()
     {
         return browserConfiguration;
+    }
+
+    public Map<String, String> getDataSet()
+    {
+        return dataSet;
     }
 }
