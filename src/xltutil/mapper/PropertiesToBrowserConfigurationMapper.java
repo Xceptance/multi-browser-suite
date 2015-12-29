@@ -37,9 +37,6 @@ public class PropertiesToBrowserConfigurationMapper implements IMapper<Map<Strin
         BrowserConfigurationDto r = new BrowserConfigurationDto();
         DesiredCapabilities capabilities;
 
-        // assume we always do a local test. this value may be overwritten while property parsing. see below
-        r.setScope(Scope.Local);
-
         String emulatedBrowser = o.get(BROWSER);
         if (emulatedBrowser != null)
             emulatedBrowser = emulatedBrowser.toLowerCase();
@@ -128,6 +125,11 @@ public class PropertiesToBrowserConfigurationMapper implements IMapper<Map<Strin
             {
                 r.setScope(Scope.Local);
             }
+        }
+        else
+        {
+            // assume we always do a local test
+            r.setScope(Scope.Local);
         }
 
         /*
