@@ -141,8 +141,8 @@ public class AnnotationRunner extends XltTestRunner
 
     public AnnotationRunner(Class<?> testCaseClass) throws Throwable
     {
-        this(testCaseClass, testCaseClass.getSimpleName(), ScriptingUtils.getScriptBaseName(ScriptingUtils.getScriptName(testCaseClass)),
-             dataSetFileDirs);
+        this(testCaseClass, ScriptingUtils.getScriptName(testCaseClass),
+             ScriptingUtils.getScriptBaseName(ScriptingUtils.getScriptName(testCaseClass)), dataSetFileDirs);
     }
 
     public AnnotationRunner(Class<?> testCaseClass, String testCaseName, String defaultTestMethodName, final List<File> dataSetFileDirs)
