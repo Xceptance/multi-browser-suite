@@ -156,7 +156,6 @@ public final class AnnotationRunnerHelper
                 if (chromeBrowsers.contains(browserName))
                 {
                     return new ChromeDriver(capabilities);
-
                 }
                 else if (firefoxBrowsers.contains(browserName))
                 {
