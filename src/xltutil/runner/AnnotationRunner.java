@@ -123,10 +123,11 @@ public class AnnotationRunner extends XltTestRunner
             // get the browser configuration for this testcase
             BrowserConfigurationDto config = frameworkMethod.getBrowserConfiguration();
 
-            // instantiate webdriver and set browser window size
+            // instantiate webdriver according to browser configuration
             WebDriver driver = AnnotationRunnerHelper.createWebdriver(config);
             if (driver != null)
             {
+                // set browser window size
                 AnnotationRunnerHelper.setBrowserWindowSize(config, driver);
                 ((AbstractScriptTestCase) test).setWebDriver(driver);
                 ((AbstractScriptTestCase) test).setTestDataSet(frameworkMethod.getDataSet());
