@@ -1,7 +1,6 @@
 ﻿# Readme
 
-This is a demo test suite for [katespade.com](http://www.katespade.com).
-This test suite has been built for and with __XLT__.
+This test suite has been built for and with __XLT__ to demo the support of multiple browsers as well as a Sauce Labs integration for test automation with XLT.
 
 # Test Suite Setup
 
