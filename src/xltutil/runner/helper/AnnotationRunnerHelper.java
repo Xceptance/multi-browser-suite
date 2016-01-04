@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang3.StringUtils;
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.UnsupportedCommandException;
 import org.openqa.selenium.WebDriver;
@@ -87,8 +88,6 @@ public final class AnnotationRunnerHelper
      * <p>
      * Reads the default size from xlt properties and applies them to the browser window as long as its no
      * device-emulation test. In case of device-emulation the emulated device specifies the size of the browser window.
-     * <p>
-     * If there is no window size defined in properties, there is an fallback to 1024 X 768
      *
      * @param config
      * @param driver
@@ -177,9 +176,12 @@ public final class AnnotationRunnerHelper
 
     public static Map<String, BrowserConfigurationDto> parseBrowserProperties(XltProperties properties)
     {
+        // Structur browserprofile.<nametag>.*
+
         // property prefix for browser configurations
         String propertyKeyBrowsers = "browserprofile";
 
+        // get all properties with prefix browserprofile. they are then truncated to <nametag>.*
         // holds all found browser configurations
         Map<String, String> browserProperties = properties.getPropertiesForKey(propertyKeyBrowsers);
 
@@ -190,8 +192,9 @@ public final class AnnotationRunnerHelper
         for (String key : browserProperties.keySet())
         {
             String[] parts = key.split("\\.");
-            if (!browserTags.contains(parts[0]))
-                browserTags.add(parts[0]);
+            String browserTag = parts[0];
+            if (!StringUtils.isEmpty(browserTag) && !browserTags.contains(browserTag))
+                browserTags.add(browserTag);
         }
 
         // map to hold all browser configurations. lookup via browser tag
