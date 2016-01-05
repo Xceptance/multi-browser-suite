@@ -40,6 +40,7 @@ import com.xceptance.xlt.engine.util.XltTestRunner;
 import xltutil.AbstractAnnotatedScriptTestCase;
 import xltutil.annotation.TestTargets;
 import xltutil.dto.BrowserConfigurationDto;
+import xltutil.dto.ProxyConfigurationDTO;
 import xltutil.runner.helper.AnnotationRunnerHelper;
 
 /**
@@ -72,6 +73,8 @@ public class AnnotationRunner extends XltTestRunner
      * The data sets directory as specified in the XLT configuration. Maybe <code>null</code> if not configured.
      */
     protected static final File DATA_SETS_DIR;
+
+    private final ProxyConfigurationDTO proxyConfig;
 
     static
     {
@@ -124,7 +127,25 @@ public class AnnotationRunner extends XltTestRunner
             BrowserConfigurationDto config = frameworkMethod.getBrowserConfiguration();
 
             // instantiate webdriver according to browser configuration
-            WebDriver driver = AnnotationRunnerHelper.createWebdriver(config);
+            WebDriver driver = null;
+            try
+            {
+                driver = AnnotationRunnerHelper.createWebdriver(config, proxyConfig);
+            }
+            catch (Exception e)
+            {
+                // TODO: handle exception
+                e.printStackTrace();
+                try
+                {
+                    throw e;
+                }
+                catch (Exception e1)
+                {
+                    // TODO Auto-generated catch block
+                    e1.printStackTrace();
+                }
+            }
             if (driver != null)
             {
                 // set browser window size
@@ -159,6 +180,10 @@ public class AnnotationRunner extends XltTestRunner
 
         XltProperties xltProperties = XltProperties.getInstance();
 
+        // parse proxy settings
+        proxyConfig = AnnotationRunnerHelper.parseProxySettings(xltProperties);
+
+        // parse browser properties
         Map<String, BrowserConfigurationDto> parsedBrowserProperties = AnnotationRunnerHelper.parseBrowserProperties(xltProperties);
 
         String ieDriverPath = xltProperties.getProperty("xlt.webDriver.ie.pathToDriverServer");

@@ -8,6 +8,13 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.http.HttpHost;
+import org.apache.http.auth.AuthScope;
+import org.apache.http.auth.Credentials;
+import org.apache.http.auth.UsernamePasswordCredentials;
+import org.apache.http.impl.client.BasicCredentialsProvider;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClientBuilder;
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.UnsupportedCommandException;
 import org.openqa.selenium.WebDriver;
@@ -16,7 +23,9 @@ import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.ie.InternetExplorerDriver;
 import org.openqa.selenium.remote.BrowserType;
+import org.openqa.selenium.remote.CommandInfo;
 import org.openqa.selenium.remote.DesiredCapabilities;
+import org.openqa.selenium.remote.HttpCommandExecutor;
 import org.openqa.selenium.remote.RemoteWebDriver;
 
 import com.xceptance.xlt.api.util.XltProperties;
@@ -24,10 +33,14 @@ import com.xceptance.xlt.engine.SessionImpl;
 
 import xltutil.annotation.TestTargets;
 import xltutil.dto.BrowserConfigurationDto;
+import xltutil.dto.ProxyConfigurationDTO;
 import xltutil.mapper.PropertiesToBrowserConfigurationMapper;
+import xltutil.mapper.PropertiesToProxyConfigurationMapper;
+import xltutil.proxy.ProxyHttpClient;
 
 public final class AnnotationRunnerHelper
 {
+    private static final String PROXY_PROPERTY_KEY = "com.xceptance.xlt.proxy";
 
     private static List<String> chromeBrowsers = new ArrayList<String>();
 
@@ -139,16 +152,50 @@ public final class AnnotationRunnerHelper
      * Instantiate the {@link WebDriver} according to the configuration read from {@link TestTargets} annotations.
      *
      * @param config
+     * @param proxyConfig
      * @return
+     * @throws MalformedURLException
      */
-    public static WebDriver createWebdriver(BrowserConfigurationDto config)
+    public static WebDriver createWebdriver(BrowserConfigurationDto config, ProxyConfigurationDTO proxyConfig) throws MalformedURLException
     {
         DesiredCapabilities capabilities = config.getCapabilities(); // setUpBrowserCapabilities(config);
 
         switch (config.getScope())
         {
             case SauceLabs:
-                return new RemoteWebDriver(AnnotationRunnerHelper.createSauceLabUrl(), capabilities);
+                if (proxyConfig == null)
+                {
+                    return new RemoteWebDriver(AnnotationRunnerHelper.createSauceLabUrl(), capabilities);
+                }
+                else
+                {
+                    BasicCredentialsProvider basicCredentialsProvider = new BasicCredentialsProvider();
+
+                    XltProperties xltProperties = XltProperties.getInstance();
+                    String saucelabUsername = xltProperties.getProperty("saucelab.username");
+                    String saucelabAccesskey = xltProperties.getProperty("saucelab.accesskey");
+
+                    AuthScope proxyAuth = new AuthScope(proxyConfig.getHost(), Integer.valueOf(proxyConfig.getPort()));
+                    Credentials proxyCredentials = new UsernamePasswordCredentials(proxyConfig.getUsername(), proxyConfig.getPassword());
+                    basicCredentialsProvider.setCredentials(proxyAuth, proxyCredentials);
+
+                    AuthScope saucelabsAuth = new AuthScope("ondemand.saucelabs.com", 80);
+                    Credentials saucelabsCredentials = new UsernamePasswordCredentials(saucelabUsername, saucelabAccesskey);
+                    basicCredentialsProvider.setCredentials(saucelabsAuth, saucelabsCredentials);
+
+                    HttpClientBuilder clientBuilder = HttpClientBuilder.create();
+                    clientBuilder.setDefaultCredentialsProvider(basicCredentialsProvider);
+                    clientBuilder.setProxy(new HttpHost(proxyConfig.getHost(), Integer.valueOf(proxyConfig.getPort())));
+                    CloseableHttpClient httpClient = clientBuilder.build();
+
+                    Map<String, CommandInfo> additionalCommands = new HashMap<String, CommandInfo>();
+
+                    HttpCommandExecutor httpCommandExecutor = new HttpCommandExecutor(additionalCommands,
+                                                                                      new URL("http://ondemand.saucelabs.com/wd/hub"),
+                                                                                      new ProxyHttpClient(httpClient));
+
+                    return new RemoteWebDriver(httpCommandExecutor, capabilities);
+                }
 
             case Local:
                 String browserName = config.getCapabilities().getBrowserName();
@@ -261,5 +308,27 @@ public final class AnnotationRunnerHelper
         }
 
         return effectiveKey;
+    }
+
+    public static ProxyConfigurationDTO parseProxySettings(XltProperties xltProperties) throws Exception
+    {
+
+        String strProxyEnabled = xltProperties.getProperty(PROXY_PROPERTY_KEY);
+
+        if (Boolean.parseBoolean(strProxyEnabled))
+        {
+            PropertiesToProxyConfigurationMapper proxyMapper = new PropertiesToProxyConfigurationMapper();
+            ProxyConfigurationDTO proxyConfiguration = proxyMapper.toDto(xltProperties.getPropertiesForKey(PROXY_PROPERTY_KEY));
+
+            // if (!StringUtils.isEmpty(proxyConfiguration.getHost()))
+            // System.setProperty("http.proxyHost", proxyConfiguration.getHost());
+            //
+            // if (!StringUtils.isEmpty(proxyConfiguration.getPort()))
+            // System.setProperty("http.proxyPort", proxyConfiguration.getPort());
+
+            return proxyConfiguration;
+        }
+
+        return null;
     }
 }
