@@ -27,20 +27,8 @@ import xltutil.annotation.TestTargets;
  */
 @ScriptName("tests.search.TSearch_ProductOnly")
 @TestTargets(
-    {"chrome_local", "ie11_local"
-        // @TestTarget(testCaseName = "IE8-Testcase", browser = Browser.InternetExplorer, browserVersion = "8.0", os =
-        // OS.Windows,
-        // scope = Scope.Local),
-        // @TestTarget(testCaseName = "IE11-Testcase", browser = Browser.InternetExplorer, browserVersion = "11.0", os =
-        // OS.Windows,
-        // scope = Scope.Local),
-        // @TestTarget(testCaseName = "Chrome-Testcase", browser = Browser.Chrome, browserVersion = "", os = OS.Windows,
-        // scope = Scope.Local),
-        // @TestTarget(testCaseName = "IE11-Testcase", browser = Browser.InternetExplorer, browserVersion = "11.0", os =
-        // OS.Windows, scope = Scope.SauceLabs)
-        // @TestTarget(browser = Browser.MobileIphone6Plus), @TestTarget(browser = Browser.MobileGalaxyS3),
-        // @TestTarget(browser = Browser.MobileNexus6)
-        // @TestTarget(browser= Browser.MobileIphone4, scope = Scope.SauceLabs)
+    {
+    	"chrome_sl", "FF_1000x768", "FF_1500x1000", "Chrome_1280x900", "Chrome_1500x1000", "Galaxy_Note3_Emulation"
     })
 public class TSearch_ProductOnly_Augmented extends AbstractAnnotatedScriptTestCase
 {
