@@ -1,6 +1,6 @@
 package xltutil.dto;
 
-public class ProxyConfigurationDTO
+public class ProxyConfigurationDto
 {
     private String host;
 

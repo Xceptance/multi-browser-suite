@@ -2,20 +2,20 @@ package xltutil.mapper;
 
 import com.xceptance.xlt.api.util.XltProperties;
 
-import xltutil.dto.ProxyConfigurationDTO;
+import xltutil.dto.ProxyConfigurationDto;
 import xltutil.interfaces.IMapper;
 import xltutil.runner.helper.XltPropertyKey;
 
-public class PropertiesToProxyConfigurationMapper implements IMapper<XltProperties, ProxyConfigurationDTO>
+public class PropertiesToProxyConfigurationMapper implements IMapper<XltProperties, ProxyConfigurationDto>
 {
     @Override
-    public ProxyConfigurationDTO toDto(XltProperties o)
+    public ProxyConfigurationDto toDto(XltProperties o)
     {
         String strProxyEnabled = o.getProperty(XltPropertyKey.PROXY, null);
 
         if (Boolean.parseBoolean(strProxyEnabled))
         {
-            ProxyConfigurationDTO r = new ProxyConfigurationDTO();
+            ProxyConfigurationDto r = new ProxyConfigurationDto();
 
             r.setHost(o.getProperty(XltPropertyKey.PROXY_HOST, null));
             r.setPort(o.getProperty(XltPropertyKey.PROXY_PORT, null));
@@ -30,7 +30,7 @@ public class PropertiesToProxyConfigurationMapper implements IMapper<XltProperti
     }
 
     @Override
-    public XltProperties fromDto(ProxyConfigurationDTO o)
+    public XltProperties fromDto(ProxyConfigurationDto o)
     {
         throw new RuntimeException("Not implemented yet.");
     }

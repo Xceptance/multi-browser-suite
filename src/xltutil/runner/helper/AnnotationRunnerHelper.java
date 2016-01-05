@@ -33,7 +33,7 @@ import com.xceptance.xlt.engine.SessionImpl;
 
 import xltutil.annotation.TestTargets;
 import xltutil.dto.BrowserConfigurationDto;
-import xltutil.dto.ProxyConfigurationDTO;
+import xltutil.dto.ProxyConfigurationDto;
 import xltutil.mapper.PropertiesToBrowserConfigurationMapper;
 import xltutil.proxy.ProxyHttpClient;
 
@@ -153,7 +153,7 @@ public final class AnnotationRunnerHelper
      * @return
      * @throws MalformedURLException
      */
-    public static WebDriver createWebdriver(BrowserConfigurationDto config, ProxyConfigurationDTO proxyConfig) throws MalformedURLException
+    public static WebDriver createWebdriver(BrowserConfigurationDto config, ProxyConfigurationDto proxyConfig) throws MalformedURLException
     {
         DesiredCapabilities capabilities = config.getCapabilities(); // setUpBrowserCapabilities(config);
 

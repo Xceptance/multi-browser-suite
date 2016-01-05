@@ -41,7 +41,7 @@ import com.xceptance.xlt.engine.util.XltTestRunner;
 import xltutil.AbstractAnnotatedScriptTestCase;
 import xltutil.annotation.TestTargets;
 import xltutil.dto.BrowserConfigurationDto;
-import xltutil.dto.ProxyConfigurationDTO;
+import xltutil.dto.ProxyConfigurationDto;
 import xltutil.mapper.PropertiesToProxyConfigurationMapper;
 import xltutil.runner.helper.AnnotationRunnerHelper;
 import xltutil.runner.helper.XltPropertyKey;
@@ -77,7 +77,7 @@ public class AnnotationRunner extends XltTestRunner
      */
     protected static final File DATA_SETS_DIR;
 
-    private final ProxyConfigurationDTO proxyConfig;
+    private final ProxyConfigurationDto proxyConfig;
 
     static
     {
