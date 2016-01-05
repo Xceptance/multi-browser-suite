@@ -8,6 +8,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
+import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedHashSet;
@@ -40,8 +41,10 @@ import com.xceptance.xlt.engine.util.XltTestRunner;
 import xltutil.AbstractAnnotatedScriptTestCase;
 import xltutil.annotation.TestTargets;
 import xltutil.dto.BrowserConfigurationDto;
-import xltutil.dto.ProxyConfigurationDTO;
+import xltutil.dto.ProxyConfigurationDto;
+import xltutil.mapper.PropertiesToProxyConfigurationMapper;
 import xltutil.runner.helper.AnnotationRunnerHelper;
+import xltutil.runner.helper.XltPropertyKey;
 
 /**
  * JUnit runner used to run testcases that inherit from {@link AbstractAnnotatedScriptTestCase}. This class reads the
@@ -74,7 +77,7 @@ public class AnnotationRunner extends XltTestRunner
      */
     protected static final File DATA_SETS_DIR;
 
-    private final ProxyConfigurationDTO proxyConfig;
+    private final ProxyConfigurationDto proxyConfig;
 
     static
     {
@@ -132,19 +135,9 @@ public class AnnotationRunner extends XltTestRunner
             {
                 driver = AnnotationRunnerHelper.createWebdriver(config, proxyConfig);
             }
-            catch (Exception e)
+            catch (MalformedURLException e)
             {
-                // TODO: handle exception
-                e.printStackTrace();
-                try
-                {
-                    throw e;
-                }
-                catch (Exception e1)
-                {
-                    // TODO Auto-generated catch block
-                    e1.printStackTrace();
-                }
+                throw new RuntimeException("An error occured during URL creation. See nested exception.", e);
             }
             if (driver != null)
             {
@@ -181,13 +174,13 @@ public class AnnotationRunner extends XltTestRunner
         XltProperties xltProperties = XltProperties.getInstance();
 
         // parse proxy settings
-        proxyConfig = AnnotationRunnerHelper.parseProxySettings(xltProperties);
+        proxyConfig = new PropertiesToProxyConfigurationMapper().toDto(xltProperties);
 
         // parse browser properties
         Map<String, BrowserConfigurationDto> parsedBrowserProperties = AnnotationRunnerHelper.parseBrowserProperties(xltProperties);
 
-        String ieDriverPath = xltProperties.getProperty("xlt.webDriver.ie.pathToDriverServer");
-        String chromeDriverPath = xltProperties.getProperty("xlt.webDriver.chrome.pathToDriverServer");
+        String ieDriverPath = xltProperties.getProperty(XltPropertyKey.WEBDRIVER_PATH_IE, null);
+        String chromeDriverPath = xltProperties.getProperty(XltPropertyKey.WEBDRIVER_PATH_CHROME, null);
 
         if (!StringUtils.isEmpty(ieDriverPath))
             System.setProperty("webdriver.ie.driver", ieDriverPath);

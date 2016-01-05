@@ -1,29 +1,36 @@
 package xltutil.mapper;
 
-import java.util.Map;
+import com.xceptance.xlt.api.util.XltProperties;
 
-import xltutil.dto.ProxyConfigurationDTO;
+import xltutil.dto.ProxyConfigurationDto;
 import xltutil.interfaces.IMapper;
+import xltutil.runner.helper.XltPropertyKey;
 
-public class PropertiesToProxyConfigurationMapper implements IMapper<Map<String, String>, xltutil.dto.ProxyConfigurationDTO>
+public class PropertiesToProxyConfigurationMapper implements IMapper<XltProperties, ProxyConfigurationDto>
 {
-
     @Override
-    public ProxyConfigurationDTO toDto(Map<String, String> o)
+    public ProxyConfigurationDto toDto(XltProperties o)
     {
-        ProxyConfigurationDTO r = new ProxyConfigurationDTO();
+        String strProxyEnabled = o.getProperty(XltPropertyKey.PROXY, null);
 
-        r.setHost(o.get("host"));
-        r.setPort(o.get("port"));
-        r.setUsername(o.get("userName"));
-        r.setPassword(o.get("password"));
-        r.setProxyByPass(o.get("bypassForHosts"));
+        if (Boolean.parseBoolean(strProxyEnabled))
+        {
+            ProxyConfigurationDto r = new ProxyConfigurationDto();
 
-        return r;
+            r.setHost(o.getProperty(XltPropertyKey.PROXY_HOST, null));
+            r.setPort(o.getProperty(XltPropertyKey.PROXY_PORT, null));
+            r.setUsername(o.getProperty(XltPropertyKey.PROXY_USERNAME, null));
+            r.setPassword(o.getProperty(XltPropertyKey.PROXY_PASSWORD, null));
+            r.setProxyByPass(o.getProperty(XltPropertyKey.PROXY_BYPASS, null));
+
+            return r;
+        }
+
+        return null;
     }
 
     @Override
-    public Map<String, String> fromDto(ProxyConfigurationDTO o)
+    public XltProperties fromDto(ProxyConfigurationDto o)
     {
         throw new RuntimeException("Not implemented yet.");
     }
