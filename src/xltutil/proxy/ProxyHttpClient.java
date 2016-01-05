@@ -1,7 +1,5 @@
 package xltutil.proxy;
 
-import static com.google.common.base.Preconditions.checkNotNull;
-
 import java.net.URL;
 
 import org.apache.http.client.HttpClient;
@@ -13,14 +11,12 @@ public class ProxyHttpClient implements org.openqa.selenium.remote.http.HttpClie
 
     public ProxyHttpClient(HttpClient httpClient)
     {
-        this.httpClient = checkNotNull(httpClient, "null HttpClient");
+        this.httpClient = httpClient;
     }
 
     @Override
     public org.openqa.selenium.remote.http.HttpClient createClient(URL url)
     {
-        checkNotNull(url, "null URL");
-
         return new ApacheHttpClient(httpClient, url);
     }
 }
