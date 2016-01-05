@@ -5,12 +5,8 @@ package tests.search;
 
 import com.xceptance.xlt.api.engine.scripting.ScriptName;
 
-import tests.augment.AbstractAnnotatedScriptTestCase;
-import tests.augment.annotation.TestTarget;
-import tests.augment.annotation.TestTargets;
-import tests.augment.enums.Browser;
-import tests.augment.enums.OS;
-import tests.augment.enums.Scope;
+import xltutil.AbstractAnnotatedScriptTestCase;
+import xltutil.annotation.TestTargets;
 
 /**
  * <p>
@@ -32,15 +28,7 @@ import tests.augment.enums.Scope;
 @ScriptName("tests.search.TSearch_ProductOnly")
 @TestTargets(
     {
-    	@TestTarget(testCaseName = "IE8-SauceLabs-Testcase", browser = Browser.InternetExplorer, browserVersion = "8.0", scope = Scope.SauceLabs),
-        @TestTarget(testCaseName = "IE11-SauceLabs-Testcase", browser = Browser.InternetExplorer, browserVersion = "11.0", scope = Scope.SauceLabs),
-        @TestTarget(testCaseName = "IE11-Local-Testcase", browser = Browser.InternetExplorer, browserVersion = "11.0", scope = Scope.Local),
-        @TestTarget(testCaseName = "Firefox-Local-Testcase", browser = Browser.Firefox, scope = Scope.Local),
-        @TestTarget(testCaseName = "Chrome-Local-Testcase", browser = Browser.Chrome, scope = Scope.Local),
-        @TestTarget(browser = Browser.MobileIphone6Plus, scope = Scope.Local),
-        @TestTarget(browser = Browser.MobileGalaxyS3, scope = Scope.Local),
-        @TestTarget(browser = Browser.MobileNexus6, scope = Scope.Local),
-        @TestTarget(browser = Browser.MobileIphone4, scope = Scope.Local)
+    	"chrome_sl", "FF_1000x768", "FF_1500x1000", "Chrome_1280x900", "Chrome_1500x1000", "Galaxy_Note3_Emulation"
     })
 public class TSearch_ProductOnly_Augmented extends AbstractAnnotatedScriptTestCase
 {
