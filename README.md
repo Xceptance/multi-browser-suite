@@ -98,23 +98,24 @@ xlt.webDriver.ie.pathToDriverServer = path/to/webDriver/IEDriverServer.exe
 saucelab.username  = xx
 saucelab.accesskey = xx
 ```
+## Configuration browser definition (config/browser.properties)
+- Open file `config/browser.properties`
+- Create your own browser definition by your wishes
+    - check the notes in this file for syntax
+
 ## Configuration testcase
 ### Preperation testcase
 - Start Eclipse
 - Open testcase eg. `test.search/TSearch_ProductOnly.java`
-- Replace row `import com.xceptance.xlt.api.engine.scripting.AbstractScriptTestCase;` with
+- Append under the row `import com.xceptance.xlt.api.engine.scripting.AbstractScriptTestCase;`
 ```sh
-import com.xceptance.xlt.api.engine.scripting.ScriptName;
-import tests.augment.AbstractAnnotatedScriptTestCase;
-import tests.augment.annotation.TestTarget;
-import tests.augment.annotation.TestTargets;
-import tests.augment.enums.Browser;
-import tests.augment.enums.OS;
-import tests.augment.enums.Scope;
+import xltutil.AbstractAnnotatedScriptTestCase;
+import xltutil.annotation.TestTargets;
 ```
 - Replace `AbstractScriptTestCase` with `AbstractAnnotatedScriptTestCase`
 - Below row `@ScriptName(..)` and `public class ...` add new rows
 
+Example:
 ```sh
 @ScriptName("xxxxxx")
 @TestTargets(
@@ -124,19 +125,16 @@ public class Tcase_name extends AbstractAnnotatedScriptTestCase
 ```
 
 ### One browser definition for a testcase
+Note: The `NameOfTestCase` is set in the file `config/browser.properties` -> `"browserprofile"."NameOfTestCase"`
 - Add  "@TestTarget("
-	- [required value] `browser = xx` , Example. Browser.Chrome, Browser.Firefox, Browser.InternetExplorer
-	- [optional value] `testCaseName = xx`' name for this testcase
-	- [optional value] `browserVersion = xx` browser Version, Example: "11.0"
-	- [optional value] `os = xx` Operating System, Example: "OS.Windows", "OS.Linux"
-	- [optional value] `scope = xx` who run this testcase, Example: Scope.SauceLabs, Scope.Local
+	- `NameOfTestCase`  Example. `Chrome_1280x900`
 - Add ")"
 
-Example row: InternetExplorer with Version 11 on SauceLabs
+Example row: start Chrome with a special Resolution (1280x900)
 ```sh
 @TestTargets(
 {
-	@TestTarget(testCaseName = "IE11-Testcase", browser = Browser.InternetExplorer, browserVersion = "11.0", scope = Scope.SauceLabs)
+	@TestTarget("Chrome_1280x900")
 })
 ```
 
@@ -148,8 +146,7 @@ Example:
 ```sh
 @TestTargets(
 {
-	@TestTarget(browser = Browser.InternetExplorer, browserVersion = "11.0", scope = Scope.SauceLabs),
-	@TestTarget(browser = Browser.Chrome, scope = Scope.Local)
+	@TestTarget("Chrome_1280x900", "Chrome_1500x1000", "FF_1000x768", "FF_1500x1000")
 })
 ```
 
@@ -158,29 +155,23 @@ Full Example:
 - Firefox and Chrome run local
 ```sh
 package tests.search;
+
 import com.xceptance.xlt.api.engine.scripting.ScriptName;
-import tests.augment.AbstractAnnotatedScriptTestCase;
-import tests.augment.annotation.TestTarget;
-import tests.augment.annotation.TestTargets;
-import tests.augment.enums.Browser;
-import tests.augment.enums.OS;
-import tests.augment.enums.Scope;
+
+import xltutil.AbstractAnnotatedScriptTestCase;
+import xltutil.annotation.TestTargets;
 
 //coment ...
 
-@ScriptName("xxxxxx")
+@ScriptName("tests.search.TSearch_ProductOnly")
 @TestTargets(
-{
-    @TestTarget(browser = Browser.InternetExplorer, browserVersion = "8.0", os = OS.Windows, scope = Scope.SauceLabs),
-    @TestTarget(browser = Browser.InternetExplorer, browserVersion = "11.0", os = OS.Windows, scope = Scope.SauceLabs),
-    @TestTarget(browser = Browser.Firefox, scope = Scope.Local),
-    @TestTarget(browser = Browser.Chrome, scope = Scope.Local)
-})
-public class Tcase_name extends AbstractAnnotatedScriptTestCase
+    {
+    	"chrome_sl", "FF_1000x768", "FF_1500x1000", "Chrome_1280x900", "Chrome_1500x1000", "Galaxy_Note3_Emulation"
+    })
+public class TSearch_ProductOnly_Augmented extends AbstractAnnotatedScriptTestCase
 {
 }
 ```
-
 
 ## Execution testcase
 ### Start test case in Eclipse
