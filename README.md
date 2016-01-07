@@ -22,14 +22,13 @@ See below for prerequisites and installation steps needed to run the test suite 
 - XLT&reg; Framework v4.5 (or higher) - [Download the XLT Framework](https://www.xceptance.com/en/xlt/download.html)
 - JDK 7 ([JSE](https://www.oracle.com/technetwork/java/javase/downloads)) or higher
 - Browser:
-    - (Firefox 31)[https://www.mozilla.org/firefox-download] up to latest version 42
-    - or (Google Chrome)[https://www.google.com/chrome/browser/desktop/index.html#] version 30 (or higher)
+    - [Firefox 31](https://www.mozilla.org/firefox-download) up to version 42
+    - or [Google Chrome](https://www.google.com/chrome/browser/desktop/index.html) version 30 (or higher)
     - or Internet Explorer 11 
 - Execution Environment:
     - Java IDE (e.g. [Eclipse](https://eclipse.org/downloads/)) or
     - [Apache Ant](https://ant.apache.org/bindownload.cgi)  ( [install Apache Ant](https://ant.apache.org/manual/install.html#installing) )
 - [Source Labs Account](https://saucelabs.com/)
-
 
 
 # Step 1: Execution Environments
@@ -56,11 +55,13 @@ xlt.lib.dir = path/to/xlt/lib
 ```sh
 test.lib.dir = path/to/xlt/lib
 ```
+
 # Step 2: WebDriver Configuration
 
 ## Firefox
 Note: installation and configuration not required. FirefoxWebdriver are integrated.
 - Open file `multi-browser-suite/config/default.properties` and set property to
+
 ```sh
 xlt.webDriver = firefox
 ```
@@ -70,6 +71,7 @@ Note: For information about ChromeWebdriver, [click here](https://sites.google.c
 - [Download ChromeDriver](https://sites.google.com/a/chromium.org/chromedriver/downloads) and unpack it (eg: D:/dev/webDriver/)
 - Open file `multi-browser-suite/config/default.properties`
 - Set property and adjust path to the downloaded ChromeDriver
+
 ```sh
 xlt.webDriver = chrome
 xlt.webDriver.chrome.pathToDriverServer = path/to/webDriver/chromedriver.exe
@@ -89,7 +91,7 @@ xlt.webDriver.ie.pathToDriverServer = path/to/webDriver/IEDriverServer.exe
 
 # Step 3: Configuration and Execution testcase
 ## Configuration Sourcelab account setting
-- Log into Sauce Labs
+- Log into your SauceLabs Account
 - Navigate to the User Settings page: `https://saucelabs.com/beta/user-settings`
 - On section `Access Key` click the `[Show]` button
 - Copy this `Access Key` into clipboard
@@ -98,22 +100,87 @@ xlt.webDriver.ie.pathToDriverServer = path/to/webDriver/IEDriverServer.exe
 saucelab.username  = xx
 saucelab.accesskey = xx
 ```
+
 ## Configuration browser definition (config/browser.properties)
-- Open file `config/browser.properties`
-- Create your own browser definition by your wishes
-    - check the notes in this file for syntax
+All browser definitions are set in file `config/browser.properties`.
+This is a short overview, for more information please look into the file, there are a lot of comments about it.
+
+Same properties in all browser definitions:
+- `browserprofile.<unique profile identifier>` -> string to make different browserprofiles unique
+- `browserprofile.<unique profile identifier>.name` -> is a more detailed name of this browser definition
+- `browserprofile.<unique profile identifier>.browser` -> determines which browser will be used for this test
+- `browserprofile.<unique profile identifier>.browserResolution` -> determines width and height of the browser window. [optional]
+
+Chrome device emulation properties
+- `browserprofile.<unique profile identifier>.chromeEmulationProfile` -> a special property that contains a device name that should be emulated.
+
+SauceLabs remote browser properties
+- `browserprofile.<unique profile identifier>.testEnvironment` -> determines where the testcase will be executed. possible values are local and saucelabs.
+- `browserprofile.<unique profile identifier>.version` -> determines which version of the browser should be used or determines the version of the OS of an emulated device by default version references the browser version, but in case of saucelabs device emulation usage it may be used for the OS version instead
+- `browserprofile.<unique profile identifier>.platform` -> defines on which (emulated) platform the test should run
+- `browserprofile.<unique profile identifier>.deviceName` -> defines the name of the device
+- `browserprofile.<unique profile identifier>.deviceOrientation` -> defines the device orientation
+
+### Example 1 : `local Chrome`
+
+```sh
+browserprofile.Chrome_local.name = Latest local Chrome
+browserprofile.Chrome_local.browser = chrome
+browserprofile.Chrome_local.testEnvironment = local
+```
+### Example 2 : `Samsung Galaxy Note 3 run as local Chrome Emulation`
+
+```sh
+browserprofile.Galaxy_Note3_Emulation.name = Samsung Galaxy Note 3 Chrome Emulation
+browserprofile.Galaxy_Note3_Emulation.browser = chrome
+browserprofile.Galaxy_Note3_Emulation.chromeEmulationProfile = Samsung Galaxy Note 
+```
+
+### Example 3 : `local Chrome browser resolution to 1280x900 and Test-Environment to SauceLabs`
+
+```sh
+browserprofile.Chrome_1280x900_sl.name = Chrome on SauceLabs
+browserprofile.Chrome_1280x900_sl.browser = chrome
+browserprofile.Chrome_1280x900_sl.browserResolution = 1280x900
+browserprofile.Chrome_1280x900_sl.testEnvironment = saucelabs
+```
+
+### Example 4 : `iPhone 5s on SauceLabs`
+
+```sh
+browserprofile.iPhone5s.name = iPhone5s on SauceLabs
+browserprofile.iPhone5s.browser = iphone
+browserprofile.iPhone5s.platform = OS X 10.10
+browserprofile.iPhone5s.version = 9.2
+browserprofile.iPhone5s.deviceName = iPhone 5s
+browserprofile.iPhone5s.deviceOrientation = portrait
+browserprofile.iPhone5s.testEnvironment = saucelabs
+```
 
 ## Configuration testcase
 ### Preperation testcase
 - Start Eclipse
-- Open testcase eg. `test.search/TSearch_ProductOnly.java`
-- Append under the row `import com.xceptance.xlt.api.engine.scripting.AbstractScriptTestCase;`
+- Copy and rename generated wrapper class to make sure that the following changes will not be lost.
+- Open copied testcase (example: `src/test.search/TSearch_ProductOnly_Augmented.java` which is a copy of `src/test.search/TSearch_ProductOnly.java`)
+
+Replace rows:
 ```sh
+import com.xceptance.xlt.api.engine.scripting.AbstractScriptTestCase;
+import com.xceptance.xlt.api.engine.scripting.ScriptName;
+
+import xltutil.AbstractAnnotatedScriptTestCase;
+```
+to 
+```sh
+import com.xceptance.xlt.api.engine.scripting.ScriptName;
+
 import xltutil.AbstractAnnotatedScriptTestCase;
 import xltutil.annotation.TestTargets;
 ```
+
+
 - Replace `AbstractScriptTestCase` with `AbstractAnnotatedScriptTestCase`
-- Below row `@ScriptName(..)` and `public class ...` add new rows
+- Between row `@ScriptName(..)` and `public class ...` add following rows
 
 Example:
 ```sh
@@ -124,13 +191,10 @@ Example:
 public class Tcase_name extends AbstractAnnotatedScriptTestCase
 ```
 
-### One browser definition for a testcase
-Note: The `NameOfTestCase` is set in the file `config/browser.properties` -> `"browserprofile"."NameOfTestCase"`
-- Add  "@TestTarget("
-	- `NameOfTestCase`  Example. `Chrome_1280x900`
-- Add ")"
+## Set one ore more browser targets
+Add targets based on `unique profile identifier` in the file `config/browser.properties`
 
-Example row: start Chrome with a special Resolution (1280x900)
+Example for one browser:
 ```sh
 @TestTargets(
 {
@@ -138,11 +202,8 @@ Example row: start Chrome with a special Resolution (1280x900)
 })
 ```
 
-### Many browser definition for a testcase
-- It it possible to add more than one browser definition to the testcase
-- Comma separated values
+Example for more than browser:
 
-Example:
 ```sh
 @TestTargets(
 {
@@ -150,9 +211,11 @@ Example:
 })
 ```
 
-Full Example: 
+
+The following example shows a complete java file configured for multiple browsers: 
 - InternetExplorer with Version 8 and 11 on SauceLabs
 - Firefox and Chrome run local
+
 ```sh
 package tests.search;
 
@@ -175,7 +238,8 @@ public class TSearch_ProductOnly_Augmented extends AbstractAnnotatedScriptTestCa
 
 ## Execution testcase
 ### Start test case in Eclipse
-- Select java file from the testcase eg. src->test.search->`TSearch_ProductOnly.java` 
+- Select java file from the testcase 
+    - Example: src -> test.search -> `TSearch_ProductOnly.java` 
 - `Run as` item in context menu -> `JUnit Test`
 
 ### Run Apache Ant
@@ -184,7 +248,6 @@ Open the command prompt window: click the Start button picture of the Start butt
 ```sh
 $ ant test.java
 ```
-
 
 ## XLT Result Browser
 The result browser offers an integrated navigation to browse the complete page output of the transaction and to look at every single request in detail. For more information about the XLT Result Browser, [click here](https://lab.xceptance.de/releases/xlt/latest/user-manual.html#XLTResultBrowser).
@@ -234,4 +297,3 @@ This section gives a small introduction to the multi-browser-suite structure.
     `---- global_testdata.properties         # global testdata properties
 ```
 Please note there is a special folder src/tests/others to collect Java-based test examples e.g. testing via RemoteWebDriver against [Sauce Labs](https://saucelabs.com/).
-
