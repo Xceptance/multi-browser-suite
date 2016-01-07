@@ -31,8 +31,6 @@ import xltutil.annotation.TestTargets;
 @TestTargets(
     {
         "iphone5"
-        // @TestTarget(browser = Browser.MobileNexus6, scope = Scope.SauceLabs), //
-        // @TestTarget(browser = Browser.MobileIphone5, scope = Scope.SauceLabs), //
     })
 public class TMobile_ValidateMobileNavigation extends AbstractAnnotatedScriptTestCase
 {
