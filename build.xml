@@ -1,124 +1,131 @@
 <?xml version="1.0"?>
 <project default="test" basedir="." xmlns:if="ant:if" xmlns:unless="ant:unless">
 
-    <!--
+	<!--
         Reads the properties from a file.
     -->
-    <property file="build.properties"/>
+	<property file="build.properties"/>
 
-    <!--
+	<!--
         Builds the XLT class path for further reference.
     -->
-    <path id="xlt.classpath">
-        <pathelement path="${xlt.classes.dir}"/>
-        <fileset dir="${xlt.lib.dir}">
-            <include name="**/*.jar"/>
-        </fileset>
-    </path>
+	<path id="xlt.classpath">
+		<pathelement path="${xlt.classes.dir}"/>
+		<fileset dir="${xlt.lib.dir}">
+			<include name="**/*.jar"/>
+		</fileset>
+	</path>
 
-    <!--
+	<!--
         Builds the test suite class path for further reference.
     -->
-    <path id="test.suite.classpath">
-        <path refid="xlt.classpath"/>
-        <pathelement location="${test.classes.dir}"/>
-        <fileset dir="${test.lib.dir}">
-            <include name="*.jar"/>
-        </fileset>
-    </path>
+	<path id="test.suite.classpath">
+		<path refid="xlt.classpath"/>
+		<pathelement location="${test.classes.dir}"/>
+		<fileset dir="${test.lib.dir}">
+			<include name="*.jar"/>
+		</fileset>
+	</path>
 
-    <!--
+	<!--
         Deletes any result and compiles.
     -->
-    <target name="clean">
-        <delete includeEmptyDirs="true" failonerror="false">
-            <fileset dir="${test.classes.dir}" includes="**/*"/>
-            <fileset dir="${test.results.dir}" includes="**/*"/>
-        </delete>
-    </target>
+	<target name="clean">
+		<delete includeEmptyDirs="true" failonerror="false">
+			<fileset dir="${test.classes.dir}" includes="**/*"/>
+			<fileset dir="${test.results.dir}" includes="**/*"/>
+		</delete>
+	</target>
 
-    <!--
+	<!--
         Compiles the Java sources in ${test.src.dir} to ${test.classes.dir}.
         Any non-Java file in the sources dir will be copied there, too.
     -->
-    <target name="compile">
-        <mkdir dir="${test.classes.dir}"/>
-        <javac srcdir="${test.src.dir}" destdir="${test.classes.dir}" debug="on" optimize="off" deprecation="on"
+	<target name="compile">
+		<mkdir dir="${test.classes.dir}"/>
+		<javac srcdir="${test.src.dir}" destdir="${test.classes.dir}" debug="on" optimize="off" deprecation="on"
                includeantruntime="false">
-            <classpath refid="test.suite.classpath"/>
-        </javac>
-        <copy todir="${test.classes.dir}">
-            <fileset dir="${test.src.dir}">
-                <exclude name="**/*.java"/>
-            </fileset>
-        </copy>
-    </target>
+			<classpath refid="test.suite.classpath"/>
+		</javac>
+		<copy todir="${test.classes.dir}">
+			<fileset dir="${test.src.dir}">
+				<exclude name="**/*.java"/>
+			</fileset>
+		</copy>
+	</target>
 
-    <!--
+	<!--
         Compiles all junit stubs or other classes.
     -->
-    <target name="test.init" depends="compile">
-        <mkdir dir="${test.results.dir}"/>
-    </target>
+	<target name="test.init" depends="compile">
+		<mkdir dir="${test.results.dir}"/>
+		<condition property="browserdefinition" value="">
+		   <not>  
+		      <isset property="browserdefinition"/>
+		   </not>
+		</condition>
+	</target>
 
-    <macrodef name="macro.junit.report">
-        <sequential>
-            <!--
+	<macrodef name="macro.junit.report">
+		<sequential>
+			<!--
                 Create a test report from the test results.
             -->
-            <junitreport todir="${test.results.dir}">
-                <!-- determine the test result files -->
-                <fileset dir="${test.results.dir}">
-                    <include name="TEST-*.xml"/>
-                </fileset>
+			<junitreport todir="${test.results.dir}">
+				<!-- determine the test result files -->
+				<fileset dir="${test.results.dir}">
+					<include name="TEST-*.xml"/>
+				</fileset>
 
-                <!-- generate the HTML report -->
-                <report format="noframes" todir="${test.results.dir}"/>
-            </junitreport>
-        </sequential>
-    </macrodef>
+				<!-- generate the HTML report -->
+				<report format="noframes" todir="${test.results.dir}"/>
+			</junitreport>
+		</sequential>
+	</macrodef>
 
-    <macrodef name="macro.junit.run">
-        <attribute name="files" />
-        <attribute name="basepath" />
-        <attribute name="scripts" />
+	<macrodef name="macro.junit.run">
+		<attribute name="files" />
+		<attribute name="basepath" />
+		<attribute name="scripts" />
 
-        <sequential>
-            <junit fork="yes" forkmode="perBatch" printsummary="on" dir="${basedir}" showoutput="off">
-                <!-- build the class path -->
-                <classpath refid="test.suite.classpath"/>
+		<sequential>
+			<junit fork="yes" forkmode="perBatch" printsummary="on" dir="${basedir}" showoutput="off">
+				<!-- build the class path -->
+				<classpath refid="test.suite.classpath"/>
 
-                <!-- configure the environment for XLT-based test cases -->
-                <sysproperty key="com.xceptance.xlt.home" value="${basedir}"/>
-                <sysproperty key="com.xceptance.xlt.data.directory" value="${test.config.dir}/data"/>
-                <sysproperty key="log4j.configuration" value="file:${test.config.dir}/dev-log4j.properties"/>
-                <sysproperty if:set="webdriver" key="xlt.webDriver" value="${webdriver}" />
+				<!-- configure the environment for XLT-based test cases -->
+				<sysproperty key="com.xceptance.xlt.home" value="${basedir}"/>
+				<sysproperty key="com.xceptance.xlt.data.directory" value="${test.config.dir}/data"/>
+				<sysproperty key="log4j.configuration" value="file:${test.config.dir}/dev-log4j.properties"/>
+				<sysproperty if:set="webdriver" key="xlt.webDriver" value="${webdriver}" />
 
-                <!-- configure the test result formatter -->
-                <formatter type="xml"/>
+				<!-- configure the test result formatter -->
+				<formatter type="xml"/>
 
-                <!-- configure the tests to run when we are a script test case -->
-                <sysproperty
+				<!-- configure the tests to run when we are a script test case -->
+				<sysproperty
                     if:set="test.engine.script"
                     key="com.xceptance.xlt.api.engine.scripting.ScriptTestCaseSuite.testCases"
                     value="@{scripts}" />
+				
+				<sysproperty key="browserdefinition" value="${browserdefinition}"/>
 
-                <!-- execute all configured tests -->
-                <batchtest todir="${test.results.dir}" skipNonTests="true">
-                    <javaresource if:set="test.engine.script"
+				<!-- execute all configured tests -->
+				<batchtest todir="${test.results.dir}" skipNonTests="true">
+					<javaresource if:set="test.engine.script"
                                 name="com/xceptance/xlt/api/engine/scripting/ScriptTestCaseSuite.class"
                                 classpathref="xlt.classpath" />
 
-                    <filelist dir="${basepath}" files="@{files}"/>
-                </batchtest>
-            </junit>
-        </sequential>
-    </macrodef>
+					<filelist dir="${basepath}" files="@{files}"/>
+				</batchtest>
+			</junit>
+		</sequential>
+	</macrodef>
 
 
-    <target name="test" depends="test.init">
-        <script language="javascript">
-            <![CDATA[
+	<target name="test" depends="test.init">
+		<script language="javascript">
+			<![CDATA[
             // do we want parallel execution?, if not set count to 1
             if (project.getProperty("parallel") == null) {
                     project.setProperty("parallel", 1);
@@ -128,11 +135,11 @@
                 project.setProperty("test.engine.java", "true");
             }
             ]]>
-        </script>
+		</script>
 
-        <!-- get all test cases and run them-->
-        <script language="javascript">
-            <![CDATA[
+		<!-- get all test cases and run them-->
+		<script language="javascript">
+			<![CDATA[
                 // make sure we can run with JDK8 or higher, when an older ANT version is in place
                 // https://bugs.openjdk.java.net/browse/JDK-8025132?focusedCommentId=13569345
                 var version = java.lang.System.getProperty("java.version");
@@ -213,54 +220,54 @@
                 }
                 parallel.execute();
             ]]>
-        </script>
+		</script>
 
-        <macro.junit.report />
+		<macro.junit.report />
 
-        <script language="javascript">
-            <![CDATA[
+		<script language="javascript">
+			<![CDATA[
             ]]>
-        </script>
-    </target>
+		</script>
+	</target>
 
-    <!--
+	<!--
         Starts a parallel build and uses the value of -Dparallel
         to determine the parallel count, otherwise it uses the cpu count
     -->
-    <target name="test.parallel" depends="clean, test.init">
-        <script language="javascript">
+	<target name="test.parallel" depends="clean, test.init">
+		<script language="javascript">
             project.setProperty("NUMBER_OF_PROCESSORS", java.lang.Runtime.getRuntime().availableProcessors());
         </script>
 
-        <!--
+		<!--
             Check of parallel is given, if not, set threads to CPU Count.
             If given but no value, set CPU Count, otherwise use value
         -->
-        <script language="javascript">
-            <![CDATA[
+		<script language="javascript">
+			<![CDATA[
                 var parallelCount = project.getProperty("parallel");
                 if (parallelCount == null || isNaN(parseInt(parallelCount))) {
                     project.setProperty("parallel", project.getProperty("NUMBER_OF_PROCESSORS"));
                 }
             ]]>
-        </script>
+		</script>
 
-        <!-- do to the build -->
-        <antcall target="test" />
-    </target>
+		<!-- do to the build -->
+		<antcall target="test" />
+	</target>
 
-    <!-- Start Java tests -->
-    <target name="test.java" depends="test.init">
-        <property name="test.engine.java" value="true" />
-        <!-- do to the build -->
-        <antcall target="test" />
-    </target>
+	<!-- Start Java tests -->
+	<target name="test.java" depends="test.init">
+		<property name="test.engine.java" value="true" />
+		<!-- do to the build -->
+		<antcall target="test" />
+	</target>
 
-    <!-- Start Script tests -->
-    <target name="test.script" depends="test.init">
-        <property name="test.engine.script" value="true" />
+	<!-- Start Script tests -->
+	<target name="test.script" depends="test.init">
+		<property name="test.engine.script" value="true" />
 
-        <!-- do to the build -->
-        <antcall target="test" />
-    </target>
+		<!-- do to the build -->
+		<antcall target="test" />
+	</target>
 </project>
