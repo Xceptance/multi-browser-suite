@@ -16,6 +16,7 @@ import org.apache.http.impl.client.BasicCredentialsProvider;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.openqa.selenium.Dimension;
+import org.openqa.selenium.Proxy;
 import org.openqa.selenium.UnsupportedCommandException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
@@ -23,6 +24,7 @@ import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.ie.InternetExplorerDriver;
 import org.openqa.selenium.remote.BrowserType;
+import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.CommandInfo;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.HttpCommandExecutor;
@@ -191,6 +193,23 @@ public final class AnnotationRunnerHelper
                 return new RemoteWebDriver(createSauceLabExecutor(proxyConfig), capabilities);
 
             case Local:
+                if (proxyConfig != null)
+                {
+                    String proxyHost = proxyConfig.getHost() + ":" + proxyConfig.getPort();
+
+                    Proxy webdriverProxy = new Proxy();
+                    webdriverProxy.setHttpProxy(proxyHost);
+                    webdriverProxy.setSslProxy(proxyHost);
+                    webdriverProxy.setFtpProxy(proxyHost);
+                    if (!StringUtils.isEmpty(proxyConfig.getUsername()) && !StringUtils.isEmpty(proxyConfig.getPassword()))
+                    {
+                        webdriverProxy.setSocksUsername(proxyConfig.getUsername());
+                        webdriverProxy.setSocksPassword(proxyConfig.getPassword());
+                    }
+
+                    capabilities.setCapability(CapabilityType.PROXY, webdriverProxy);
+                }
+
                 String browserName = config.getCapabilities().getBrowserName();
                 if (chromeBrowsers.contains(browserName))
                 {
