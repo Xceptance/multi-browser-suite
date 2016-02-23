@@ -31,6 +31,17 @@ public class PropertiesToBrowserConfigurationMapper implements IMapper<Map<Strin
 
     private static final String TEST_ENVIRONMENT = "testEnvironment";
 
+    // appium specific propertys
+    private static final String APPIUM_VERSION = "appiumVersion";
+
+    private static final String BROWSER_NAME = "browserName";
+
+    private static final String PLATTFORM_VERSION = "platformVersion";
+
+    private static final String APP = "app";
+
+    private static final String AUTOMATION_NAME = "automationName";
+
     @Override
     public BrowserConfigurationDto toDto(Map<String, String> o)
     {
@@ -96,6 +107,28 @@ public class PropertiesToBrowserConfigurationMapper implements IMapper<Map<Strin
         String emulatedDeviceScreenResolution = o.get(SCREEN_RESOLUTION);
         if (!StringUtils.isEmpty(emulatedDeviceScreenResolution))
             capabilities.setCapability("screenResolution", emulatedDeviceScreenResolution);
+
+        // appium
+
+        String appiumVersion = o.get(APPIUM_VERSION);
+        if (!StringUtils.isEmpty(appiumVersion))
+            capabilities.setCapability("appiumVersion", appiumVersion);
+
+        String browserName = o.get(BROWSER_NAME);
+        if (!StringUtils.isEmpty(browserName))
+            capabilities.setCapability("browserName", browserName);
+
+        String plattformVersion = o.get(PLATTFORM_VERSION);
+        if (!StringUtils.isEmpty(plattformVersion))
+            capabilities.setCapability("platformVersion", plattformVersion);
+
+        String app = o.get(APP);
+        if (!StringUtils.isEmpty(app))
+            capabilities.setCapability("app", app);
+
+        String automationName = o.get(AUTOMATION_NAME);
+        if (!StringUtils.isEmpty(automationName))
+            capabilities.setCapability("automationName", automationName);
 
         /*
          * Chrome device emulation
