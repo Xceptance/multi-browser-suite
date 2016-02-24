@@ -10,6 +10,7 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.net.MalformedURLException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -76,6 +77,8 @@ public class AnnotationRunner extends XltTestRunner
      * The data sets directory as specified in the XLT configuration. Maybe <code>null</code> if not configured.
      */
     protected static final File DATA_SETS_DIR;
+
+    private static final String SYSTEM_PROPERTY_BROWSERDEFINITION = "browserdefinition";
 
     private final ProxyConfigurationDto proxyConfig;
 
@@ -190,6 +193,20 @@ public class AnnotationRunner extends XltTestRunner
 
         boolean foundTargetsAnnotation = false;
 
+        // get test specific browser definitions (aka browser tag see browser.properties)
+        // could be one value or comma separated list of values
+        String browserDefinitionsProperty = XltProperties.getInstance().getProperty(SYSTEM_PROPERTY_BROWSERDEFINITION, "");
+        if (browserDefinitionsProperty != null)
+            browserDefinitionsProperty = browserDefinitionsProperty.replaceAll("\\s", "");
+
+        List<String> browserDefinitions = null;
+
+        // parse test specific browser definitions
+        if (!StringUtils.isEmpty(browserDefinitionsProperty))
+        {
+            browserDefinitions = Arrays.asList(browserDefinitionsProperty.split(","));
+        }
+
         // Get annotations of test class.
         Annotation[] annotations = testCaseClass.getAnnotations();
         for (Annotation annotation : annotations)
@@ -203,6 +220,12 @@ public class AnnotationRunner extends XltTestRunner
 
                 for (String target : targets)
                 {
+                    // check if the annotated target is in the list of targets specified via system property
+                    if (browserDefinitions != null && !browserDefinitions.contains(target))
+                    {
+                        continue;
+                    }
+
                     BrowserConfigurationDto foundBrowserConfiguration = parsedBrowserProperties.get(target);
                     if (foundBrowserConfiguration == null)
                     {

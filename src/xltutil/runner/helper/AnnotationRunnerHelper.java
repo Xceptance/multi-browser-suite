@@ -16,6 +16,7 @@ import org.apache.http.impl.client.BasicCredentialsProvider;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.openqa.selenium.Dimension;
+import org.openqa.selenium.Proxy;
 import org.openqa.selenium.UnsupportedCommandException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
@@ -23,6 +24,7 @@ import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.ie.InternetExplorerDriver;
 import org.openqa.selenium.remote.BrowserType;
+import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.CommandInfo;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.HttpCommandExecutor;
@@ -76,21 +78,48 @@ public final class AnnotationRunnerHelper
      * </ul>
      * 
      * @return {@link URL} to SauceLabs augmented with credentials
+     * @throws MalformedURLException
      */
-    public static URL createSauceLabUrl()
+    public static HttpCommandExecutor createSauceLabExecutor(ProxyConfigurationDto proxyConfig) throws MalformedURLException
     {
-        XltProperties xltProperties = XltProperties.getInstance();
-        String saucelabUsername = xltProperties.getProperty("saucelab.username");
-        String saucelabAccesskey = xltProperties.getProperty("saucelab.accesskey");
+        // create a configuration for accessing target site via proxy (if a proxy is defined)
+        // the proxy and the destination site will have different or no credentials for accessing them
+        // so we need to create different authentication scopes and link them with the credentials
+        BasicCredentialsProvider basicCredentialsProvider = new BasicCredentialsProvider();
 
-        try
+        // create credentials for proxy access
+        if (proxyConfig != null //
+        && !StringUtils.isEmpty(proxyConfig.getUsername()) //
+        && !StringUtils.isEmpty(proxyConfig.getPassword()))
         {
-            return new URL("http://" + saucelabUsername + ":" + saucelabAccesskey + "@ondemand.saucelabs.com:80/wd/hub");
+            AuthScope proxyAuth = new AuthScope(proxyConfig.getHost(), Integer.valueOf(proxyConfig.getPort()));
+            Credentials proxyCredentials = new UsernamePasswordCredentials(proxyConfig.getUsername(), proxyConfig.getPassword());
+            basicCredentialsProvider.setCredentials(proxyAuth, proxyCredentials);
         }
-        catch (MalformedURLException e)
-        {
-            throw new RuntimeException(e);
-        }
+
+        // create credentials for target website
+        AuthScope saucelabsAuth = new AuthScope("ondemand.saucelabs.com", 80);
+
+        XltProperties xltProperties = XltProperties.getInstance();
+        String saucelabUsername = xltProperties.getProperty(XltPropertyKey.SAUCELABS_USERNAME, null);
+        String saucelabAccesskey = xltProperties.getProperty(XltPropertyKey.SAUCELABS_ACCESSKEY, null);
+
+        Credentials saucelabsCredentials = new UsernamePasswordCredentials(saucelabUsername, saucelabAccesskey);
+        basicCredentialsProvider.setCredentials(saucelabsAuth, saucelabsCredentials);
+
+        // now create a http client, set the custom proxy and inject the credentials
+        HttpClientBuilder clientBuilder = HttpClientBuilder.create();
+        clientBuilder.setDefaultCredentialsProvider(basicCredentialsProvider);
+        if (proxyConfig != null)
+            clientBuilder.setProxy(new HttpHost(proxyConfig.getHost(), Integer.valueOf(proxyConfig.getPort())));
+        CloseableHttpClient httpClient = clientBuilder.build();
+
+        Map<String, CommandInfo> additionalCommands = new HashMap<String, CommandInfo>();   // just a dummy
+
+        // this command executor will do the credential magic for us. both proxy and target site credentials
+        return new HttpCommandExecutor(additionalCommands, new URL("http://ondemand.saucelabs.com/wd/hub"),
+                                       new ProxyHttpClient(httpClient));
+
     }
 
     /**
@@ -155,58 +184,32 @@ public final class AnnotationRunnerHelper
      */
     public static WebDriver createWebdriver(BrowserConfigurationDto config, ProxyConfigurationDto proxyConfig) throws MalformedURLException
     {
-        DesiredCapabilities capabilities = config.getCapabilities(); // setUpBrowserCapabilities(config);
+        DesiredCapabilities capabilities = config.getCapabilities();
 
         switch (config.getScope())
         {
             case SauceLabs:
-                if (proxyConfig == null)
-                {
-                    return new RemoteWebDriver(AnnotationRunnerHelper.createSauceLabUrl(), capabilities);
-                }
-                else
-                {
-                    // create a configuration for proxy access
-                    // the proxy and the destination site will have different or no credentials for accessing them
-                    // so we need to create different authentication scopes and linkt them with the credentials
-                    BasicCredentialsProvider basicCredentialsProvider = new BasicCredentialsProvider();
-
-                    // create credentials for proxy access
-                    if (!StringUtils.isEmpty(proxyConfig.getUsername()) && !StringUtils.isEmpty(proxyConfig.getPassword()))
-                    {
-                        AuthScope proxyAuth = new AuthScope(proxyConfig.getHost(), Integer.valueOf(proxyConfig.getPort()));
-                        Credentials proxyCredentials = new UsernamePasswordCredentials(proxyConfig.getUsername(),
-                                                                                       proxyConfig.getPassword());
-                        basicCredentialsProvider.setCredentials(proxyAuth, proxyCredentials);
-                    }
-
-                    // create credentials for target website
-                    AuthScope saucelabsAuth = new AuthScope("ondemand.saucelabs.com", 80);
-
-                    XltProperties xltProperties = XltProperties.getInstance();
-                    String saucelabUsername = xltProperties.getProperty(XltPropertyKey.SAUCELABS_USERNAME, null);
-                    String saucelabAccesskey = xltProperties.getProperty(XltPropertyKey.SAUCELABS_ACCESSKEY, null);
-
-                    Credentials saucelabsCredentials = new UsernamePasswordCredentials(saucelabUsername, saucelabAccesskey);
-                    basicCredentialsProvider.setCredentials(saucelabsAuth, saucelabsCredentials);
-
-                    // now create a http client, set the custom proxy and inject the credentials
-                    HttpClientBuilder clientBuilder = HttpClientBuilder.create();
-                    clientBuilder.setDefaultCredentialsProvider(basicCredentialsProvider);
-                    clientBuilder.setProxy(new HttpHost(proxyConfig.getHost(), Integer.valueOf(proxyConfig.getPort())));
-                    CloseableHttpClient httpClient = clientBuilder.build();
-
-                    Map<String, CommandInfo> additionalCommands = new HashMap<String, CommandInfo>();   // just a dummy
-
-                    // this command executor will do the credential magic for us. both proxy and target site credentials
-                    HttpCommandExecutor httpCommandExecutor = new HttpCommandExecutor(additionalCommands,
-                                                                                      new URL("http://ondemand.saucelabs.com/wd/hub"),
-                                                                                      new ProxyHttpClient(httpClient));
-                    // establish connection to target website through proxy
-                    return new RemoteWebDriver(httpCommandExecutor, capabilities);
-                }
+                // establish connection to target website
+                return new RemoteWebDriver(createSauceLabExecutor(proxyConfig), capabilities);
 
             case Local:
+                if (proxyConfig != null)
+                {
+                    String proxyHost = proxyConfig.getHost() + ":" + proxyConfig.getPort();
+
+                    Proxy webdriverProxy = new Proxy();
+                    webdriverProxy.setHttpProxy(proxyHost);
+                    webdriverProxy.setSslProxy(proxyHost);
+                    webdriverProxy.setFtpProxy(proxyHost);
+                    if (!StringUtils.isEmpty(proxyConfig.getUsername()) && !StringUtils.isEmpty(proxyConfig.getPassword()))
+                    {
+                        webdriverProxy.setSocksUsername(proxyConfig.getUsername());
+                        webdriverProxy.setSocksPassword(proxyConfig.getPassword());
+                    }
+
+                    capabilities.setCapability(CapabilityType.PROXY, webdriverProxy);
+                }
+
                 String browserName = config.getCapabilities().getBrowserName();
                 if (chromeBrowsers.contains(browserName))
                 {
