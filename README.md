@@ -196,7 +196,7 @@ Example for one browser:
 ```sh
 @TestTargets(
 {
-	@TestTarget("Chrome_1280x900")
+	"Chrome_1280x900"
 })
 ```
 
@@ -205,7 +205,7 @@ Example for more than browser:
 ```sh
 @TestTargets(
 {
-	@TestTarget("Chrome_1280x900", "Chrome_1500x1000", "FF_1000x768", "FF_1500x1000")
+	"Chrome_1280x900", "Chrome_1500x1000", "FF_1000x768", "FF_1500x1000"
 })
 ```
 
@@ -245,6 +245,14 @@ Open the command prompt window: click the Start button picture of the Start butt
 
 ```sh
 $ ant test.java
+```
+
+### Run Apache Ant with Browsertag Support
+Note: The Option `-Dbrowserdefinition=<comma separated list of browsertags>` enables you to run only testcases that are annotated with a specific browsertag.
+
+Example
+```sh
+$ ant test -Dbrowserdefinition=chrome_local, ie8_saucelabs'
 ```
 
 ## XLT Result Browser
