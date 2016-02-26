@@ -28,7 +28,7 @@ See below for prerequisites and installation steps needed to run the test suite 
 - Execution Environment:
     - Java IDE (e.g. [Eclipse](https://eclipse.org/downloads/)) or
     - [Apache Ant](https://ant.apache.org/bindownload.cgi)  ( [install Apache Ant](https://ant.apache.org/manual/install.html#installing) )
-- [Source Labs Account](https://saucelabs.com/)
+- [SauceLabs Account](https://saucelabs.com/)
 
 
 # Step 1: Execution Environments
@@ -41,7 +41,7 @@ See below for prerequisites and installation steps needed to run the test suite 
 - Directory: your Workspace (eg: path/to/multi-browser-suite) -> `[Next]`
 - Select `“Import existing Eclipse projects”` -> `[Next]`
 - Check all values and press `[Finish]`
-- Click left on project folder
+- Click right on project folder
 - Select `Build Path configure` `Build Path`
 - `Libraries` -> `[Add External JARs]`
 - Go to `your xlt path /libs`
@@ -49,11 +49,9 @@ See below for prerequisites and installation steps needed to run the test suite 
 
 ## Ant - Project Configuration
 Open file `multi-browser-suite/build.properties` and adjust the values
+
 ```sh
-xlt.lib.dir = path/to/xlt/lib
-```
-```sh
-test.lib.dir = path/to/xlt/lib
+xlt.home.dir = path/to/xlt
 ```
 
 # Step 2: WebDriver Configuration
@@ -90,12 +88,12 @@ xlt.webDriver.ie.pathToDriverServer = path/to/webDriver/IEDriverServer.exe
 ```
 
 # Step 3: Configuration and Execution testcase
-## Configuration Sourcelab account setting
+## Configuration SauceLabs account setting
 - Log into your SauceLabs Account
 - Navigate to the User Settings page: `https://saucelabs.com/beta/user-settings`
 - On section `Access Key` click the `[Show]` button
 - Copy this `Access Key` into clipboard
-- Open file `multi-browser-suite/config/default.properties` and set properties
+- Open file `multi-browser-suite/config/project.properties` and set properties
 ```sh
 saucelab.username  = xx
 saucelab.accesskey = xx
@@ -198,7 +196,7 @@ Example for one browser:
 ```sh
 @TestTargets(
 {
-	@TestTarget("Chrome_1280x900")
+	"Chrome_1280x900"
 })
 ```
 
@@ -207,7 +205,7 @@ Example for more than browser:
 ```sh
 @TestTargets(
 {
-	@TestTarget("Chrome_1280x900", "Chrome_1500x1000", "FF_1000x768", "FF_1500x1000")
+	"Chrome_1280x900", "Chrome_1500x1000", "FF_1000x768", "FF_1500x1000"
 })
 ```
 
@@ -243,10 +241,18 @@ public class TSearch_ProductOnly_Augmented extends AbstractAnnotatedScriptTestCa
 - `Run as` item in context menu -> `JUnit Test`
 
 ### Run Apache Ant
-Open the command prompt window: click the Start button picture of the Start button, then click All Programs, then Accessories, then Command Prompt.
+Open the command prompt window: click the Start button picture of the Start button, then click All Programs, then Accessories, then Command Prompt, then change to your `multi-browser-suite` path.
 
 ```sh
 $ ant test.java
+```
+
+### Run Apache Ant with Browsertag Support
+Note: The option `-Dbrowserdefinition=<comma separated list of browsertags>` enables you to run only testcases that are annotated with a specific browsertag.
+
+Example
+```sh
+$ ant test -Dbrowserdefinition=chrome_local, ie8_saucelabs
 ```
 
 ## XLT Result Browser

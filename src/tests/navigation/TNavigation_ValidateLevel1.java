@@ -28,7 +28,6 @@ import xltutil.annotation.TestTargets;
 @TestTargets(
     {
         "chrome_sl"
-        // @TestTarget(browser = Browser.Firefox)
     })
 public class TNavigation_ValidateLevel1 extends AbstractAnnotatedScriptTestCase
 {
