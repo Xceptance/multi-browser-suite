@@ -248,11 +248,11 @@ $ ant test.java
 ```
 
 ### Run Apache Ant with Browsertag Support
-Note: The Option `-Dbrowserdefinition=<comma separated list of browsertags>` enables you to run only testcases that are annotated with a specific browsertag.
+Note: The option `-Dbrowserdefinition=<comma separated list of browsertags>` enables you to run only testcases that are annotated with a specific browsertag.
 
 Example
 ```sh
-$ ant test -Dbrowserdefinition=chrome_local, ie8_saucelabs'
+$ ant test -Dbrowserdefinition=chrome_local, ie8_saucelabs
 ```
 
 ## XLT Result Browser
