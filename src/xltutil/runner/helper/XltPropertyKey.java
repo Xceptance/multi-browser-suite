@@ -18,7 +18,5 @@ public abstract class XltPropertyKey
 
     public static final String WEBDRIVER_PATH_CHROME = "xlt.webDriver.chrome.pathToDriverServer";
 
-    public static final String SAUCELABS_USERNAME = "saucelab.username";
-
-    public static final String SAUCELABS_ACCESSKEY = "saucelab.accesskey";
+    public static final String BROWSERPROFILE_TEST_ENVIRONMENT = "browserprofile.testEnvironment.";
 }

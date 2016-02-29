@@ -2,8 +2,6 @@ package xltutil.dto;
 
 import org.openqa.selenium.remote.DesiredCapabilities;
 
-import xltutil.enums.Scope;
-
 /**
  * POJO class to hold browser configurations
  * 
@@ -17,7 +15,7 @@ public class BrowserConfigurationDto
 
     private DesiredCapabilities capabilities;
 
-    private Scope scope;
+    private String testEnvironment;
 
     private int browserWidth;
 
@@ -53,14 +51,14 @@ public class BrowserConfigurationDto
         this.capabilities = capabilities;
     }
 
-    public Scope getScope()
+    public String getTestEnvironment()
     {
-        return scope;
+        return testEnvironment;
     }
 
-    public void setScope(Scope scope)
+    public void setTestEnvironment(String testEnvironment)
     {
-        this.scope = scope;
+        this.testEnvironment = testEnvironment;
     }
 
     public int getBrowserWidth()

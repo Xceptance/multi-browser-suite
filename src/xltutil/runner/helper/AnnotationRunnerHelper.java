@@ -68,19 +68,13 @@ public final class AnnotationRunnerHelper
     private static final String PROP_PREFIX_WEB_DRIVER = "xlt.webDriver";
 
     /**
-     * Returns an {@link URL} to SauceLabs that contains username and access-key from xlt properties
-     * <p>
-     * Credentials are read from <B>/config/project.properties</B>
-     * <ul>
-     * <li>saucelab.username is your saucelab username
-     * <li>saucelab.accesskey is the access key generated for your SauceLab account. Not to be confused with the
-     * SauceLab account password
-     * </ul>
+     * Returns an {@link URL} to a Selenium grid (e.g. SauceLabs) that contains basic authentication for access
      * 
-     * @return {@link URL} to SauceLabs augmented with credentials
+     * @return {@link URL} to Selenium grid augmented with credentials
      * @throws MalformedURLException
      */
-    public static HttpCommandExecutor createSauceLabExecutor(ProxyConfigurationDto proxyConfig) throws MalformedURLException
+    public static HttpCommandExecutor createGridExecutor(ProxyConfigurationDto proxyConfig, URL gridUrl, String gridUsername,
+                                                         String gridPassword) throws MalformedURLException
     {
         // create a configuration for accessing target site via proxy (if a proxy is defined)
         // the proxy and the destination site will have different or no credentials for accessing them
@@ -98,14 +92,13 @@ public final class AnnotationRunnerHelper
         }
 
         // create credentials for target website
-        AuthScope saucelabsAuth = new AuthScope("ondemand.saucelabs.com", 80);
+        AuthScope gridAuth = new AuthScope(gridUrl.getHost(), gridUrl.getPort());
 
-        XltProperties xltProperties = XltProperties.getInstance();
-        String saucelabUsername = xltProperties.getProperty(XltPropertyKey.SAUCELABS_USERNAME, null);
-        String saucelabAccesskey = xltProperties.getProperty(XltPropertyKey.SAUCELABS_ACCESSKEY, null);
-
-        Credentials saucelabsCredentials = new UsernamePasswordCredentials(saucelabUsername, saucelabAccesskey);
-        basicCredentialsProvider.setCredentials(saucelabsAuth, saucelabsCredentials);
+        if (!StringUtils.isEmpty(gridUsername))
+        {
+            Credentials gridCredentials = new UsernamePasswordCredentials(gridUsername, gridPassword);
+            basicCredentialsProvider.setCredentials(gridAuth, gridCredentials);
+        }
 
         // now create a http client, set the custom proxy and inject the credentials
         HttpClientBuilder clientBuilder = HttpClientBuilder.create();
@@ -117,8 +110,7 @@ public final class AnnotationRunnerHelper
         Map<String, CommandInfo> additionalCommands = new HashMap<String, CommandInfo>();   // just a dummy
 
         // this command executor will do the credential magic for us. both proxy and target site credentials
-        return new HttpCommandExecutor(additionalCommands, new URL("http://ondemand.saucelabs.com/wd/hub"),
-                                       new ProxyHttpClient(httpClient));
+        return new HttpCommandExecutor(additionalCommands, gridUrl, new ProxyHttpClient(httpClient));
 
     }
 
@@ -186,48 +178,55 @@ public final class AnnotationRunnerHelper
     {
         DesiredCapabilities capabilities = config.getCapabilities();
 
-        switch (config.getScope())
+        String testEnvironment = config.getTestEnvironment();
+
+        if (StringUtils.isEmpty(testEnvironment) || "local".equalsIgnoreCase(testEnvironment))
         {
-            case SauceLabs:
-                // establish connection to target website
-                return new RemoteWebDriver(createSauceLabExecutor(proxyConfig), capabilities);
+            if (proxyConfig != null)
+            {
+                String proxyHost = proxyConfig.getHost() + ":" + proxyConfig.getPort();
 
-            case Local:
-                if (proxyConfig != null)
+                Proxy webdriverProxy = new Proxy();
+                webdriverProxy.setHttpProxy(proxyHost);
+                webdriverProxy.setSslProxy(proxyHost);
+                webdriverProxy.setFtpProxy(proxyHost);
+                if (!StringUtils.isEmpty(proxyConfig.getUsername()) && !StringUtils.isEmpty(proxyConfig.getPassword()))
                 {
-                    String proxyHost = proxyConfig.getHost() + ":" + proxyConfig.getPort();
-
-                    Proxy webdriverProxy = new Proxy();
-                    webdriverProxy.setHttpProxy(proxyHost);
-                    webdriverProxy.setSslProxy(proxyHost);
-                    webdriverProxy.setFtpProxy(proxyHost);
-                    if (!StringUtils.isEmpty(proxyConfig.getUsername()) && !StringUtils.isEmpty(proxyConfig.getPassword()))
-                    {
-                        webdriverProxy.setSocksUsername(proxyConfig.getUsername());
-                        webdriverProxy.setSocksPassword(proxyConfig.getPassword());
-                    }
-
-                    capabilities.setCapability(CapabilityType.PROXY, webdriverProxy);
+                    webdriverProxy.setSocksUsername(proxyConfig.getUsername());
+                    webdriverProxy.setSocksPassword(proxyConfig.getPassword());
                 }
 
-                String browserName = config.getCapabilities().getBrowserName();
-                if (chromeBrowsers.contains(browserName))
-                {
-                    return new ChromeDriver(capabilities);
-                }
-                else if (firefoxBrowsers.contains(browserName))
-                {
-                    return new FirefoxDriver(capabilities);
-                }
-                else if (internetExplorerBrowsers.contains(browserName))
-                {
-                    return new InternetExplorerDriver(capabilities);
-                }
+                capabilities.setCapability(CapabilityType.PROXY, webdriverProxy);
+            }
 
-                break;
+            String browserName = config.getCapabilities().getBrowserName();
+            if (chromeBrowsers.contains(browserName))
+            {
+                return new ChromeDriver(capabilities);
+            }
+            else if (firefoxBrowsers.contains(browserName))
+            {
+                return new FirefoxDriver(capabilities);
+            }
+            else if (internetExplorerBrowsers.contains(browserName))
+            {
+                return new InternetExplorerDriver(capabilities);
+            }
+        }
+        else
+        {
+            XltProperties xltProperties = XltProperties.getInstance();
 
-            default:
-                break;
+            Map<String, String> propertiesForEnvironment = xltProperties.getPropertiesForKey(XltPropertyKey.BROWSERPROFILE_TEST_ENVIRONMENT +
+                                                                                             testEnvironment);
+
+            String gridUsername = propertiesForEnvironment.get("username");
+            String gridPassword = propertiesForEnvironment.get("password");
+            String gridUrlString = propertiesForEnvironment.get("url");
+            URL gridUrl = new URL(gridUrlString);
+
+            // establish connection to target website
+            return new RemoteWebDriver(createGridExecutor(proxyConfig, gridUrl, gridUsername, gridPassword), capabilities);
         }
 
         return null;

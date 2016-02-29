@@ -8,7 +8,6 @@ import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.remote.DesiredCapabilities;
 
 import xltutil.dto.BrowserConfigurationDto;
-import xltutil.enums.Scope;
 import xltutil.interfaces.IMapper;
 
 public class PropertiesToBrowserConfigurationMapper implements IMapper<Map<String, String>, BrowserConfigurationDto>
@@ -145,25 +144,11 @@ public class PropertiesToBrowserConfigurationMapper implements IMapper<Map<Strin
         }
 
         /*
-         * Explicit test environment check. Local or SauceLabs
+         * Explicit test environment check
          */
         String testEnvironment = o.get(TEST_ENVIRONMENT);
         if (!StringUtils.isEmpty(testEnvironment))
-        {
-            if ("saucelabs".equalsIgnoreCase(testEnvironment))
-            {
-                r.setScope(Scope.SauceLabs);
-            }
-            else
-            {
-                r.setScope(Scope.Local);
-            }
-        }
-        else
-        {
-            // assume we always do a local test
-            r.setScope(Scope.Local);
-        }
+            r.setTestEnvironment(testEnvironment);
 
         /*
          * Browser resolution
