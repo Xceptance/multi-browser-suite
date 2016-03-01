@@ -88,15 +88,25 @@ xlt.webDriver.ie.pathToDriverServer = path/to/webDriver/IEDriverServer.exe
 ```
 
 # Step 3: Configuration and Execution testcase
-## Configuration SauceLabs account setting
+## Configuration SauceLabs account settings
 - Log into your SauceLabs Account
 - Navigate to the User Settings page: `https://saucelabs.com/beta/user-settings`
 - On section `Access Key` click the `[Show]` button
 - Copy this `Access Key` into clipboard
-- Open file `multi-browser-suite/config/project.properties` and set properties
+- Open file `multi-browser-suite/config/browser.properties` and set properties
+- Username can be found on the page as `User Information` -> `USERNAME`
+- Password is your `Access Key`
 ```sh
-saucelab.username  = xx
-saucelab.accesskey = xx
+browserprofile.testEnvironment.saucelabs.url = http://ondemand.saucelabs.com/wd/hub
+browserprofile.testEnvironment.saucelabs.username = xx
+browserprofile.testEnvironment.saucelabs.password = xx
+```
+Note: You can also define test environments other than SauceLabs, e.g. BrowserStack or even your own Selenium Grid. To accomplish that just use the template below to create a access configuration. You later can refer this configuration in your browserprofile to run it in the desired test environment by setting the testEnvironment property of the browser profile to the desired <name>.
+
+```sh
+browserprofile.testEnvironment.<name>.url = <URL>
+browserprofile.testEnvironment.<name>.username = <USERNAME>
+browserprofile.testEnvironment.<name>.password = <PASSWORD>
 ```
 
 ## Configuration browser definition (config/browser.properties)
@@ -113,7 +123,7 @@ Chrome device emulation properties
 - `browserprofile.<unique profile identifier>.chromeEmulationProfile` -> a special property that contains a device name that should be emulated.
 
 SauceLabs remote browser properties
-- `browserprofile.<unique profile identifier>.testEnvironment` -> determines where the testcase will be executed. possible values are local and saucelabs.
+- `browserprofile.<unique profile identifier>.testEnvironment` -> determines where the testcase will be executed. Possible values are local, saucelabs or what ever you defined (see `Configuration SauceLabs account settings`).
 - `browserprofile.<unique profile identifier>.version` -> determines which version of the browser should be used or determines the version of the OS of an emulated device by default version references the browser version, but in case of saucelabs device emulation usage it may be used for the OS version instead
 - `browserprofile.<unique profile identifier>.platform` -> defines on which (emulated) platform the test should run
 - `browserprofile.<unique profile identifier>.deviceName` -> defines the name of the device
