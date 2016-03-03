@@ -101,13 +101,17 @@ browserprofile.testEnvironment.saucelabs.url = http://ondemand.saucelabs.com/wd/
 browserprofile.testEnvironment.saucelabs.username = xx
 browserprofile.testEnvironment.saucelabs.password = xx
 ```
-Note: You can also define test environments other than SauceLabs, e.g. BrowserStack or even your own Selenium Grid. To accomplish that just use the template below to create a access configuration. You later can refer this configuration in your browserprofile to run it in the desired test environment by setting the testEnvironment property of the browser profile to the desired <name>.
+
+## Configuration of other automated testing platforms
+You can also define test environments other than SauceLabs, e.g. BrowserStack or even your own Selenium grid. To accomplish that just use the template below to create a access configuration. You later can refer this configuration in your browserprofile to run it in the desired test environment by setting the testEnvironment property of the browser profile to the desired <name>.
 
 ```sh
 browserprofile.testEnvironment.<name>.url = <URL>
 browserprofile.testEnvironment.<name>.username = <USERNAME>
 browserprofile.testEnvironment.<name>.password = <PASSWORD>
 ```
+
+To create your own Selenium grid please see the  following article about using Selenium standalone server `https://github.com/SeleniumHQ/selenium/wiki/Grid2`
 
 ## Configuration browser definition (config/browser.properties)
 All browser definitions are set in file `config/browser.properties`.
