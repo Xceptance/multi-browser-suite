@@ -103,12 +103,12 @@ browserprofile.testEnvironment.saucelabs.password = xx
 ```
 
 ## Configuration of other automated testing platforms
-You can also define test environments other than SauceLabs, e.g. BrowserStack or even your own Selenium grid. To accomplish that just use the template below to create a access configuration. You later can refer this configuration in your browserprofile to run it in the desired test environment by setting the testEnvironment property of the browser profile to the desired <name>.
+You can also define test environments other than SauceLabs, e.g. BrowserStack or even your own Selenium grid. To accomplish that just use the template below to create a access configuration. You later can refer this configuration in your browserprofile to run it in the desired test environment by setting the testEnvironment property of the browser profile to the desired `<gridname>`. See example 5 for instance.
 
 ```sh
-browserprofile.testEnvironment.<name>.url = <URL>
-browserprofile.testEnvironment.<name>.username = <USERNAME>
-browserprofile.testEnvironment.<name>.password = <PASSWORD>
+browserprofile.testEnvironment.<gridname>.url = <URL>
+browserprofile.testEnvironment.<gridname>.username = <USERNAME>
+browserprofile.testEnvironment.<gridname>.password = <PASSWORD>
 ```
 
 To create your own Selenium grid please see the  following article about using Selenium standalone server `https://github.com/SeleniumHQ/selenium/wiki/Grid2`
@@ -168,6 +168,17 @@ browserprofile.iPhone5s.deviceName = iPhone 5s
 browserprofile.iPhone5s.deviceOrientation = portrait
 browserprofile.iPhone5s.testEnvironment = saucelabs
 ```
+
+### Example 5: `Internet Explorer on own Selenium grid`
+```sh
+browserprofile.testEnvironment.myGrid.url = http://localhost:4444/wd/hub
+
+browserprofile.ie11.name = IE11 on my own Selenium grid
+browserprofile.ie11.browser = internetexplorer
+browserprofile.ie11.version = 11
+browserprofile.ie11.testEnvironment = myGrid
+```
+
 
 ## Configuration testcase
 ### Preperation testcase
