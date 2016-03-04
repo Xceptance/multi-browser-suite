@@ -111,7 +111,7 @@ browserprofile.testEnvironment.<gridname>.username = <USERNAME>
 browserprofile.testEnvironment.<gridname>.password = <PASSWORD>
 ```
 
-To create your own Selenium grid please see the  following article about using Selenium standalone server `https://github.com/SeleniumHQ/selenium/wiki/Grid2`
+To create your own Selenium grid please see the  following article about using Selenium standalone server [https://github.com/SeleniumHQ/selenium/wiki/Grid2](https://github.com/SeleniumHQ/selenium/wiki/Grid2)
 
 ## Configuration browser definition (config/browser.properties)
 All browser definitions are set in file `config/browser.properties`.
