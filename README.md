@@ -1,9 +1,7 @@
-﻿# Readme
-
+# XLT Multi Browser Test Suite
 This test suite has been built for and with __XLT__ to demo the support of multiple browsers as well as a Sauce Labs integration for test automation with XLT.
 
 # Test Suite Setup
-
 See below for prerequisites and installation steps needed to run the test suite with __XLT Script Developer__ in Firefox or the __XLT Framework__ orchestrating different WebDrivers. For further information, please refer to [XLT Online](https://www.xceptance.com/en/xlt/documentation.html).
 
 # Overview
@@ -87,7 +85,7 @@ xlt.webDriver = ie
 xlt.webDriver.ie.pathToDriverServer = path/to/webDriver/IEDriverServer.exe
 ```
 
-# Step 3: Configuration and Execution testcase
+# Step 3: Configuration and Execution of Testcases
 ## Configuration SauceLabs account settings
 - Log into your SauceLabs Account
 - Navigate to the User Settings page: `https://saucelabs.com/beta/user-settings`
