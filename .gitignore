@@ -1,5 +1,4 @@
 bin/
-config/
 .classpath
 build.properties
 .properties
@@ -8,3 +7,4 @@ classes/
 .settings/
 results/
 target/
+config/credentials.properties
