@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<scriptmodule xmlns="http://xlt.xceptance.com/xlt-script/2" version="6">
-  <description>Enter a text in the search field and submit the search.</description>
-  <parameter name="searchText" desc="The search phrase to enter."/>
-  <command name="type" target="css=#q.search-input" value="@{searchText}"/>
-  <command name="clickAndWait" target="id=searchsubmit"/>
-  <command name="waitForElementPresent" target="css=#sortby"/>
-</scriptmodule>

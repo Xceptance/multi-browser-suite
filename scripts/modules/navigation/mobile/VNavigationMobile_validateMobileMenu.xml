@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<scriptmodule xmlns="http://xlt.xceptance.com/xlt-script/2" version="6">
-  <description>Validates that main menu components are visible</description>
-  <command name="assertVisible" target="id=offCanvasClose"/>
-  <command name="assertVisible" target="id=regionLangContentDropdown"/>
-  <command name="assertVisible" target="css=#js-canvas-content-left #mm_ul #navnewarrivals  #mm_icatnewarrivals"/>
-</scriptmodule>

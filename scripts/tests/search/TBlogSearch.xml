@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testcase xmlns="http://xlt.xceptance.com/xlt-script/2" version="7">
+  <description>This is a simple demo for a Google search and will demonstrate how the multi browser suite works.</description>
+  <action name="Homepage">
+    <comment>Open the Google homepage.</comment>
+  </action>
+  <command name="open" value="https://blog.xceptance.com/"/>
+  <command name="assertText" target="css=h1.site-title" value="Passionate Testing"/>
+  <action name="Search"/>
+  <command name="click" target="css=.search-toggle a"/>
+  <command name="waitForVisible" target="css=#search-container input.search-field"/>
+  <command name="type" target="css=#search-container .search-field" value="concurrent users"/>
+  <command name="submitAndWait" target="css=.search-form"/>
+  <command name="assertText" target="css=h1.page-title" value="glob:Search Results for: concurrent users"/>
+  <action name="FirstArticle"/>
+  <command name="clickAndWait" target="css=#content article:first-of-type h1.entry-title a "/>
+  <command name="assertText" target="css=h1.entry-title" value="Concurrent Users – The Art of Calculation"/>
+</testcase>

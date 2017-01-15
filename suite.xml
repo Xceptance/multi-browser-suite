@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://xlt.xceptance.com/xsd-project" version="1">
+  <name>multi-browser-suite</name>
+  <description>This suite does not demonstrate any XLT features extensivly, it is just a vehicle to easily introduce the multi-browser concept.</description>
+</project>
