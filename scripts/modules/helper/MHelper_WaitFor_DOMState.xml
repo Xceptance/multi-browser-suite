@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<scriptmodule xmlns="http://xlt.xceptance.com/xlt-script/2" version="6">
-  <tags>DOM,helper,waitfor</tags>
-  <description>This helper waits for the DOM state hence we know of the site is still loading and the ready state is fired. This can be useful for click only commands, where we want to wait till the dust has settled.</description>
-  <command name="waitForEval" target="(document.readyState == &quot;complete&quot; || document.readyState == &quot;loaded&quot;)" value="true"/>
-  <command name="waitForEval" target="(jQuery.active == 0)" value="true">
-    <comment>Wait until JQuery is finished. This state is not always used. Just an additional measure to make sure we do not run into additional wait problems.</comment>
-  </command>
-</scriptmodule>

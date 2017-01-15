@@ -27,6 +27,7 @@ import org.junit.runner.Description;
 import org.junit.runners.model.FrameworkMethod;
 import org.junit.runners.model.Statement;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.firefox.FirefoxDriver;
 
 import com.xceptance.xlt.api.data.DataSetProvider;
 import com.xceptance.xlt.api.data.DataSetProviderException;
@@ -130,7 +131,7 @@ public class AnnotationRunner extends XltTestRunner
             final AnnotatedFrameworkMethod frameworkMethod = (AnnotatedFrameworkMethod) method;
 
             // get the browser configuration for this testcase
-            BrowserConfigurationDto config = frameworkMethod.getBrowserConfiguration();
+            final BrowserConfigurationDto config = frameworkMethod.getBrowserConfiguration();
 
             // instantiate webdriver according to browser configuration
             WebDriver driver = null;
@@ -138,7 +139,7 @@ public class AnnotationRunner extends XltTestRunner
             {
                 driver = AnnotationRunnerHelper.createWebdriver(config, proxyConfig);
             }
-            catch (MalformedURLException e)
+            catch (final MalformedURLException e)
             {
                 throw new RuntimeException("An error occured during URL creation. See nested exception.", e);
             }
@@ -157,13 +158,13 @@ public class AnnotationRunner extends XltTestRunner
         }
     }
 
-    public AnnotationRunner(Class<?> testCaseClass) throws Throwable
+    public AnnotationRunner(final Class<?> testCaseClass) throws Throwable
     {
         this(testCaseClass, ScriptingUtils.getScriptName(testCaseClass),
              ScriptingUtils.getScriptBaseName(ScriptingUtils.getScriptName(testCaseClass)), dataSetFileDirs);
     }
 
-    public AnnotationRunner(Class<?> testCaseClass, String testCaseName, String defaultTestMethodName, final List<File> dataSetFileDirs)
+    public AnnotationRunner(final Class<?> testCaseClass, final String testCaseName, final String defaultTestMethodName, final List<File> dataSetFileDirs)
         throws Throwable
     {
         super(testCaseClass);
@@ -174,23 +175,34 @@ public class AnnotationRunner extends XltTestRunner
         // get the data sets
         final List<Map<String, String>> dataSets = getDataSets(testCaseClass, testCaseName, shortTestCaseName, dataSetFileDirs);
 
-        XltProperties xltProperties = XltProperties.getInstance();
+        final XltProperties xltProperties = XltProperties.getInstance();
 
         // parse proxy settings
         proxyConfig = new PropertiesToProxyConfigurationMapper().toDto(xltProperties);
 
         // parse browser properties
-        Map<String, BrowserConfigurationDto> parsedBrowserProperties = AnnotationRunnerHelper.parseBrowserProperties(xltProperties);
+        final Map<String, BrowserConfigurationDto> parsedBrowserProperties = AnnotationRunnerHelper.parseBrowserProperties(xltProperties);
 
-        String ieDriverPath = xltProperties.getProperty(XltPropertyKey.WEBDRIVER_PATH_IE, null);
-        String chromeDriverPath = xltProperties.getProperty(XltPropertyKey.WEBDRIVER_PATH_CHROME, null);
+        final String ieDriverPath = xltProperties.getProperty(XltPropertyKey.WEBDRIVER_PATH_IE, null);
+        final String chromeDriverPath = xltProperties.getProperty(XltPropertyKey.WEBDRIVER_PATH_CHROME, null);
+        final String geckoDriverPath = xltProperties.getProperty(XltPropertyKey.WEBDRIVER_PATH_FIREFOX, null);
 
+        // shall we run old school firefox?
+        final boolean firefoxLegacy = xltProperties.getProperty(XltPropertyKey.WEBDRIVER_FIREFOX_LEGACY, false);
+        System.setProperty(FirefoxDriver.SystemProperty.DRIVER_USE_MARIONETTE, Boolean.toString(!firefoxLegacy));
+        
         if (!StringUtils.isEmpty(ieDriverPath))
+        {
             System.setProperty("webdriver.ie.driver", ieDriverPath);
-
+        }
         if (!StringUtils.isEmpty(chromeDriverPath))
+        {
             System.setProperty("webdriver.chrome.driver", chromeDriverPath);
-
+        }
+        if (!StringUtils.isEmpty(geckoDriverPath))
+        {
+            System.setProperty("webdriver.gecko.driver", geckoDriverPath);
+        }        
         boolean foundTargetsAnnotation = false;
 
         // get test specific browser definitions (aka browser tag see browser.properties)
@@ -208,17 +220,17 @@ public class AnnotationRunner extends XltTestRunner
         }
 
         // Get annotations of test class.
-        Annotation[] annotations = testCaseClass.getAnnotations();
-        for (Annotation annotation : annotations)
+        final Annotation[] annotations = testCaseClass.getAnnotations();
+        for (final Annotation annotation : annotations)
         {
             // only check TestTargets annotation with a list of nested TestTarget annotations
             if (annotation instanceof TestTargets)
             {
                 foundTargetsAnnotation = true;
 
-                String[] targets = ((TestTargets) annotation).value();
+                final String[] targets = ((TestTargets) annotation).value();
 
-                for (String target : targets)
+                for (final String target : targets)
                 {
                     // check if the annotated target is in the list of targets specified via system property
                     if (browserDefinitions != null && !browserDefinitions.contains(target))
@@ -226,7 +238,7 @@ public class AnnotationRunner extends XltTestRunner
                         continue;
                     }
 
-                    BrowserConfigurationDto foundBrowserConfiguration = parsedBrowserProperties.get(target);
+                    final BrowserConfigurationDto foundBrowserConfiguration = parsedBrowserProperties.get(target);
                     if (foundBrowserConfiguration == null)
                     {
                         throw new IllegalArgumentException("Can not find browser configuration with tag: " + target);

@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<scriptmodule xmlns="http://xlt.xceptance.com/xlt-script/2" version="6">
-  <description>Closes the mobile navigation menu</description>
-  <command name="click" target="css=#offCanvasClose .icon-close1"/>
-  <command name="waitForNotVisible" target="css=#offCanvasClose"/>
-</scriptmodule>
