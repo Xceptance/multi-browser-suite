@@ -7,7 +7,7 @@
   <command name="open" value="https://blog.xceptance.com/"/>
   <command name="assertText" target="css=h1.site-title" value="Passionate Testing"/>
   <action name="Search"/>
-  <command name="click" target="css=.search-toggle a"/>
+  <command name="click" target="css=.search-toggle"/>
   <command name="waitForVisible" target="css=#search-container input.search-field"/>
   <command name="type" target="css=#search-container .search-field" value="concurrent users"/>
   <command name="submitAndWait" target="css=.search-form"/>

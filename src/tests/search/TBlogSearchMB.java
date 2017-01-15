@@ -14,7 +14,11 @@ import xltutil.annotation.TestTargets;
 @ScriptName("tests.search.TBlogSearch")
 @TestTargets(
                 {
-                    "chrome_sl", "FF_1000x768", "FF_1500x1000", "Chrome_1280x900", "Chrome_1500x1000", "Galaxy_Note3_Emulation"
+//                    "IE11_SauceLabs", "Firefox_SauceLabs", "Chrome_SauceLabs", 
+//                    "Chrome_1024x768", "Chrome_1500x1000",
+//                    "FF_1024x768", "FF_1500x1000",
+                    "Safari10_SauceLabs"
+//                    "Galaxy_Note3_Emulation", "iphone5"
                 })
 public class TBlogSearchMB extends AbstractAnnotatedScriptTestCase
 {

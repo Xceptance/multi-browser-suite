@@ -8,8 +8,8 @@ See below for prerequisites and installation steps needed to run the test suite 
 - Step 1) Execution Environments
     - IDE
     - Ant
-- Step 2) WebDrive Configuration
-    - Firefox
+- Step 2) WebDriver Configuration
+    - Firefox (legacy and GeckoDriver)
     - Chrome
     - Internet Explorer
 - Step 3) Execution
@@ -18,7 +18,7 @@ See below for prerequisites and installation steps needed to run the test suite 
 
 # Prerequisites
 - XLT&reg; Framework (latest) - [Download the XLT Framework](https://www.xceptance.com/en/xlt/download.html)
-- JDK 7 ([JSE](https://www.oracle.com/technetwork/java/javase/downloads)) or higher
+- JDK 8 ([JSE](https://www.oracle.com/technetwork/java/javase/downloads)) or higher
 - Browser:
     - [Firefox 31](https://www.mozilla.org/firefox-download) or later
     - or [Google Chrome](https://www.google.com/chrome/browser/desktop/index.html) version 30 (or later)
@@ -46,56 +46,32 @@ See below for prerequisites and installation steps needed to run the test suite 
 - Select `all jar files` and press `[OK]`
 
 ## Ant - Project Configuration
-Open file `multi-browser-suite/build.properties` and adjust the values
+Open file `multi-browser-suite/build.properties` and adjust the value
 
 ```sh
-xlt.home.dir = path/to/xlt
+xlt.home.dir = /path/to/xlt
 ```
 
 # Step 2: WebDriver Configuration
+If you want to run tests locally with your installed browsers, adjust `config/browser.properties`. You have to set the path to the downloaded chromedriver, internetexplorerdriver, and geckodriver, depending on your OS and browsers installed of course.
 
-## Firefox
-Note: installation and configuration not required. FirefoxWebdriver are integrated.
-- Open file `multi-browser-suite/config/default.properties` and set property to
+- ChromeDriver: https://sites.google.com/a/chromium.org/chromedriver/
+- IEDriver: https://github.com/SeleniumHQ/selenium/wiki/InternetExplorerDriver
+- GeckoDriver (Firefox 48 and higher): https://github.com/mozilla/geckodriver/releases
 
-```sh
-xlt.webDriver = firefox
-```
 
-## Chrome
-Note: For information about ChromeWebdriver, [click here](https://sites.google.com/a/chromium.org/chromedriver)
-- [Download ChromeDriver](https://sites.google.com/a/chromium.org/chromedriver/downloads) and unpack it (eg: D:/dev/webDriver/)
-- Open file `multi-browser-suite/config/default.properties`
-- Set property and adjust path to the downloaded ChromeDriver
-
-```sh
-xlt.webDriver = chrome
-xlt.webDriver.chrome.pathToDriverServer = path/to/webDriver/chromedriver.exe
-```
-
-## Internet Explorer 11 (only Microsoft OS Support)
-Note: For general information about IEWebdriver, [click here](https://code.google.com/p/selenium/wiki/InternetExplorerDriver). 
-Information about installation/configuration information can be found [here](https://code.google.com/p/selenium/wiki/InternetExplorerDriver#Required_Configuration).
-
-- [Download Internet Explorer Webdriver](http://www.seleniumhq.org/download/) and unpack it (eg: D:/dev/webDriver/)
-- Open file `multi-browser-suite/config/default.properties`
-- Set property and adjust path to the downloaded IEWebdriver
-```sh
-xlt.webDriver = ie
-xlt.webDriver.ie.pathToDriverServer = path/to/webDriver/IEDriverServer.exe
-```
-
-# Step 3: Configuration and Execution of Testcases
+# Step 3: Configuration and Execution of Test Cases
 ## Configuration SauceLabs account settings
+- Copy `config/credentials.properties.template` to `config/credentials.properties`
+- Open `config/credentials.properties`
 - Log into your SauceLabs Account
 - Navigate to the User Settings page: `https://saucelabs.com/beta/user-settings`
 - On section `Access Key` click the `[Show]` button
-- Copy this `Access Key` into clipboard
-- Open file `multi-browser-suite/config/browser.properties` and set properties
+- Copy value of `Access Key`
 - Username can be found on the page as `User Information` -> `USERNAME`
 - Password is your `Access Key`
 ```sh
-browserprofile.testEnvironment.saucelabs.url = http://ondemand.saucelabs.com/wd/hub
+browserprofile.testEnvironment.saucelabs.url = https://ondemand.saucelabs.com:443/wd/hub
 browserprofile.testEnvironment.saucelabs.username = xx
 browserprofile.testEnvironment.saucelabs.password = xx
 ```
@@ -178,60 +154,10 @@ browserprofile.ie11.testEnvironment = myGrid
 ```
 
 
-## Configuration testcase
-### Preperation testcase
-- Start Eclipse
-- Copy and rename generated wrapper class to make sure that the following changes will not be lost.
-- Open copied testcase (example: `src/test.search/TSearch_ProductOnly_Augmented.java` which is a copy of `src/test.search/TSearch_ProductOnly.java`)
-
-Replace rows:
-```sh
-import com.xceptance.xlt.api.engine.scripting.AbstractScriptTestCase;
-import com.xceptance.xlt.api.engine.scripting.ScriptName;
-
-import xltutil.AbstractAnnotatedScriptTestCase;
-```
-to 
-```sh
-import com.xceptance.xlt.api.engine.scripting.ScriptName;
-
-import xltutil.AbstractAnnotatedScriptTestCase;
-import xltutil.annotation.TestTargets;
-```
-
-
-- Replace `AbstractScriptTestCase` with `AbstractAnnotatedScriptTestCase`
-- Between row `@ScriptName(..)` and `public class ...` add following rows
-
-Example:
-```sh
-@ScriptName("xxxxxx")
-@TestTargets(
-{
-})
-public class Tcase_name extends AbstractAnnotatedScriptTestCase
-```
-
-## Set one ore more browser targets
-Add targets based on `unique profile identifier` in the file `config/browser.properties`
-
-Example for one browser:
-```sh
-@TestTargets(
-{
-	"Chrome_1280x900"
-})
-```
-
-Example for more than browser:
-
-```sh
-@TestTargets(
-{
-	"Chrome_1280x900", "Chrome_1500x1000", "FF_1000x768", "FF_1500x1000"
-})
-```
-
+## Configuration test case
+### Prepare test case
+- Copy and rename generated wrapper class to make sure that your test case won't be overwritten when continuing editing, for instance copy TSearch.java to TSearchMB.java
+- Make sure you fix and correct the imports at the end of editing
 
 The following example shows a complete java file configured for multiple browsers: 
 - InternetExplorer with Version 8 and 11 on SauceLabs
@@ -252,12 +178,12 @@ import xltutil.annotation.TestTargets;
     {
     	"chrome_sl", "FF_1000x768", "FF_1500x1000", "Chrome_1280x900", "Chrome_1500x1000", "Galaxy_Note3_Emulation"
     })
-public class TSearch_ProductOnly_Augmented extends AbstractAnnotatedScriptTestCase
+public class TSearchMB extends AbstractAnnotatedScriptTestCase
 {
 }
 ```
 
-## Execution testcase
+## Execution test case
 ### Start test case in Eclipse
 - Select java file from the testcase 
     - Example: src -> test.search -> `TSearch_ProductOnly.java` 

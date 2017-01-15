@@ -1,5 +1,6 @@
 package xltutil.runner.helper;
 
+import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -21,6 +22,8 @@ import org.openqa.selenium.UnsupportedCommandException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeOptions;
+import org.openqa.selenium.firefox.FirefoxBinary;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.ie.InternetExplorerDriver;
 import org.openqa.selenium.remote.BrowserType;
@@ -73,41 +76,41 @@ public final class AnnotationRunnerHelper
      * @return {@link URL} to Selenium grid augmented with credentials
      * @throws MalformedURLException
      */
-    public static HttpCommandExecutor createGridExecutor(ProxyConfigurationDto proxyConfig, URL gridUrl, String gridUsername,
-                                                         String gridPassword) throws MalformedURLException
+    public static HttpCommandExecutor createGridExecutor(final ProxyConfigurationDto proxyConfig, final URL gridUrl, final String gridUsername,
+                                                         final String gridPassword) throws MalformedURLException
     {
         // create a configuration for accessing target site via proxy (if a proxy is defined)
         // the proxy and the destination site will have different or no credentials for accessing them
         // so we need to create different authentication scopes and link them with the credentials
-        BasicCredentialsProvider basicCredentialsProvider = new BasicCredentialsProvider();
+        final BasicCredentialsProvider basicCredentialsProvider = new BasicCredentialsProvider();
 
         // create credentials for proxy access
         if (proxyConfig != null //
         && !StringUtils.isEmpty(proxyConfig.getUsername()) //
         && !StringUtils.isEmpty(proxyConfig.getPassword()))
         {
-            AuthScope proxyAuth = new AuthScope(proxyConfig.getHost(), Integer.valueOf(proxyConfig.getPort()));
-            Credentials proxyCredentials = new UsernamePasswordCredentials(proxyConfig.getUsername(), proxyConfig.getPassword());
+            final AuthScope proxyAuth = new AuthScope(proxyConfig.getHost(), Integer.valueOf(proxyConfig.getPort()));
+            final Credentials proxyCredentials = new UsernamePasswordCredentials(proxyConfig.getUsername(), proxyConfig.getPassword());
             basicCredentialsProvider.setCredentials(proxyAuth, proxyCredentials);
         }
 
         // create credentials for target website
-        AuthScope gridAuth = new AuthScope(gridUrl.getHost(), gridUrl.getPort());
+        final AuthScope gridAuth = new AuthScope(gridUrl.getHost(), gridUrl.getPort());
 
         if (!StringUtils.isEmpty(gridUsername))
         {
-            Credentials gridCredentials = new UsernamePasswordCredentials(gridUsername, gridPassword);
+            final Credentials gridCredentials = new UsernamePasswordCredentials(gridUsername, gridPassword);
             basicCredentialsProvider.setCredentials(gridAuth, gridCredentials);
         }
 
         // now create a http client, set the custom proxy and inject the credentials
-        HttpClientBuilder clientBuilder = HttpClientBuilder.create();
+        final HttpClientBuilder clientBuilder = HttpClientBuilder.create();
         clientBuilder.setDefaultCredentialsProvider(basicCredentialsProvider);
         if (proxyConfig != null)
             clientBuilder.setProxy(new HttpHost(proxyConfig.getHost(), Integer.valueOf(proxyConfig.getPort())));
-        CloseableHttpClient httpClient = clientBuilder.build();
+        final CloseableHttpClient httpClient = clientBuilder.build();
 
-        Map<String, CommandInfo> additionalCommands = new HashMap<String, CommandInfo>();   // just a dummy
+        final Map<String, CommandInfo> additionalCommands = new HashMap<String, CommandInfo>();   // just a dummy
 
         // this command executor will do the credential magic for us. both proxy and target site credentials
         return new HttpCommandExecutor(additionalCommands, gridUrl, new ProxyHttpClient(httpClient));
@@ -123,16 +126,16 @@ public final class AnnotationRunnerHelper
      * @param config
      * @param driver
      */
-    public static void setBrowserWindowSize(BrowserConfigurationDto config, WebDriver driver)
+    public static void setBrowserWindowSize(final BrowserConfigurationDto config, final WebDriver driver)
     {
-        XltProperties props = XltProperties.getInstance();
+        final XltProperties props = XltProperties.getInstance();
 
         // get the configured window size and set it if defined
-        int windowWidth = props.getProperty(getEffectiveKey(PROP_PREFIX_WEB_DRIVER + ".window.width"), -1);
-        int windowHeight = props.getProperty(getEffectiveKey(PROP_PREFIX_WEB_DRIVER + ".window.height"), -1);
+        final int windowWidth = props.getProperty(getEffectiveKey(PROP_PREFIX_WEB_DRIVER + ".window.width"), -1);
+        final int windowHeight = props.getProperty(getEffectiveKey(PROP_PREFIX_WEB_DRIVER + ".window.height"), -1);
 
-        int configuredBrowserWidth = config.getBrowserWidth();
-        int configuredBrowserHeight = config.getBrowserHeight();
+        final int configuredBrowserWidth = config.getBrowserWidth();
+        final int configuredBrowserHeight = config.getBrowserHeight();
 
         Dimension browserSize = null;
         // first check if the configured browserprofile has a defined size, else use the xlt default browser size
@@ -149,13 +152,13 @@ public final class AnnotationRunnerHelper
         {
             driver.manage().window().setSize(browserSize);
         }
-        catch (UnsupportedCommandException e)
+        catch (final UnsupportedCommandException e)
         {
             // same as the exception handling below
             if (!e.getMessage().contains("not yet supported"))
                 throw e;
         }
-        catch (WebDriverException e)
+        catch (final WebDriverException e)
         {
             // on saucelabs in some cases like iphone emulation you cant resize the browser.
             // they throw an unchecked WebDriverException with the message "Not yet implemented"
@@ -167,6 +170,25 @@ public final class AnnotationRunnerHelper
     }
 
     /**
+     * Creates a {@link FirefoxBinary} object and sets the path, but only if the path is not blank.
+     * 
+     * @param pathToBrowser
+     *            the path to the browser binary
+     * @return the Firefox binary
+     */
+    private static FirefoxBinary createFirefoxBinary(final String pathToBrowser)
+    {
+        if (StringUtils.isNotBlank(pathToBrowser))
+        {
+            return new FirefoxBinary(new File(pathToBrowser));
+        }
+        else
+        {
+            return new FirefoxBinary();
+        }
+    }
+    
+    /**
      * Instantiate the {@link WebDriver} according to the configuration read from {@link TestTargets} annotations.
      *
      * @param config
@@ -174,19 +196,19 @@ public final class AnnotationRunnerHelper
      * @return
      * @throws MalformedURLException
      */
-    public static WebDriver createWebdriver(BrowserConfigurationDto config, ProxyConfigurationDto proxyConfig) throws MalformedURLException
+    public static WebDriver createWebdriver(final BrowserConfigurationDto config, final ProxyConfigurationDto proxyConfig) throws MalformedURLException
     {
-        DesiredCapabilities capabilities = config.getCapabilities();
+        final DesiredCapabilities capabilities = config.getCapabilities();
 
-        String testEnvironment = config.getTestEnvironment();
+        final String testEnvironment = config.getTestEnvironment();
 
         if (StringUtils.isEmpty(testEnvironment) || "local".equalsIgnoreCase(testEnvironment))
         {
             if (proxyConfig != null)
             {
-                String proxyHost = proxyConfig.getHost() + ":" + proxyConfig.getPort();
+                final String proxyHost = proxyConfig.getHost() + ":" + proxyConfig.getPort();
 
-                Proxy webdriverProxy = new Proxy();
+                final Proxy webdriverProxy = new Proxy();
                 webdriverProxy.setHttpProxy(proxyHost);
                 webdriverProxy.setSslProxy(proxyHost);
                 webdriverProxy.setFtpProxy(proxyHost);
@@ -199,14 +221,24 @@ public final class AnnotationRunnerHelper
                 capabilities.setCapability(CapabilityType.PROXY, webdriverProxy);
             }
 
-            String browserName = config.getCapabilities().getBrowserName();
+            final String browserName = config.getCapabilities().getBrowserName();
             if (chromeBrowsers.contains(browserName))
             {
+                // do we have a custom path?
+                final String pathToBrowser = XltProperties.getInstance().getProperty(XltPropertyKey.CHROME_PATH);
+                if (StringUtils.isNotBlank(pathToBrowser))
+                {
+                    final ChromeOptions options = new ChromeOptions();
+                    options.setBinary(pathToBrowser);
+                    capabilities.setCapability(ChromeOptions.CAPABILITY, options);
+                }     
                 return new ChromeDriver(capabilities);
             }
             else if (firefoxBrowsers.contains(browserName))
             {
-                return new FirefoxDriver(capabilities);
+                final String pathToBrowser = XltProperties.getInstance().getProperty(XltPropertyKey.FIREFOX_PATH);
+                final FirefoxBinary binary = createFirefoxBinary(pathToBrowser);
+                return new FirefoxDriver(binary, null, capabilities);
             }
             else if (internetExplorerBrowsers.contains(browserName))
             {
@@ -215,15 +247,15 @@ public final class AnnotationRunnerHelper
         }
         else
         {
-            XltProperties xltProperties = XltProperties.getInstance();
+            final XltProperties xltProperties = XltProperties.getInstance();
 
-            Map<String, String> propertiesForEnvironment = xltProperties.getPropertiesForKey(XltPropertyKey.BROWSERPROFILE_TEST_ENVIRONMENT +
+            final Map<String, String> propertiesForEnvironment = xltProperties.getPropertiesForKey(XltPropertyKey.BROWSERPROFILE_TEST_ENVIRONMENT +
                                                                                              testEnvironment);
 
-            String gridUsername = propertiesForEnvironment.get("username");
-            String gridPassword = propertiesForEnvironment.get("password");
-            String gridUrlString = propertiesForEnvironment.get("url");
-            URL gridUrl = new URL(gridUrlString);
+            final String gridUsername = propertiesForEnvironment.get("username");
+            final String gridPassword = propertiesForEnvironment.get("password");
+            final String gridUrlString = propertiesForEnvironment.get("url");
+            final URL gridUrl = new URL(gridUrlString);
 
             // establish connection to target website
             return new RemoteWebDriver(createGridExecutor(proxyConfig, gridUrl, gridUsername, gridPassword), capabilities);
@@ -232,35 +264,35 @@ public final class AnnotationRunnerHelper
         return null;
     }
 
-    public static Map<String, BrowserConfigurationDto> parseBrowserProperties(XltProperties properties)
+    public static Map<String, BrowserConfigurationDto> parseBrowserProperties(final XltProperties properties)
     {
         // Structur browserprofile.<nametag>.*
 
         // property prefix for browser configurations
-        String propertyKeyBrowsers = "browserprofile";
+        final String propertyKeyBrowsers = "browserprofile";
 
         // get all properties with prefix browserprofile. they are then truncated to <nametag>.*
         // holds all found browser configurations
         Map<String, String> browserProperties = properties.getPropertiesForKey(propertyKeyBrowsers);
 
         // a temporary list to hold all found browser tags
-        List<String> browserTags = new ArrayList<String>();
+        final List<String> browserTags = new ArrayList<String>();
 
         // create a list of tags referencing browser configurations
-        for (String key : browserProperties.keySet())
+        for (final String key : browserProperties.keySet())
         {
-            String[] parts = key.split("\\.");
-            String browserTag = parts[0];
+            final String[] parts = key.split("\\.");
+            final String browserTag = parts[0];
             if (!StringUtils.isEmpty(browserTag) && !browserTags.contains(browserTag))
                 browserTags.add(browserTag);
         }
 
         // map to hold all browser configurations. lookup via browser tag
-        Map<String, BrowserConfigurationDto> browserConfigurations = new HashMap<String, BrowserConfigurationDto>();
+        final Map<String, BrowserConfigurationDto> browserConfigurations = new HashMap<String, BrowserConfigurationDto>();
 
         // parse all browser properties and add them to the map
-        PropertiesToBrowserConfigurationMapper mapper = new PropertiesToBrowserConfigurationMapper();
-        for (String browserTag : browserTags)
+        final PropertiesToBrowserConfigurationMapper mapper = new PropertiesToBrowserConfigurationMapper();
+        for (final String browserTag : browserTags)
         {
             browserProperties = properties.getPropertiesForKey(propertyKeyBrowsers + "." + browserTag);
             browserProperties.put("browserTag", browserTag);
