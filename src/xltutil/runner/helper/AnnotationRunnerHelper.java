@@ -25,6 +25,7 @@ import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.firefox.FirefoxBinary;
 import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.firefox.FirefoxOptions;
 import org.openqa.selenium.ie.InternetExplorerDriver;
 import org.openqa.selenium.remote.BrowserType;
 import org.openqa.selenium.remote.CapabilityType;
@@ -86,8 +87,8 @@ public final class AnnotationRunnerHelper
 
         // create credentials for proxy access
         if (proxyConfig != null //
-        && !StringUtils.isEmpty(proxyConfig.getUsername()) //
-        && !StringUtils.isEmpty(proxyConfig.getPassword()))
+            && !StringUtils.isEmpty(proxyConfig.getUsername()) //
+            && !StringUtils.isEmpty(proxyConfig.getPassword()))
         {
             final AuthScope proxyAuth = new AuthScope(proxyConfig.getHost(), Integer.valueOf(proxyConfig.getPort()));
             final Credentials proxyCredentials = new UsernamePasswordCredentials(proxyConfig.getUsername(), proxyConfig.getPassword());
@@ -187,7 +188,7 @@ public final class AnnotationRunnerHelper
             return new FirefoxBinary();
         }
     }
-    
+
     /**
      * Instantiate the {@link WebDriver} according to the configuration read from {@link TestTargets} annotations.
      *
@@ -231,14 +232,16 @@ public final class AnnotationRunnerHelper
                     final ChromeOptions options = new ChromeOptions();
                     options.setBinary(pathToBrowser);
                     capabilities.setCapability(ChromeOptions.CAPABILITY, options);
-                }     
+                }
                 return new ChromeDriver(capabilities);
             }
             else if (firefoxBrowsers.contains(browserName))
             {
-                final String pathToBrowser = XltProperties.getInstance().getProperty(XltPropertyKey.FIREFOX_PATH);
-                final FirefoxBinary binary = createFirefoxBinary(pathToBrowser);
-                return new FirefoxDriver(binary, null, capabilities);
+                FirefoxOptions firefoxOptions = new FirefoxOptions();
+                firefoxOptions.setBinary(createFirefoxBinary(XltProperties.getInstance().getProperty(XltPropertyKey.FIREFOX_PATH)));
+                firefoxOptions.merge(capabilities);
+
+                return new FirefoxDriver(firefoxOptions);
             }
             else if (internetExplorerBrowsers.contains(browserName))
             {
@@ -250,7 +253,7 @@ public final class AnnotationRunnerHelper
             final XltProperties xltProperties = XltProperties.getInstance();
 
             final Map<String, String> propertiesForEnvironment = xltProperties.getPropertiesForKey(XltPropertyKey.BROWSERPROFILE_TEST_ENVIRONMENT +
-                                                                                             testEnvironment);
+                                                                                                   testEnvironment);
 
             final String gridUsername = propertiesForEnvironment.get("username");
             final String gridPassword = propertiesForEnvironment.get("password");
