@@ -20,7 +20,6 @@ import java.util.Set;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang.IllegalClassException;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.Test;
 import org.junit.runner.Description;
@@ -190,7 +189,7 @@ public class AnnotationRunner extends XltTestRunner
         // shall we run old school firefox?
         final boolean firefoxLegacy = xltProperties.getProperty(XltPropertyKey.WEBDRIVER_FIREFOX_LEGACY, false);
         System.setProperty(FirefoxDriver.SystemProperty.DRIVER_USE_MARIONETTE, Boolean.toString(!firefoxLegacy));
-        
+
         if (!StringUtils.isEmpty(ieDriverPath))
         {
             System.setProperty("webdriver.ie.driver", ieDriverPath);
@@ -202,7 +201,7 @@ public class AnnotationRunner extends XltTestRunner
         if (!StringUtils.isEmpty(geckoDriverPath))
         {
             System.setProperty("webdriver.gecko.driver", geckoDriverPath);
-        }        
+        }
         boolean foundTargetsAnnotation = false;
 
         // get test specific browser definitions (aka browser tag see browser.properties)
@@ -274,8 +273,8 @@ public class AnnotationRunner extends XltTestRunner
         }
 
         if (!foundTargetsAnnotation)
-            throw new IllegalClassException("The class (" + testCaseClass.getSimpleName() +
-                                            ") does not have a required TestTargets annotation.");
+            throw new IllegalArgumentException("The class (" + testCaseClass.getSimpleName() +
+                                               ") does not have a required TestTargets annotation.");
     }
 
     /**
@@ -336,7 +335,7 @@ public class AnnotationRunner extends XltTestRunner
      */
     private List<Map<String, String>> getDataSets(final Class<?> testClass, final String fullTestCaseName, final String shortTestCaseName,
                                                   final List<File> dataSetFileDirs)
-                                                      throws DataSetProviderException, FileNotFoundException, IOException
+        throws DataSetProviderException, FileNotFoundException, IOException
     {
         // check whether we are in load test mode
         if (Session.getCurrent().isLoadTest())
