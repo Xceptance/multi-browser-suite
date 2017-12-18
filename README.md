@@ -2,35 +2,41 @@
 This test suite has been built for and with __XLT__ to demo the support of multiple browsers as well as a Sauce Labs integration for test automation with XLT.
 
 # Test Suite Setup
-See below for prerequisites and installation steps needed to run the test suite with __XLT Script Developer__ in Firefox or the __XLT Framework__ orchestrating different WebDrivers. For further information, please refer to [XLT Online](https://www.xceptance.com/en/xlt/documentation.html).
+See below for prerequisites and installation steps needed to run the test suite with the __XLT Framework__ orchestrating different WebDrivers. For further information, please refer to [XLT Online](https://www.xceptance.com/en/xlt/documentation.html).
 
 # Overview
-- Step 1) Execution Environments
-    - IDE
-    - Ant
+- Step 1) IDE Setup
+    - Preparation
+    - Project Configuration
 - Step 2) WebDriver Configuration
     - Firefox (legacy and GeckoDriver)
     - Chrome
     - Internet Explorer
 - Step 3) Execution
     - Eclipse
-    - Ant
+    - Maven
 
 # Prerequisites
-- XLT&reg; Framework (latest) - [Download the XLT Framework](https://www.xceptance.com/en/xlt/download.html)
 - JDK 8 ([JSE](https://www.oracle.com/technetwork/java/javase/downloads)) or higher
 - Browser:
-    - [Firefox 31](https://www.mozilla.org/firefox-download) or later
-    - or [Google Chrome](https://www.google.com/chrome/browser/desktop/index.html) version 30 (or later)
+    - [Firefox](https://www.mozilla.org/en-US/firefox/)
+    - or [Google Chrome](https://www.google.com/chrome/browser/desktop/)
     - or Internet Explorer 11 
 - Execution Environment:
     - Java IDE (e.g. [Eclipse](https://eclipse.org/downloads/)) or
-    - [Apache Ant](https://ant.apache.org/bindownload.cgi)  ( [install Apache Ant](https://ant.apache.org/manual/install.html#installing) )
+    - [Apache Maven](https://maven.apache.org/download.cgi)  ( [Install Apache Maven](http://maven.apache.org/install.html) )
 - [SauceLabs Account](https://saucelabs.com/)
 
 
-# Step 1: Execution Environments
-## IDE - Project Configuration (Eclipse)
+# Step 1: IDE Setup
+## Preparation (Eclipse)
+- `Help` -> `Eclipse Marketplace...`
+- Click on tab `Installed` and look for 'Maven Integration for Eclipse'
+- If you found a match, you are done
+- Otherwise, click on tab `Search`, type 'Maven' into the search field and press `Enter`
+- Select 'Maven Integration for Eclipse' that matches your Eclipse version (e.g. 'Luna or newer') and click on `[Install]`
+
+## Project Configuration (Eclipse)
 - `File` -> `Import`
 - `Git` -> `Projects from Git` -> `[Next]`
 - `Clone URI` -> `[Next]`
@@ -39,18 +45,8 @@ See below for prerequisites and installation steps needed to run the test suite 
 - Directory: your Workspace (eg: path/to/multi-browser-suite) -> `[Next]`
 - Select `“Import existing Eclipse projects”` -> `[Next]`
 - Check all values and press `[Finish]`
-- Click right on project folder
-- Select `Build Path configure` `Build Path`
-- `Libraries` -> `[Add External JARs]`
-- Go to `your xlt path /libs`
-- Select `all jar files` and press `[OK]`
 
-## Ant - Project Configuration
-Open file `multi-browser-suite/build.properties` and adjust the value
 
-```sh
-xlt.home.dir = /path/to/xlt
-```
 
 # Step 2: WebDriver Configuration
 If you want to run tests locally with your installed browsers, adjust `config/browser.properties`. You have to set the path to the downloaded chromedriver, internetexplorerdriver, and geckodriver, depending on your OS and browsers installed of course.
@@ -154,77 +150,50 @@ browserprofile.ie11.testEnvironment = myGrid
 ```
 
 
-## Configuration test case
-### Prepare test case
-- Copy and rename generated wrapper class to make sure that your test case won't be overwritten when continuing editing, for instance copy TSearch.java to TSearchMB.java
-- Make sure you fix and correct the imports at the end of editing
-
-The following example shows a complete java file configured for multiple browsers: 
-- InternetExplorer with Version 8 and 11 on SauceLabs
-- Firefox and Chrome run local
-
-```sh
-package tests.search;
-
-import com.xceptance.xlt.api.engine.scripting.ScriptName;
-
-import xltutil.AbstractAnnotatedScriptTestCase;
-import xltutil.annotation.TestTargets;
-
-//coment ...
-
-@ScriptName("tests.search.TSearch_ProductOnly")
-@TestTargets(
-    {
-    	"chrome_sl", "FF_1000x768", "FF_1500x1000", "Chrome_1280x900", "Chrome_1500x1000", "Galaxy_Note3_Emulation"
-    })
-public class TSearchMB extends AbstractAnnotatedScriptTestCase
-{
-}
-```
-
-## Execution test case
+## Test Execution
 ### Start test case in Eclipse
-- Select java file from the testcase 
-    - Example: src -> test.search -> `TSearch_ProductOnly.java` 
+- Select testcase in Package Explorer 
+    - Example: src -> test -> java -> multibrowser -> search -> `TBlogSearch.java` 
 - `Run as` item in context menu -> `JUnit Test`
 
-### Run Apache Ant
-Open the command prompt window: click the Start button picture of the Start button, then click All Programs, then Accessories, then Command Prompt, then change to your `multi-browser-suite` path.
+### Run Apache Maven
+Open the command prompt/terminal window and change to your `multi-browser-suite` path.
 
 ```sh
-$ ant test.java
+$ maven clean test
 ```
 
-### Run Apache Ant with Browsertag Support
+### Run Apache Maven with Browsertag Support
 Note: The option `-Dbrowserdefinition=<comma separated list of browsertags>` enables you to run only testcases that are annotated with a specific browsertag.
 
 Example
 ```sh
-$ ant test -Dbrowserdefinition=chrome_local, ie8_saucelabs
+$ maven clean test -Dbrowserdefinition="chrome_local, ie8_saucelabs"
 ```
 
 ## XLT Result Browser
 The result browser offers an integrated navigation to browse the complete page output of the transaction and to look at every single request in detail. For more information about the XLT Result Browser, [click here](https://lab.xceptance.de/releases/xlt/latest/user-manual.html#XLTResultBrowser).
 
 ## XLT Result - Structure
+
 ```sh
 ---+ multi-browser-suite
-    `---+ results
-       `---+ [testcase]
-           `---+ [virtual-user]
-               `---+ output
-                   `---+ [transaction-ID]
-                       |---- css
-                       |---- images
-                       |---+ pages
-                       |   `---- cache
-                       `---- responses
+   `---+ target
+        `---+ results
+             `---+ [testcase]
+                 `---+ [virtual-user]
+                     `---+ output
+                         `---+ [transaction-ID]
+                             |---- css
+                             |---- images
+                             |---+ pages
+                             |    `---- cache
+                             `---- responses
 ```
 
 ###  Deletes any result file from a previous test run
 ```sh
-$ ant clean
+$ maven clean
 ```
 
 # Test Suite Structure
@@ -235,20 +204,15 @@ This section gives a small introduction to the multi-browser-suite structure.
 
 ```sh
 ---+ multi-browser-suite
-    |---- config                             # XLT framework configuration
-    |---+ scripts
-    |   |-- modules/helper                   # scripts for auxiliary services
-    |   |---+ modules/pages                  # scripts specific pages
-    |   |   |---- pdp                        # scripts for productdetailpages
-    |   |   |---- search                     # scripts for search page
-    |   `---+ tests
-    |       `---- search                     # tests for search area
-    |---+ src
-    |   |---+ tests                          # XLT java wrapper classes
-    |   |        `---- others                # other sample tests
-    |---- build.properties                   # XLT ant build properties
-    |---- build.xml                          # XLT ant build configuration
-    |---- xlt-scriptdeveloper.properties     # XLT Script Developer settings
-    `---- global_testdata.properties         # global testdata properties
+   |---- config                             # XLT framework configuration
+   |---+ src
+   |   `---+ test
+   |       `---- java                       # Java test class sources
+   |---+ target
+   |   |---- classes                        # Compiled Java classes
+   |   |---- results                        # XLT Result Browsers
+   |   `---- surefire-reports               # JUnit test results
+   |---- pom.xml                            # Maven POM file
+   |---- LICENSE                            # Project License
+   `---- README.md                          # This file
 ```
-Please note there is a special folder src/tests/others to collect Java-based test examples e.g. testing via RemoteWebDriver against [Sauce Labs](https://saucelabs.com/).
