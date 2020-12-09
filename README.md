@@ -1,6 +1,9 @@
 # XLT Multi Browser Test Suite
 This test suite has been built for and with __XLT__ to demo the support of multiple browsers as well as a Sauce Labs integration for test automation with XLT.
 
+# Deprecation Note
+This repository has been retired. There is not replacement for it. For a more refined test automation concept take a look at [Neodymium](https://github.com/Xceptance/neodymium-library).
+
 # Test Suite Setup
 See below for prerequisites and installation steps needed to run the test suite with the __XLT Framework__ orchestrating different WebDrivers. For further information, please refer to [XLT Online](https://www.xceptance.com/en/xlt/documentation.html).
 
